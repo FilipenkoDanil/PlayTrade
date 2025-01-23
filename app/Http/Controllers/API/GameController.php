@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Game\StoreGameRequest;
+use App\Http\Requests\Game\UpdateGameRequest;
 use App\Http\Resources\GameResource;
 use App\Models\Game;
-use App\Http\Requests\StoreGameRequest;
-use App\Http\Requests\UpdateGameRequest;
 
 class GameController extends Controller
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Attribute;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateUnitRequest extends FormRequest
+class UpdateAttributeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,8 @@ class UpdateUnitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|max:255|unique:units,title,' . $this->unit->id,
+            'title' => 'required|max:255',
+            'category_id' => 'required|exists:categories,id',
         ];
     }
 }

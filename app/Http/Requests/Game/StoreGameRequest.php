@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Game;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateGameRequest extends FormRequest
+class StoreGameRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,7 @@ class UpdateGameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|max:255|unique:games,title,' . $this->game->id
+            'title' => 'required|unique:games,title|max:255'
         ];
     }
 }

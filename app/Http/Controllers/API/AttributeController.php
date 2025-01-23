@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Attribute\StoreAttributeRequest;
+use App\Http\Requests\Attribute\UpdateAttributeRequest;
 use App\Http\Resources\AttributeResource;
 use App\Models\Attribute;
-use App\Http\Requests\StoreAttributeRequest;
-use App\Http\Requests\UpdateAttributeRequest;
 
 class AttributeController extends Controller
 {
