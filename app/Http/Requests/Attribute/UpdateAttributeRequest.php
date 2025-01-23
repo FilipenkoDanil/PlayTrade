@@ -23,7 +23,7 @@ class UpdateAttributeRequest extends FormRequest
     {
         return [
             'title' => 'required|max:255',
-            'category_id' => 'required|exists:categories,id',
+            'game_id' => 'required|exists:games,id',
         ];
     }
 }
