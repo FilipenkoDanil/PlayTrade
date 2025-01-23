@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AttributeController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\GameController;
 use App\Http\Controllers\API\UnitController;
@@ -24,3 +25,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('games', GameController::class);
 Route::apiResource('units', UnitController::class);
 Route::apiResource('categories', CategoryController::class);
+Route::apiResource('attributes', AttributeController::class);
