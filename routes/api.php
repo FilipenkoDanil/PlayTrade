@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AttributeController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\GameController;
+use App\Http\Controllers\API\ServerController;
 use App\Http\Controllers\API\UnitController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,3 +27,4 @@ Route::apiResource('games', GameController::class);
 Route::apiResource('units', UnitController::class);
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('attributes', AttributeController::class);
+Route::apiResource('servers', ServerController::class);

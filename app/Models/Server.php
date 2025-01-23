@@ -9,4 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Server extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $fillable = ['title', 'game_id'];
 }
