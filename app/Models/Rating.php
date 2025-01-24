@@ -9,4 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Rating extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $fillable = ['deal_id', 'rating', 'comment', 'user_id'];
 }

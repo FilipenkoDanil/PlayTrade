@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\API\AttributeController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\DealController;
 use App\Http\Controllers\API\GameController;
 use App\Http\Controllers\API\OfferController;
+use App\Http\Controllers\API\RatingController;
 use App\Http\Controllers\API\ServerController;
 use App\Http\Controllers\API\StatusController;
 use App\Http\Controllers\API\UnitController;
@@ -32,3 +34,4 @@ Route::apiResource('attributes', AttributeController::class);
 Route::apiResource('servers', ServerController::class);
 Route::apiResource('offers', OfferController::class);
 Route::apiResource('statuses', StatusController::class);
+Route::apiResource('ratings', RatingController::class);
