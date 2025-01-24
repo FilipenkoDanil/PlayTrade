@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Status\StoreStatusRequest;
+use App\Http\Requests\Status\UpdateStatusRequest;
+use App\Http\Resources\StatusResource;
+use App\Models\Status;
+
+class StatusController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        return StatusResource::collection(Status::all());
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreStatusRequest $request)
+    {
+        return new StatusResource(Status::create($request->all()));
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Status $status)
+    {
+        return new StatusResource($status);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateStatusRequest $request, Status $status)
+    {
+        $status->update($request->all());
+
+        return new StatusResource($status);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Status $status)
+    {
+        $status->delete();
+
+        return response()->json([
+            'message' => 'Status deleted'
+        ]);
+    }
+}
