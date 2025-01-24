@@ -23,7 +23,7 @@ class DealController extends Controller
      */
     public function store(StoreDealRequest $request)
     {
-        return new DealResource(Deal::create($request->all()));
+        return new DealResource(Deal::create($request->validated()));
     }
 
     /**
@@ -39,7 +39,7 @@ class DealController extends Controller
      */
     public function update(UpdateDealRequest $request, Deal $deal)
     {
-        $deal->update($request->all());
+        $deal->update($request->validated());
 
         return new DealResource($deal);
     }

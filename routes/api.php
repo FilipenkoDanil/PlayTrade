@@ -34,4 +34,5 @@ Route::apiResource('attributes', AttributeController::class);
 Route::apiResource('servers', ServerController::class);
 Route::apiResource('offers', OfferController::class);
 Route::apiResource('statuses', StatusController::class);
+Route::apiResource('deals', DealController::class);
 Route::apiResource('ratings', RatingController::class);

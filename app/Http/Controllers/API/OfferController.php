@@ -23,7 +23,7 @@ class OfferController extends Controller
      */
     public function store(StoreOfferRequest $request)
     {
-        return new OfferResource(Offer::create($request->all()));
+        return new OfferResource(Offer::create($request->validated()));
     }
 
     /**
@@ -39,7 +39,7 @@ class OfferController extends Controller
      */
     public function update(UpdateOfferRequest $request, Offer $offer)
     {
-        $offer->update($request->all());
+        $offer->update($request->validated());
 
         return new OfferResource($offer);
     }

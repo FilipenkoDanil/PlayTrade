@@ -23,7 +23,7 @@ class StatusController extends Controller
      */
     public function store(StoreStatusRequest $request)
     {
-        return new StatusResource(Status::create($request->all()));
+        return new StatusResource(Status::create($request->validated()));
     }
 
     /**
@@ -39,7 +39,7 @@ class StatusController extends Controller
      */
     public function update(UpdateStatusRequest $request, Status $status)
     {
-        $status->update($request->all());
+        $status->update($request->validated());
 
         return new StatusResource($status);
     }
