@@ -17,8 +17,8 @@ class GameResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'categories' => CategoryResource::collection($this->whenLoaded('categories')),
+            'attributes' => AttributeResource::collection($this->whenLoaded('attributes')),
         ];
     }
 }

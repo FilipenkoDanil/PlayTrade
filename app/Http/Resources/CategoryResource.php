@@ -20,9 +20,8 @@ class CategoryResource extends JsonResource
             'description' => $this->description,
             'game_id' => $this->game_id,
             'unit_id' => $this->unit_id,
-            'deleted_at' => $this->deleted_at,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'game' => new GameResource($this->whenLoaded('game')),
+            'unit' => new UnitResource($this->whenLoaded('unit')),
         ];
     }
 }
