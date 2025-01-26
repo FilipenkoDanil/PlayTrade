@@ -7,9 +7,14 @@ use App\Http\Requests\Offer\StoreOfferRequest;
 use App\Http\Requests\Offer\UpdateOfferRequest;
 use App\Http\Resources\OfferResource;
 use App\Models\Offer;
+use App\Services\OfferService;
 
 class OfferController extends Controller
 {
+    public function __construct(private readonly OfferService $offerService)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -23,7 +28,7 @@ class OfferController extends Controller
      */
     public function store(StoreOfferRequest $request)
     {
-        return new OfferResource(Offer::create($request->validated()));
+        return new OfferResource($this->offerService->create($request->validated()));
     }
 
     /**

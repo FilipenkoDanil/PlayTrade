@@ -7,9 +7,14 @@ use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use App\Services\CategoryService;
 
 class CategoryController extends Controller
 {
+    public function __construct(private readonly CategoryService $categoryService)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -23,7 +28,7 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        return Category::create($request->validated());
+        return new CategoryResource($this->categoryService->create($request->validated()));
     }
 
     /**
@@ -39,9 +44,7 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $category->update($request->validated());
-
-        return new CategoryResource($category);
+        return new CategoryResource($this->categoryService->update($category, $request->validated()));
     }
 
     /**
