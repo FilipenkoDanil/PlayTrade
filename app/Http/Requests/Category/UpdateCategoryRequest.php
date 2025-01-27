@@ -41,7 +41,7 @@ class UpdateCategoryRequest extends FormRequest
             'servers' => 'array',
             'servers.*' => [
                 'exists:servers,id',
-                function ($server, $value, $fail) {
+                function ($attribute, $value, $fail) {
                     $gameId = request('game_id');
                     if (!Server::where('id', $value)->where('game_id', $gameId)->exists()) {
                         $fail("Server ID $value does not belong to the specified game.");

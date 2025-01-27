@@ -28,11 +28,10 @@ class UpdateOfferRequest extends FormRequest
             'description' => 'string|nullable|max:255',
             'auto_message' => 'string|nullable|max:255',
             'is_active' => 'boolean',
-            'category_id' => 'required|integer|exists:categories,id',
-            'seller_id' => 'required|integer|exists:users,id',
-            'deleted_at' => 'nullable|date',
-            'created_at' => 'nullable|date',
-            'updated_at' => 'nullable|date',
+            'server_id' => 'required|exists:servers,id',
+            'attributes' => 'required|array',
+            'attributes.*.id' => 'required|integer|exists:attributes,id',
+            'attributes.*.value' => 'required|string|max:255',
         ];
     }
 }

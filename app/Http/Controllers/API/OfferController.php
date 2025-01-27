@@ -44,9 +44,7 @@ class OfferController extends Controller
      */
     public function update(UpdateOfferRequest $request, Offer $offer)
     {
-        $offer->update($request->validated());
-
-        return new OfferResource($offer);
+        return new OfferResource($this->offerService->update($offer, $request->validated()));
     }
 
     /**
