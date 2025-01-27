@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Category;
 
+use App\Models\Attribute;
+use App\Models\Server;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCategoryRequest extends FormRequest
@@ -26,6 +28,26 @@ class UpdateCategoryRequest extends FormRequest
             'description' => 'nullable',
             'game_id' => 'required|exists:games,id',
             'unit_id' => 'required|exists:units,id',
+            'attributes' => 'array',
+            'attributes.*' => [
+                'exists:attributes,id',
+                function ($attribute, $value, $fail) {
+                    $gameId = request('game_id');
+                    if (!Attribute::where('id', $value)->where('game_id', $gameId)->exists()) {
+                        $fail("Attribute ID $value does not belong to the specified game.");
+                    }
+                }
+            ],
+            'servers' => 'array',
+            'servers.*' => [
+                'exists:servers,id',
+                function ($server, $value, $fail) {
+                    $gameId = request('game_id');
+                    if (!Server::where('id', $value)->where('game_id', $gameId)->exists()) {
+                        $fail("Server ID $value does not belong to the specified game.");
+                    }
+                }
+            ],
         ];
     }
 }
