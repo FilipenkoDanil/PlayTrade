@@ -7,9 +7,14 @@ use App\Http\Requests\Deal\StoreDealRequest;
 use App\Http\Requests\Deal\UpdateDealRequest;
 use App\Http\Resources\DealResource;
 use App\Models\Deal;
+use App\Services\DealService;
 
 class DealController extends Controller
 {
+    public function __construct(private readonly DealService $dealService)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -23,7 +28,13 @@ class DealController extends Controller
      */
     public function store(StoreDealRequest $request)
     {
-        return new DealResource(Deal::create($request->validated()));
+        $deal = $this->dealService->create($request->validated());
+
+        if (!$deal) {
+            return response()->json(['error' => 'Unable to create deal'], 400);
+        }
+
+        return new DealResource($deal);
     }
 
     /**

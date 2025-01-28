@@ -22,10 +22,7 @@ class UpdateDealRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'quantity' => 'required|integer|min:1',
-            'price' => 'required|numeric|min:1',
-            'buyer_id' => 'required|integer|exists:users,id',
-            'offer_id' => 'required|integer|exists:offers,id',
+            'status_id' => 'required|integer|exists:statuses,id',
         ];
     }
 }
