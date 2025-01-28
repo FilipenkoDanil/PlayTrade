@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             AttributeSeeder::class,
             ServerSeeder::class,
             OfferSeeder::class,
+            StatusSeeder::class,
         ]);
     }
 }
