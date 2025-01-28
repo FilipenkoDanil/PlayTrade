@@ -28,8 +28,8 @@ class UpdateOfferRequest extends FormRequest
             'description' => 'string|nullable|max:255',
             'auto_message' => 'string|nullable|max:255',
             'is_active' => 'boolean',
-            'server_id' => 'required|exists:servers,id',
-            'attributes' => 'required|array',
+            'server_id' => 'integer|exists:servers,id',
+            'attributes' => 'array',
             'attributes.*.id' => 'required|integer|exists:attributes,id',
             'attributes.*.value' => 'required|string|max:255',
         ];

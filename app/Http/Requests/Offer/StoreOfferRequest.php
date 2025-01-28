@@ -28,9 +28,9 @@ class StoreOfferRequest extends FormRequest
             'description' => 'string|nullable|max:255',
             'auto_message' => 'string|nullable|max:255',
             'seller_id' => 'required',
-            'server_id' => 'required|exists:servers,id',
+            'server_id' => 'integer|exists:servers,id',
             'category_id' => 'required|integer|exists:categories,id',
-            'attributes' => 'required|array',
+            'attributes' => 'array',
             'attributes.*.id' => 'required|integer|exists:attributes,id',
             'attributes.*.value' => 'required|string|max:255',
         ];

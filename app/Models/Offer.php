@@ -12,7 +12,7 @@ class Offer extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['title', 'amount', 'price', 'description', 'auto_message', 'is_active', 'category_id', 'seller_id'];
+    protected $fillable = ['title', 'amount', 'price', 'description', 'auto_message', 'is_active', 'category_id', 'seller_id', 'server_id'];
 
     public function category(): BelongsTo
     {
@@ -27,5 +27,10 @@ class Offer extends Model
     public function attributes(): BelongsToMany
     {
         return $this->belongsToMany(Attribute::class);
+    }
+
+    public function server(): BelongsTo
+    {
+        return $this->belongsTo(Server::class);
     }
 }

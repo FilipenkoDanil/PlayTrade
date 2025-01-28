@@ -10,7 +10,10 @@ class OfferService
     {
         $offer = Offer::create($data);
 
-        $this->syncAttributes($offer, $data['attributes']);
+        if (isset($data['attributes']))
+        {
+            $this->syncAttributes($offer, $data['attributes']);
+        }
 
         return $offer;
     }
@@ -19,7 +22,10 @@ class OfferService
     {
         $offer->update($data);
 
-        $this->syncAttributes($offer, $data['attributes']);
+        if (isset($data['attributes']))
+        {
+            $this->syncAttributes($offer, $data['attributes']);
+        }
 
         return $offer;
     }
