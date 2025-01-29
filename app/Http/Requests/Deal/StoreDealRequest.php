@@ -23,7 +23,6 @@ class StoreDealRequest extends FormRequest
     {
         return [
             'quantity' => 'required|integer|min:1',
-            'buyer_id' => 'required|integer|exists:users,id',//TODO: изменить после добавления авторизации
             'offer_id' => 'required|integer|exists:offers,id',
         ];
     }

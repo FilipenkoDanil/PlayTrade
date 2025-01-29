@@ -16,7 +16,7 @@ class DealService
             $deal = Deal::create([
                 'quantity' => $data['quantity'],
                 'price' => $offer->price * $data['quantity'],
-                'buyer_id' => 1, //TODO: Auth::id()
+                'buyer_id' => Auth::id(),
                 'offer_id' => $offer->id,
                 'offer_title' => $offer->title,
                 'offer_description' => $offer->description,
