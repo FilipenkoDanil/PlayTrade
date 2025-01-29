@@ -7,6 +7,7 @@ use App\Http\Requests\Rating\StoreRatingRequest;
 use App\Http\Requests\Rating\UpdateRatingRequest;
 use App\Http\Resources\RatingResource;
 use App\Models\Rating;
+use Illuminate\Support\Facades\Auth;
 
 class RatingController extends Controller
 {
@@ -23,7 +24,18 @@ class RatingController extends Controller
      */
     public function store(StoreRatingRequest $request)
     {
-        return new RatingResource(Rating::create($request->validated()));
+        $rating = Rating::updateOrCreate(
+            [
+                'deal_id' => $request->deal_id,
+                'user_id' => Auth::id()
+            ],
+            [
+                'rating' => $request->rating,
+                'comment' => $request->comment,
+            ]
+        );
+
+        return new RatingResource($rating);
     }
 
     /**
@@ -49,6 +61,10 @@ class RatingController extends Controller
      */
     public function destroy(Rating $rating)
     {
+        if ($rating->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
         $rating->delete();
 
         return response()->json([

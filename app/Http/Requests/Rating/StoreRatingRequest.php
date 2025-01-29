@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Rating;
 
+use App\Models\Deal;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreRatingRequest extends FormRequest
 {
@@ -11,7 +13,9 @@ class StoreRatingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $deal = Deal::findOrFail($this->input('deal_id'));
+
+        return $deal && $deal->buyer_id == Auth::id();
     }
 
     /**
@@ -23,9 +27,8 @@ class StoreRatingRequest extends FormRequest
     {
         return [
             'deal_id' => 'required|exists:deals,id',
-            'user_id' => 'required|exists:users,id',
             'rating' => 'required|integer|between:1,5',
-            'comment' => 'nullable|string'
+            'comment' => 'nullable|string|max:255',
         ];
     }
 }

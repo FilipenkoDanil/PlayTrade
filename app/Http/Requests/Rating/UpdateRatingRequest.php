@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Rating;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateRatingRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateRatingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->route('rating')->user_id === Auth::id();
     }
 
     /**
@@ -22,8 +23,6 @@ class UpdateRatingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'deal_id' => 'required|exists:deals,id',
-            'user_id' => 'required|exists:users,id',
             'rating' => 'required|integer|between:1,5',
             'comment' => 'nullable|string'
         ];
