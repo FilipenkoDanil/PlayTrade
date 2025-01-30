@@ -13,6 +13,23 @@ class StatusSeeder extends Seeder
      */
     public function run(): void
     {
-        Status::factory(3)->create();
+        $statuses = [
+            // Статусы для сделок (deals)
+            ['title' => 'In Progress', 'type' => 'deal'], // Выполняется
+            ['title' => 'Completed', 'type' => 'deal'],   // Закрыто (выполнено)
+            ['title' => 'Cancelled', 'type' => 'deal'],   // Отменено
+            ['title' => 'Disputed', 'type' => 'deal'],    // Спор
+
+            // Статусы для транзакций (transactions)
+            ['title' => 'Pending', 'type' => 'transaction'],  // Ожидание
+            ['title' => 'Completed', 'type' => 'transaction'], // Выполнено
+            ['title' => 'Failed', 'type' => 'transaction'],   // Ошибка
+            ['title' => 'Cancelled', 'type' => 'transaction'], // Отменено
+            ['title' => 'Refunded', 'type' => 'transaction'], // Возврат
+        ];
+
+        foreach ($statuses as $status) {
+            Status::firstOrCreate(['title' => $status['title'], 'type' => $status['type']]);
+        }
     }
 }
