@@ -28,13 +28,13 @@ class DealController extends Controller
      */
     public function store(StoreDealRequest $request)
     {
-        $deal = $this->dealService->create($request->validated());
+        $result = $this->dealService->create($request->validated());
 
-        if (!$deal) {
-            return response()->json(['error' => 'Unable to create deal'], 400);
+        if (is_string($result)) {
+            return response()->json(['error' => $result], 400);
         }
 
-        return new DealResource($deal);
+        return new DealResource($result);
     }
 
     /**
@@ -51,7 +51,7 @@ class DealController extends Controller
     public function update(UpdateDealRequest $request, Deal $deal)
     {
         $deal->update($request->validated());
-
+        //Todo: изменить метод на вызов confirm | cancel
         return new DealResource($deal);
     }
 
@@ -65,5 +65,6 @@ class DealController extends Controller
         return response()->json([
             'message' => 'Deal deleted'
         ]);
+        //Todo: запретить удаление
     }
 }

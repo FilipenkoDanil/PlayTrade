@@ -4,54 +4,69 @@ namespace App\Services;
 
 use App\Models\Deal;
 use App\Models\Offer;
+use App\Models\Status;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DealService
 {
-    public function create(array $data): ?Deal
+    public function __construct(
+        private readonly TransactionService $transactionService,
+        private readonly DealValidator      $dealValidator,
+    )
     {
-        $offer = Offer::with('attributes')->findOrFail($data['offer_id']);
+    }
 
-        if ($this->isOfferValid($offer, $data['quantity'])) {
+    public function create(array $data): Deal|string
+    {
+        $offer = Offer::findOrFail($data['offer_id']);
+        $buyer = Auth::user();
+
+        $validationError = $this->dealValidator->validateCreation($offer, $data['quantity']);
+
+        if ($validationError) {
+            return $validationError;
+        }
+
+        return DB::transaction(function () use ($offer, $buyer, $data) {
             $deal = Deal::create([
                 'quantity' => $data['quantity'],
                 'price' => $offer->price * $data['quantity'],
-                'buyer_id' => Auth::id(),
+                'buyer_id' => $buyer->id,
                 'offer_id' => $offer->id,
                 'offer_title' => $offer->title,
                 'offer_description' => $offer->description,
                 'offer_attributes' => $offer->attributes,
                 'offer_server' => $offer->server,
-                'status_id' => 1,
+                'status_id' => Status::DEAL_IN_PROGRESS,
             ]);
 
-            $offer->amount -= $deal->quantity;
-            $offer->save();
+            $offer->decrement('amount', $deal->quantity);
+
+            $this->transactionService->create($buyer->id, $deal, Transaction::DEAL_PURCHASE);
+            $this->transactionService->freezeBalance($buyer, $deal->price);
 
             return $deal;
-        }
-
-        return null;
+        });
     }
 
-
-    private function isOfferValid(Offer $offer, int $quantity): bool
+    public function confirm(Deal $deal): void
     {
-        return $this->checkAmount($offer, $quantity) && $this->checkBuyerNotSeller($offer) && $this->isActive($offer);
+        DB::transaction(function () use ($deal) {
+            $deal->update(['status_id' => Status::DEAL_COMPLETED]);
+
+            $this->transactionService->confirmDeal($deal->buyer, $deal->offer->seller, $deal->price, $deal);
+        });
     }
 
-    private function checkAmount(Offer $offer, int $quantity): bool
+    public function cancel(Deal $deal): void
     {
-        return $offer->amount >= $quantity;
-    }
+        DB::transaction(function () use ($deal) {
+            $deal->update(['status_id' => Status::DEAL_CANCELED]);
 
-    private function checkBuyerNotSeller(Offer $offer): bool
-    {
-        return $offer->seller_id != Auth::id();
-    }
-
-    private function isActive(Offer $offer): bool
-    {
-        return $offer->is_active;
+            $this->transactionService->create($deal->buyer->id, $deal, Transaction::DEAL_CANCELED);
+            $this->transactionService->unfreezeBalance($deal->buyer, $deal->price);
+        });
     }
 }

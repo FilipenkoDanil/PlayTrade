@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
+use App\Contracts\Transactable;
+use App\Models\Traits\HasSignedAmount;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Deal extends Model
+class Deal extends Model implements Transactable
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasSignedAmount;
 
     protected $fillable = ['quantity', 'price', 'buyer_id', 'offer_id', 'offer_title', 'offer_description', 'offer_attributes', 'offer_server', 'status_id'];
 
@@ -32,5 +34,10 @@ class Deal extends Model
     public function rating(): HasOne
     {
         return $this->hasOne(Rating::class);
+    }
+
+    public function amount(): float
+    {
+        return $this->price;
     }
 }
