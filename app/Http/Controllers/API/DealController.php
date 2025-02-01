@@ -4,10 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Deal\StoreDealRequest;
-use App\Http\Requests\Deal\UpdateDealRequest;
 use App\Http\Resources\DealResource;
 use App\Models\Deal;
 use App\Services\DealService;
+use Illuminate\Support\Facades\Auth;
+
 
 class DealController extends Controller
 {
@@ -45,26 +46,25 @@ class DealController extends Controller
         return new DealResource($deal);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateDealRequest $request, Deal $deal)
+    public function confirm(Deal $deal)
     {
-        $deal->update($request->validated());
-        //Todo: изменить метод на вызов confirm | cancel
-        return new DealResource($deal);
+        if (Auth::id() !== $deal->buyer_id) {
+            return response()->json(['error' => 'Only the buyer can confirm this deal.'], 403);
+        }
+
+        $this->dealService->confirm($deal);
+
+        return response()->json(['message' => 'Deal confirmed']);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Deal $deal)
+    public function cancel(Deal $deal)
     {
-        $deal->delete();
+        if (Auth::id() !== $deal->offer->seller_id) {
+            return response()->json(['error' => 'Only the seller can cancel this deal.'], 403);
+        }
 
-        return response()->json([
-            'message' => 'Deal deleted'
-        ]);
-        //Todo: запретить удаление
+        $this->dealService->cancel($deal);
+
+        return response()->json(['message' => 'Deal cancelled']);
     }
 }

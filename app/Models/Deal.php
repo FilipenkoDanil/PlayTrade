@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Deal extends Model implements Transactable
 {
-    use HasFactory, SoftDeletes, HasSignedAmount;
+    use HasFactory, HasSignedAmount;
 
     protected $fillable = ['quantity', 'price', 'buyer_id', 'offer_id', 'offer_title', 'offer_description', 'offer_attributes', 'offer_server', 'status_id'];
 
@@ -39,5 +39,10 @@ class Deal extends Model implements Transactable
     public function amount(): float
     {
         return $this->price;
+    }
+
+    public function delete(): void
+    {
+        abort(403, 'Deleting a deal is not allowed.');
     }
 }

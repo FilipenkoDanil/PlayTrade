@@ -34,5 +34,7 @@ Route::apiResource('attributes', AttributeController::class);
 Route::apiResource('servers', ServerController::class);
 Route::apiResource('offers', OfferController::class);
 Route::apiResource('statuses', StatusController::class);
-Route::apiResource('deals', DealController::class);
+Route::apiResource('deals', DealController::class)->except(['update', 'destroy']);
+Route::patch('deals/{deal}/confirm', [DealController::class, 'confirm'])->middleware('check.deal.status');
+Route::patch('deals/{deal}/cancel', [DealController::class, 'cancel'])->middleware('check.deal.status');
 Route::apiResource('ratings', RatingController::class);
