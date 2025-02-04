@@ -18,7 +18,7 @@ export default {
             <v-btn rounded size="large" class="mr-2 my-2" active-color="indigo-darken-4" :to="{name: 'category'}">Серебро <span class="text-medium-emphasis text-subtitle-1">320</span>
             </v-btn>
 
-            <v-card class="offer-card px-4 mt-2 py-2" v-for="i in 15" hover>
+            <v-card class="offer-card px-4 mt-2 py-2" v-for="i in 15" hover to="/offer/1">
                 <v-row align="center" no-gutters>
                     <!-- Левая часть: сервер, заголовок предложения -->
                     <v-col cols="12" sm="9" class="d-flex align-center">
@@ -37,7 +37,7 @@ export default {
                         <v-avatar size="40" class="mr-2">
                             <v-img src="https://picsum.photos/200" alt="Seller Avatar"></v-img>
                         </v-avatar>
-                        <div class="">
+                        <div>
                             <div class="">darkholme777</div>
                             <div class="text-caption text-grey-darken-1">
                                 ⭐ 1764
