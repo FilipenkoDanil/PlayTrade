@@ -4,8 +4,29 @@ export default {
     data() {
         return {
             search: "",
+            games: [],
+            colors: ["red", "blue", "green", "orange", "purple", "teal"],
         }
     },
+
+    mounted() {
+        this.getGames()
+    },
+
+    methods: {
+        getGames() {
+            axios.get('http://localhost:8000/api/games')
+                .then(res => {
+                    this.games = res.data.data
+                })
+        }
+    },
+
+    computed: {
+        filteredGames() {
+            return this.games.filter(game => game.title.toLowerCase().includes(this.search.toLowerCase()))
+        }
+    }
 }
 </script>
 
@@ -20,23 +41,22 @@ export default {
         </v-col>
     </v-row>
 
-    <!-- Список игр карточками -->
     <v-row>
-        <v-col v-for="i in 10" cols="12" sm="6" md="4" lg="3">
+        <v-col v-for="game in filteredGames" cols="12" sm="6" md="4" lg="3">
             <v-card class="mx-auto" hover>
                 <v-img src="https://picsum.photos/800" height="200px" cover></v-img>
-
-                <v-card-title>Игра {{ i }}</v-card-title>
-
-                <!-- Кликабельные категории -->
+                <v-card-title>{{ game.title }}</v-card-title>
                 <v-card-text>
                     <v-btn
+                        v-for="(category, idx) in game.categories"
+                        :to="{name: 'category', params: {id: category.id}}"
                         rounded
                         size="small"
+                        :color="colors[idx % colors.length]"
                         variant="outlined"
                         class="mr-1 mb-1"
                     >
-                        категория
+                        {{ category.title }}
                     </v-btn>
                 </v-card-text>
             </v-card>
