@@ -1,43 +1,46 @@
 <script>
 export default {
-    name: "Home"
+    name: "Home",
+    data() {
+        return {
+            search: "",
+        }
+    },
 }
 </script>
 
 <template>
-    <v-row>
-        <v-col cols="12" sm="4" md="2">
-            <v-text-field prepend-inner-icon="mdi-magnify" placeholder="Search games"></v-text-field>
+    <v-row justify="center">
+        <v-col cols="12" sm="6" md="4">
+            <v-text-field
+                v-model="search"
+                prepend-inner-icon="mdi-magnify"
+                placeholder="Search games"
+            ></v-text-field>
         </v-col>
-        <v-divider thickness="10"></v-divider>
     </v-row>
-    <v-row v-for="i in 10">
-        <v-col cols="12">
-            <h2 class="text-h4">Game {{ i }}</h2>
-        </v-col>
-        <v-col v-for="i in 6" :key="i" cols="12" sm="4" md="3" xl="2">
-            <v-hover v-slot="{ isHovering, props }">
-                <router-link :to="{name: 'category'}">
-                    <v-card image="https://picsum.photos/600"
-                            height="200"
-                            min-width="200"
-                            class="mx-auto"
-                            v-bind="props"
-                            link
+
+    <!-- Список игр карточками -->
+    <v-row>
+        <v-col v-for="i in 10" cols="12" sm="6" md="4" lg="3">
+            <v-card class="mx-auto" hover>
+                <v-img src="https://picsum.photos/800" height="200px" cover></v-img>
+
+                <v-card-title>Игра {{ i }}</v-card-title>
+
+                <!-- Кликабельные категории -->
+                <v-card-text>
+                    <v-btn
+                        rounded
+                        size="small"
+                        variant="outlined"
+                        class="mr-1 mb-1"
                     >
-                        <v-overlay
-                            :model-value="!!isHovering"
-                            class="align-center justify-center"
-                            scrim="indigo"
-                            contained
-                        >
-                            <span class="text-uppercase text-h5 text-white">Gold</span>
-                        </v-overlay>
-                    </v-card>
-                </router-link>
-            </v-hover>
+                        категория
+                    </v-btn>
+                </v-card-text>
+            </v-card>
         </v-col>
-        <v-divider></v-divider>
     </v-row>
 </template>
 
