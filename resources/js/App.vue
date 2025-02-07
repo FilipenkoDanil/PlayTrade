@@ -27,7 +27,7 @@ export default {
 
         <v-main>
             <v-container>
-                <router-view></router-view>
+                <router-view :key="$route.path"></router-view>
             </v-container>
         </v-main>
     </v-app>

@@ -1,24 +1,46 @@
 <script>
 export default {
     name: "Category",
+
+    data() {
+        return {
+            category: {
+                game: {
+                    title: ''
+                }
+            },
+            offers: []
+        }
+    },
+
+    mounted() {
+        this.getCategory()
+    },
+
+    methods: {
+        getCategory() {
+            axios.get(`http://127.0.0.1:8000/api/categories/${this.$route.params.id}`)
+                .then(res => {
+                    this.category = res.data.data
+                    this.offers = res.data.data.offers
+                })
+        }
+    }
 }
 </script>
 
 <template>
     <v-row>
         <v-col cols="12" md="8">
-            <h1>Category name + Game name</h1>
-            <p>Хотите купить аккаунт Albion Online по разумной цене? Биржа FunPay - это уникальная площадка,
-                позволяющая геймерам торговать напрямую и заключать безопасные сделки. Стоимость аккаунтов Albion
-                Online регулируют сами продавцы. Нашим пользователям разрешено продавать аккаунты, полученные только
-                легальным путем.</p>
+            <v-btn variant="text" color="primary" @click="$router.push({name: 'home'})" prepend-icon="mdi-arrow-left">Список игр</v-btn>
 
-            <v-btn rounded size="large" class="mr-2 my-2">Серебро <span class="text-medium-emphasis text-subtitle-1">320</span>
-            </v-btn>
-            <v-btn rounded size="large" class="mr-2 my-2" active-color="indigo-darken-4" :to="{name: 'category'}">Серебро <span class="text-medium-emphasis text-subtitle-1">320</span>
+            <h1>{{ category.title }} - {{ category.game.title }}</h1>
+            <p>{{ category.description }}</p>
+
+            <v-btn v-for="cat in category.game.categories" :key="cat.id" :to="{name: 'category', params: {id: cat.id}}" active-color="indigo-darken-4" rounded size="large" class="mr-2 my-2">{{ cat.title }} <span class="text-medium-emphasis text-subtitle-1">320</span>
             </v-btn>
 
-            <v-card class="offer-card px-4 mt-2 py-2" v-for="i in 15" hover to="/offer/1">
+            <v-card class="offer-card px-4 mt-2 py-2" v-for="offer in offers" hover :to="{name: 'offer', params: {id: offer.id}}">
                 <v-row align="center" no-gutters>
                     <!-- Левая часть: сервер, заголовок предложения -->
                     <v-col cols="12" sm="9" class="d-flex align-center">
@@ -27,7 +49,7 @@ export default {
                         </div>
                         <div class="ml-3 text-wrap">
                                 <span class="text-body-2 ">
-                                  🔶🔶 ТОП АККАУНТ НА СТАРТ 🔶 [Авто] Т5 Чернокнижник 🔶🔶, Маги ческое оружие, 1к фейма
+                                    {{ offer.title }}
                                 </span>
                         </div>
                     </v-col>
@@ -38,13 +60,17 @@ export default {
                             <v-img src="https://picsum.photos/200" alt="Seller Avatar"></v-img>
                         </v-avatar>
                         <div>
-                            <div class="">darkholme777</div>
+                            <div class="">{{ offer.seller.name }}</div>
                             <div class="text-caption text-grey-darken-1">
                                 ⭐ 1764
                             </div>
                         </div>
+                        <v-spacer></v-spacer>
+                        <div>
+                            <span class="text-disabled text-body-2">{{ offer.amount }}</span>
+                        </div>
                         <div class="ml-4 font-weight-bold">
-                            926.88 ₽
+                            {{ offer.price }} ₽
                         </div>
                     </v-col>
                 </v-row>
