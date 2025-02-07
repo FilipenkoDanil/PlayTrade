@@ -2,8 +2,8 @@
 export default {
     data() {
         return {
+            offer: {},
             quantity: 1, // Количество товара
-            pricePerUnit: 926.88, // Цена за единицу
             reviews: [
                 {
                     user: "IvanP",
@@ -26,9 +26,23 @@ export default {
             ]
         };
     },
+
+    methods: {
+        getOffer() {
+            axios.get(`http://127.0.0.1:8000/api/offers/${this.$route.params.id}`)
+                .then(res => {
+                    this.offer = res.data.data
+                })
+        }
+    },
+
+    mounted() {
+        this.getOffer()
+    },
+
     computed: {
         totalPrice() {
-            return (this.quantity * this.pricePerUnit).toFixed(2);
+            return (this.quantity * this.offer.price).toFixed(2);
         },
     },
 };
@@ -47,20 +61,12 @@ export default {
 
                     <!-- Заголовок -->
                     <h1 class="text-h5 font-weight-bold mb-4">
-                        ТОП АККАУНТ НА СТАРТ 🔶 [Авто] T5 Чернокнижник
+                        {{ offer.title }}
                     </h1>
 
                     <!-- Описание -->
                     <p class="text-body-2 mb-4">
-                        Т6 (100 мастерство) переработка дерева, ткани, железа или кожи + 30 дней премиум...
-
-                        персонаж с 100 мастерством Т6 переработки делается под ваш выбор
-                        персонаж с отдельным аккаунтом делается под заказ, так же можем раскачать T4, Т5, Т6, Т7 и Т8
-                        переработку любого ресурса или даже всех сразу
-                        так же по вашему заказу можем сделать несколько персонажей на аккаунте под один или разные
-                        разогнанные крафты
-
-                        внимание! этот персонаж делается под заказ и будет готов в течении дня
+                        {{ offer.description }}
                     </p>
 
                     <v-divider class="my-4"></v-divider>
@@ -68,28 +74,10 @@ export default {
                     <!-- Атрибуты -->
                     <v-row>
                         <!-- Колонка 1 -->
-                        <v-col cols="12" sm="6">
+                        <v-col cols="12" sm="6" v-for="attribute in offer.attributes">
                             <div class="d-flex align-center py-2">
-                                <span class="text-subtitle-2 text-disabled">Феймы:</span>
-                                <span class="ml-2">1,000,000</span>
-                            </div>
-                            <v-divider v-if="!$vuetify.display.smAndUp"/>
-                        </v-col>
-
-                        <!-- Колонка 2 -->
-                        <v-col cols="12" sm="6">
-                            <div class="d-flex  align-center py-2">
-                                <span class="text-subtitle-2 text-disabled">Сервер:</span>
-                                <span class="ml-2">Европа (Амстердам)</span>
-                            </div>
-                            <v-divider v-if="!$vuetify.display.smAndUp"/>
-                        </v-col>
-
-                        <!-- Колонка 3 -->
-                        <v-col cols="12" sm="6">
-                            <div class="d-flex align-center py-2">
-                                <span class="text-subtitle-2 text-disabled">Класс:</span>
-                                <span class="ml-2">Чернокнижник</span>
+                                <span class="text-subtitle-2 text-disabled">{{ attribute.title }}:</span>
+                                <span class="ml-2">{{ attribute.value }}</span>
                             </div>
                             <v-divider v-if="!$vuetify.display.smAndUp"/>
                         </v-col>
@@ -114,7 +102,7 @@ export default {
                     </p>
 
                     <!-- Цена -->
-                    <h3 class="text-h5 font-weight-bold mt-4">926.88 ₽</h3>
+                    <h3 class="text-h5 font-weight-bold mt-4">{{ offer.price }} ₽</h3>
 
                     <!-- Поле ввода количества -->
                     <v-text-field

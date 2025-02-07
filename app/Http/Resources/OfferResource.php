@@ -26,6 +26,7 @@ class OfferResource extends JsonResource
             'seller_id' => $this->seller_id,
             'category' => new CategoryResource($this->whenLoaded('category')),
             'seller' => new UserResource($this->whenLoaded('seller')),
+            'attributes' => AttributeResource::collection($this->whenLoaded('attributes')),
         ];
     }
 }

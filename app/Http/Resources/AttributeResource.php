@@ -19,6 +19,7 @@ class AttributeResource extends JsonResource
             'title' => $this->title,
             'game_id' => $this->game_id,
             'game' => GameResource::collection($this->whenLoaded('game')),
+            'value' => $this->pivot->value
         ];
     }
 }
