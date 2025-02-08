@@ -15,7 +15,7 @@ export default {
 
     methods: {
         getGames() {
-            axios.get('http://localhost:8000/api/games')
+            axios.get('api/games')
                 .then(res => {
                     this.games = res.data.data
                 })

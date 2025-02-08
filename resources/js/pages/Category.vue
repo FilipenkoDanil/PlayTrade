@@ -19,7 +19,7 @@ export default {
 
     methods: {
         getCategory() {
-            axios.get(`http://127.0.0.1:8000/api/categories/${this.$route.params.id}`)
+            axios.get(`api/categories/${this.$route.params.id}`)
                 .then(res => {
                     this.category = res.data.data
                     this.offers = res.data.data.offers

@@ -29,7 +29,7 @@ export default {
 
     methods: {
         getOffer() {
-            axios.get(`http://127.0.0.1:8000/api/offers/${this.$route.params.id}`)
+            axios.get(`api/offers/${this.$route.params.id}`)
                 .then(res => {
                     this.offer = res.data.data
                 })
