@@ -1,6 +1,33 @@
 <script>
+import axios from "axios";
+
 export default {
-    name: "Register"
+    name: "Register",
+    data() {
+        return {
+            email: '',
+            name: '',
+            password: '',
+            conf_password: '',
+        }
+    },
+
+    methods: {
+        register() {
+            axios.get('sanctum/csrf-cookie')
+                .then(() => {
+                    axios.post('register', {
+                        email: this.email,
+                        name: this.name,
+                        password: this.password,
+                        password_confirmation: this.conf_password
+                    })
+                        .then(() => {
+                            this.$router.push({name: 'home'})
+                        })
+                })
+        },
+    }
 }
 </script>
 
@@ -11,28 +38,39 @@ export default {
             <v-card-text>
                 <v-form>
                     <v-text-field
+                        v-model="email"
                         label="Email"
                         type="email"
                         required
                     ></v-text-field>
 
                     <v-text-field
+                        v-model="name"
+                        label="Name"
+                        type="text"
+                        required
+                    ></v-text-field>
+
+                    <v-text-field
+                        v-model="password"
                         label="Пароль"
                         type="password"
                         required
                     ></v-text-field>
 
                     <v-text-field
+                        v-model="conf_password"
                         label="Повторный пароль"
                         type="password"
                         required
                     ></v-text-field>
 
-                    <v-btn type="submit" color="primary" block class="mt-2">
+                    <v-btn @click.prevent="register" type="submit" color="primary" block class="mt-2">
                         Подтвердить
                     </v-btn>
 
-                    <v-btn :to="{name: 'login'}" variant="text" size="x-small" block class="text-caption text-indigo-lighten-2 mt-2">
+                    <v-btn :to="{name: 'login'}" variant="text" size="x-small" block
+                           class="text-caption text-indigo-lighten-2 mt-2">
                         Есть аккаунт?
                     </v-btn>
                 </v-form>

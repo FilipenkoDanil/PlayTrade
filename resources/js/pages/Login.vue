@@ -1,6 +1,30 @@
 <script>
+import axios from "axios";
+
 export default {
-    name: 'Login'
+    name: 'Login',
+    data() {
+        return {
+            email: '',
+            password: '',
+        }
+    },
+
+    methods: {
+        login() {
+            axios.get('sanctum/csrf-cookie')
+                .then(() => {
+                    axios.post('login', {
+                        email: this.email,
+                        password: this.password
+                    })
+                        .then(() => {
+                            this.$router.push({name: 'home'})
+                        })
+                })
+        },
+    }
+
 }
 </script>
 
@@ -11,22 +35,25 @@ export default {
             <v-card-text>
                 <v-form>
                     <v-text-field
+                        v-model="email"
                         label="Email"
                         type="email"
                         required
                     ></v-text-field>
 
                     <v-text-field
+                        v-model="password"
                         label="Пароль"
                         type="password"
                         required
                     ></v-text-field>
 
-                    <v-btn type="submit" color="primary" block class="mt-2">
+                    <v-btn @click.prevent="login" type="submit" color="primary" block class="mt-2">
                         Войти
                     </v-btn>
 
-                    <v-btn :to="{name: 'register'}" variant="text" size="x-small" block class="text-caption text-indigo-lighten-2 mt-2">
+                    <v-btn :to="{name: 'register'}" variant="text" size="x-small" block
+                           class="text-caption text-indigo-lighten-2 mt-2">
                         Нет аккаунта?
                     </v-btn>
                 </v-form>

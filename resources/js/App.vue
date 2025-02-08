@@ -1,10 +1,21 @@
 <script>
+import axios from "axios";
+
 export default {
     name: "App",
 
     data() {
         return {
             drawer: false
+        }
+    },
+
+    methods: {
+        logout() {
+            axios.post('logout')
+                .then(() => {
+                    this.$router.push({name: 'login'})
+                })
         }
     }
 }
@@ -16,7 +27,7 @@ export default {
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-app-bar-title>PlayTrade</v-app-bar-title>
             <v-spacer></v-spacer>
-            <v-btn icon="mdi-account"></v-btn>
+            <v-btn @click="logout" icon="mdi-account"></v-btn>
         </v-app-bar>
 
         <v-navigation-drawer
