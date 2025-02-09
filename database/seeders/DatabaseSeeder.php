@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             ServerSeeder::class,
             OfferSeeder::class,
             StatusSeeder::class,
+            CategoryServerSeeder::class
         ]);
     }
 }

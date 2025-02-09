@@ -5,11 +5,15 @@ export default {
     data() {
         return {
             category: {
-                game: {
-                    title: ''
-                }
+                game: {}
             },
-            offers: []
+            offers: [],
+            headers: [
+                {title: 'Название', value: 'title'},
+                {title: 'Продавец', value: 'seller.name'},
+                {title: 'Количество', value: 'amount'},
+                {title: 'Цена', value: 'price'}
+            ],
         }
     },
 
@@ -24,6 +28,10 @@ export default {
                     this.category = res.data.data
                     this.offers = res.data.data.offers
                 })
+        },
+
+        goToOffer(_, {item}) {
+            this.$router.push({name: 'offer', params: {id: item.id}})
         }
     }
 }
@@ -32,49 +40,46 @@ export default {
 <template>
     <v-row>
         <v-col cols="12" md="8">
-            <v-btn variant="text" color="primary" @click="$router.push({name: 'home'})" prepend-icon="mdi-arrow-left">Список игр</v-btn>
-
-            <h1>{{ category.title }} - {{ category.game.title }}</h1>
-            <p>{{ category.description }}</p>
-
-            <v-btn v-for="cat in category.game.categories" :key="cat.id" :to="{name: 'category', params: {id: cat.id}}" active-color="indigo-darken-4" rounded size="large" class="mr-2 my-2">{{ cat.title }} <span class="text-medium-emphasis text-subtitle-1">320</span>
+            <v-btn variant="text" color="primary" @click="$router.push({name: 'home'})" prepend-icon="mdi-arrow-left">
+                Список игр
             </v-btn>
 
-            <v-card class="offer-card px-4 mt-2 py-2" v-for="offer in offers" hover :to="{name: 'offer', params: {id: offer.id}}">
-                <v-row align="center" no-gutters>
-                    <!-- Левая часть: сервер, заголовок предложения -->
-                    <v-col cols="12" sm="9" class="d-flex align-center">
-                        <div class="text-caption text-grey-darken-1">
-                            Европа (Амстердам)
-                        </div>
-                        <div class="ml-3 text-wrap">
-                                <span class="text-body-2 ">
-                                    {{ offer.title }}
-                                </span>
-                        </div>
-                    </v-col>
+            <h1>{{ category.title }} - {{ category.game.title }}</h1>
+            <p class="text-body-2 text-medium-emphasis">{{ category.description }}</p>
 
-                    <!-- Правая часть: аватар продавца, имя, рейтинг, цена -->
-                    <v-col cols="12" sm="3" class="d-flex align-center justify-end">
-                        <v-avatar size="40" class="mr-2">
-                            <v-img src="https://picsum.photos/200" alt="Seller Avatar"></v-img>
-                        </v-avatar>
-                        <div>
-                            <div class="">{{ offer.seller.name }}</div>
-                            <div class="text-caption text-grey-darken-1">
-                                ⭐ 1764
-                            </div>
-                        </div>
-                        <v-spacer></v-spacer>
-                        <div>
-                            <span class="text-disabled text-body-2">{{ offer.amount }}</span>
-                        </div>
-                        <div class="ml-4 font-weight-bold">
-                            {{ offer.price }} ₽
-                        </div>
-                    </v-col>
-                </v-row>
-            </v-card>
+            <v-btn v-for="cat in category.game.categories" :key="cat.id" :to="{name: 'category', params: {id: cat.id}}"
+                   active-color="indigo-darken-4" rounded size="large" class="mr-2 my-2">{{ cat.title }} <span
+                class="text-medium-emphasis text-subtitle-1">320</span>
+            </v-btn>
+
+            <div v-if="category.servers?.length > 0">
+                <v-divider></v-divider>
+                <v-select :items="category.servers" placeholder="Выберите сервер"></v-select>
+                <v-divider></v-divider>
+            </div>
+
+            <v-data-table
+                :headers="headers"
+                :items="offers"
+                item-value="id"
+                hover
+                @click:row="goToOffer"
+            >
+                <template v-slot:item.seller.name="{ item }">
+                    <v-avatar size="40">
+                        <v-img src="https://picsum.photos/500" alt="Avatar"></v-img>
+                    </v-avatar>
+                    {{ item.seller.name }}
+                </template>
+
+                <template v-slot:item.amount="{ item }">
+                    {{ item.amount }}{{ this.category.unit.title }}
+                </template>
+
+                <template v-slot:item.price="{ item }">
+                    {{ item.price }} $
+                </template>
+            </v-data-table>
         </v-col>
 
         <v-col cols="12" md="4">

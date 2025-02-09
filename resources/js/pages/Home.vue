@@ -43,7 +43,7 @@ export default {
 
     <v-row>
         <v-col v-for="game in filteredGames" cols="12" sm="6" md="4" lg="3">
-            <v-card class="mx-auto" hover>
+            <v-card class="mx-auto">
                 <v-img src="https://picsum.photos/800" height="200px" cover></v-img>
                 <v-card-title>{{ game.title }}</v-card-title>
                 <v-card-text>
