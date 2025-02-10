@@ -36,7 +36,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return new CategoryResource($category->load(['game.categories', 'offers.seller', 'servers', 'attributes', 'unit']));
+        return new CategoryResource($category->load(['game.categories', 'offers.seller', 'servers', 'attributes', 'unit', 'offers.attributes']));
     }
 
     /**

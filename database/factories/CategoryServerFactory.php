@@ -18,12 +18,9 @@ class CategoryServerFactory extends Factory
      */
     public function definition(): array
     {
-        $category = Category::inRandomOrder()->first();
+        $server = Server::inRandomOrder()->first();
 
-        // Выбираем сервер ТОЛЬКО из той же игры
-        $server = Server::where('game_id', $category->game_id)
-            ->inRandomOrder()
-            ->first();
+        $category = Category::where('game_id', $server->game_id)->inRandomOrder()->first();
 
         return [
             'category_id' => $category->id,

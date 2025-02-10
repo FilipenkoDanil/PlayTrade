@@ -26,9 +26,11 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             AttributeSeeder::class,
             ServerSeeder::class,
-            OfferSeeder::class,
             StatusSeeder::class,
-            CategoryServerSeeder::class
+            CategoryServerSeeder::class,
+            OfferSeeder::class,
+            AttributeCategorySeeder::class,
+            AttributeOfferSeeder::class,
         ]);
     }
 }

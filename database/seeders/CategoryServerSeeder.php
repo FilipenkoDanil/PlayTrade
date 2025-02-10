@@ -13,6 +13,6 @@ class CategoryServerSeeder extends Seeder
      */
     public function run(): void
     {
-        CategoryServerFactory::new()->count(5)->create();
+        CategoryServerFactory::new()->count(15)->create();
     }
 }

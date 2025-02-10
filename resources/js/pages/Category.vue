@@ -52,6 +52,12 @@ export default {
                 class="text-medium-emphasis text-subtitle-1">320</span>
             </v-btn>
 
+            <v-row>
+                <v-col  v-for="attribute in category.attributes" cols="12" md="2">
+                    <v-text-field :label="attribute.title"></v-text-field>
+                </v-col>
+            </v-row>
+
             <div v-if="category.servers?.length > 0">
                 <v-divider></v-divider>
                 <v-select :items="category.servers" placeholder="Выберите сервер"></v-select>

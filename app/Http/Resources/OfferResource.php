@@ -24,6 +24,8 @@ class OfferResource extends JsonResource
             'is_active' => $this->is_active,
             'category_id' => $this->category_id,
             'seller_id' => $this->seller_id,
+            'server_id' => $this->server_id,
+            'server' => new ServerResource($this->whenLoaded('server')),
             'category' => new CategoryResource($this->whenLoaded('category')),
             'seller' => new UserResource($this->whenLoaded('seller')),
             'attributes' => AttributeResource::collection($this->whenLoaded('attributes')),

@@ -83,13 +83,21 @@ export default {
 
                 <!-- Атрибуты -->
                 <v-row>
-                    <!-- Колонка 1 -->
                     <v-col cols="12" sm="6" v-for="attribute in offer.attributes">
                         <div class="d-flex align-center py-2">
                             <span class="text-subtitle-2 text-disabled">{{ attribute.title }}:</span>
                             <span class="ml-2">{{ attribute.value }}</span>
                         </div>
                         <v-divider v-if="!$vuetify.display.smAndUp"/>
+                    </v-col>
+                </v-row>
+
+                <v-row v-if="offer.server">
+                    <v-col>
+                        <div class="d-flex align-center py-2">
+                            <span class="text-subtitle-2 text-disabled">Сервер:</span>
+                            <span class="ml-2">{{ offer.server.title }}</span>
+                        </div>
                     </v-col>
                 </v-row>
             </v-col>

@@ -13,6 +13,6 @@ class ServerSeeder extends Seeder
      */
     public function run(): void
     {
-        Server::factory(10)->create();
+        Server::factory(25)->create();
     }
 }

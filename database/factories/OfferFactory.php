@@ -18,14 +18,18 @@ class OfferFactory extends Factory
      */
     public function definition(): array
     {
+        $category = Category::query()->inRandomOrder()->first();
+        $server = $category->servers()->inRandomOrder()->first();
+
         return [
             'title' => $this->faker->sentence(5),
             'amount' => rand(1, 100),
             'price' => $this->faker->randomFloat(2, 1, 10000),
             'description' => $this->faker->paragraph(),
             'is_active' => rand(0, 1),
-            'category_id' => Category::query()->inRandomOrder()->value('id'),
+            'category_id' => $category->id,
             'seller_id' => User::query()->inRandomOrder()->value('id'),
+            'server_id' => $server ? $server->id : null,
         ];
     }
 }
