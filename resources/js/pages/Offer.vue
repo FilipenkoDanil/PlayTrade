@@ -24,7 +24,11 @@ export default {
                     avatar: "https://i.pravatar.cc/40?img=3"
                 }
             ],
-            isDealCreated: false,
+            showSnack: false,
+            snackOptions: {
+                color: 'success',
+                text: 'Сделка успешно создана.'
+            }
         };
     },
 
@@ -42,7 +46,14 @@ export default {
                 offer_id: this.offer.id
             })
                 .then(() => {
-                    this.isDealCreated = true
+                    this.snackOptions.text = 'Сделка успешно создана.'
+                    this.snackOptions.color = 'success'
+                    this.showSnack = true
+                })
+                .catch(err => {
+                    this.snackOptions.text = err.response.data.error
+                    this.snackOptions.color = 'red'
+                    this.showSnack = true
                 })
         }
     },
@@ -163,12 +174,12 @@ export default {
     </v-card>
 
     <v-snackbar
-        v-model="isDealCreated"
+        v-model="showSnack"
         :timeout="2000"
-        color="success"
+        :color="snackOptions.color"
         variant="outlined"
     >
-        Сделка успешно создана.
+        {{ snackOptions.text }}
     </v-snackbar>
 </template>
 

@@ -44,6 +44,11 @@ class DealService
 
             $offer->decrement('amount', $deal->quantity);
 
+            if ($offer->amount == 0) {
+                $offer->is_active = false;
+                $offer->save();
+            }
+
             $this->transactionService->create($buyer->id, $deal, Transaction::DEAL_PURCHASE);
             $this->transactionService->freezeBalance($buyer, $deal->price);
 

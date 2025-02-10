@@ -37,6 +37,6 @@ class Category extends Model
 
     public function offers(): HasMany
     {
-        return $this->hasMany(Offer::class);
+        return $this->hasMany(Offer::class)->where('is_active', '=', 1);
     }
 }
