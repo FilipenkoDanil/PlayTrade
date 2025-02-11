@@ -1,7 +1,6 @@
 <script>
-import axios from "axios";
-
 export default {
+    inject: ['isAuth', 'setAuth'],
     name: "Register",
     data() {
         return {
@@ -24,6 +23,7 @@ export default {
                     })
                         .then(() => {
                             localStorage.setItem('isAuth', 'true')
+                            this.setAuth(true)
                             this.$router.push({name: 'home'})
                         })
                 })

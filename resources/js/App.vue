@@ -6,15 +6,28 @@ export default {
 
     data() {
         return {
-            drawer: false
+            drawer: false,
+            isAuth: localStorage.getItem('isAuth')
+        }
+    },
+
+    provide() {
+        return {
+            isAuth: this.isAuth,
+            setAuth: this.setAuth
         }
     },
 
     methods: {
+        setAuth(value) {
+            this.isAuth = value;
+        },
+
         logout() {
             axios.post('logout')
                 .then(() => {
                     localStorage.removeItem('isAuth')
+                    this.setAuth(false);
                     this.$router.push({name: 'login'})
                 })
         }
@@ -28,7 +41,7 @@ export default {
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
             <v-app-bar-title>PlayTrade</v-app-bar-title>
             <v-spacer></v-spacer>
-            <v-btn @click="logout" icon="mdi-account"></v-btn>
+            <v-btn v-if="isAuth" @click="logout" icon="mdi-logout"></v-btn>
         </v-app-bar>
 
         <v-navigation-drawer
