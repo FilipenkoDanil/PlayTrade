@@ -19,6 +19,7 @@ export default {
                         password: this.password
                     })
                         .then(() => {
+                            localStorage.setItem('isAuth', 'true')
                             this.$router.push({name: 'home'})
                         })
                 })

@@ -23,6 +23,7 @@ export default {
                         password_confirmation: this.conf_password
                     })
                         .then(() => {
+                            localStorage.setItem('isAuth', 'true')
                             this.$router.push({name: 'home'})
                         })
                 })
