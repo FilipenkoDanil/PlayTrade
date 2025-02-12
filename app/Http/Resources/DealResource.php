@@ -25,6 +25,7 @@ class DealResource extends JsonResource
             'offer_description' => $this->offer_description,
             'offer_attributes' => $this->offer_attributes,
             'offer_server' => $this->offer_server,
+            'created_at' => $this->created_at->diffForHumans(),
             'buyer' => new UserResource($this->whenLoaded('buyer')),
             'offer' => new OfferResource($this->whenLoaded('offer')),
             'status' => new StatusResource($this->whenLoaded('status')),

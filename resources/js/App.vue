@@ -47,6 +47,9 @@ export default {
         <v-navigation-drawer
             v-model="drawer"
             temporary>
+            <v-list>
+                <v-list-item :to="{name: 'orders'}">Orders</v-list-item>
+            </v-list>
         </v-navigation-drawer>
 
 

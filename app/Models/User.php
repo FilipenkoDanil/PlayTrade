@@ -46,6 +46,6 @@ class User extends Authenticatable
 
     public function deals(): HasMany
     {
-        return $this->hasMany(Deal::class, 'buyer_id', "id");
+        return $this->hasMany(Deal::class, 'buyer_id', "id")->orderBy('created_at', 'desc');
     }
 }

@@ -21,7 +21,7 @@ class DealController extends Controller
      */
     public function index()
     {
-        return DealResource::collection(Deal::all());
+        return DealResource::collection(Auth::user()->deals()->get());
     }
 
     /**
