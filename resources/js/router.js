@@ -19,7 +19,12 @@ const routes = [
     {
         path: '/orders',
         name: 'orders',
-        component: () => import('@/pages/Order.vue')
+        component: () => import('@/pages/Orders.vue')
+    },
+    {
+        path: '/sales',
+        name: 'sales',
+        component: () => import('@/pages/Sales.vue')
     },
     {
         path: '/login',

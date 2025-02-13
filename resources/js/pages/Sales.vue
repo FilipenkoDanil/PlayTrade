@@ -1,6 +1,6 @@
 <script>
 export default {
-    name: "Order",
+    name: "Sales",
     data() {
         return {
             deals: [],
@@ -18,16 +18,16 @@ export default {
     },
 
     methods: {
-        getDeals() {
-            axios.get('/api/deals')
+        getSales() {
+            axios.get('/api/sales')
                 .then(r => {
                     this.deals = r.data.data
                 })
         },
-        confirmDeal(dealId) {
-            axios.patch(`/api/deals/${dealId}/confirm`)
+        cancelDeal(dealId) {
+            axios.patch(`/api/deals/${dealId}/cancel`)
                 .then(() => {
-                    this.getDeals()
+                    this.getSales()
                     this.dialog = false
                 })
         },
@@ -66,7 +66,7 @@ export default {
     },
 
     mounted() {
-        this.getDeals()
+        this.getSales()
     }
 }
 </script>
@@ -92,7 +92,7 @@ export default {
         </template>
 
         <template v-slot:item.price="{ item }">
-            <span class="text-red-accent-2">-{{ item.price }}</span>
+            <span class="text-green-accent-3">+{{ item.price }}</span>
         </template>
     </v-data-table>
 
@@ -142,8 +142,8 @@ export default {
             </v-card-text>
 
             <v-card-actions>
-                <v-btn @click="confirmDeal(selectedDeal.id)" v-if="selectedDeal.status_id === 1" color="green">
-                    Подтвердить сделку
+                <v-btn @click="cancelDeal(selectedDeal.id)" v-if="selectedDeal.status_id === 1" color="red">
+                    Отменить сделку
                 </v-btn>
                 <v-btn color="primary" @click="dialog = false">Закрыть</v-btn>
             </v-card-actions>

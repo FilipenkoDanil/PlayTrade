@@ -5,8 +5,10 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -44,8 +46,18 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function deals(): HasMany
+    public function buyerDeals(): HasMany
     {
         return $this->hasMany(Deal::class, 'buyer_id', "id")->orderBy('created_at', 'desc');
+    }
+
+    public function sellerDeals(): HasManyThrough
+    {
+        return $this->hasManyThrough(Deal::class, Offer::class, 'seller_id', 'offer_id', 'id', 'id')->orderBy('created_at', 'desc');
+    }
+
+    public function allDeals()
+    {
+        return $this->buyerDeals->merge($this->sellerDeals)->sortByDesc('created_at');
     }
 }

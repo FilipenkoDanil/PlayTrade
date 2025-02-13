@@ -21,7 +21,7 @@ class DealController extends Controller
      */
     public function index()
     {
-        return DealResource::collection(Auth::user()->deals()->get());
+        return DealResource::collection(Auth::user()->allDeals());
     }
 
     /**
@@ -66,5 +66,15 @@ class DealController extends Controller
         $this->dealService->cancel($deal);
 
         return response()->json(['message' => 'Deal cancelled']);
+    }
+
+    public function orders()
+    {
+        return DealResource::collection(Auth::user()->buyerDeals()->get());
+    }
+
+    public function sales()
+    {
+        return DealResource::collection(Auth::user()->sellerDeals()->get());
     }
 }
