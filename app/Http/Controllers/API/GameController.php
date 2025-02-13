@@ -7,6 +7,7 @@ use App\Http\Requests\Game\StoreGameRequest;
 use App\Http\Requests\Game\UpdateGameRequest;
 use App\Http\Resources\GameResource;
 use App\Models\Game;
+use Illuminate\Support\Facades\DB;
 
 class GameController extends Controller
 {
@@ -31,7 +32,7 @@ class GameController extends Controller
      */
     public function show(Game $game)
     {
-        return new GameResource($game);
+        return new GameResource($game->load('categories'));
     }
 
     /**
@@ -49,10 +50,18 @@ class GameController extends Controller
      */
     public function destroy(Game $game)
     {
-        $game->delete();
+        DB::transaction(function () use ($game) {
+            $game->categories()->delete();
+            $game->delete();
+        });
 
         return response()->json(
             ['message' => 'Game deleted']
         );
+    }
+
+    public function trashed()
+    {
+        return GameResource::collection(Game::onlyTrashed()->get());
     }
 }

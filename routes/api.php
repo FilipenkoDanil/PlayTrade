@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('games', GameController::class);
+Route::get('trash/games', [GameController::class, 'trashed']);
 Route::apiResource('units', UnitController::class);
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('attributes', AttributeController::class);

@@ -15,6 +15,15 @@ class Category extends Model
 
     protected $fillable = ['title', 'description', 'game_id', 'unit_id'];
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::deleting(function ($category) {
+            Offer::where('category_id', $category->id)->delete();
+        });
+    }
+
     public function game(): BelongsTo
     {
         return $this->belongsTo(Game::class);

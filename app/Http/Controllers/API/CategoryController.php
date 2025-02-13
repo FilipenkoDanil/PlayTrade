@@ -8,6 +8,7 @@ use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Services\CategoryService;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -52,7 +53,9 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $category->delete();
+        DB::transaction(function () use ($category) {
+           $category->delete();
+        });
 
         return response()->json([
             'message' => 'Category deleted'
