@@ -91,6 +91,16 @@ export default {
             #{{ item.id }}
         </template>
 
+        <template v-slot:item.offer_title="{ item }">
+            {{ item.offer_title }}
+            <br>
+            <span class="text-disabled">{{ item.offer_game }} - {{ item.offer_category }}</span>
+        </template>
+
+        <template v-slot:item.quantity="{ item }">
+            {{ item.quantity }}{{ item.offer_unit }}
+        </template>
+
         <template v-slot:item.price="{ item }">
             <span class="text-green-accent-3">+{{ item.price }}</span>
         </template>
@@ -128,7 +138,7 @@ export default {
                 <p>
                     <v-divider class="my-3"></v-divider>
                     <strong>Сумма: </strong> {{ selectedDeal.price }}
-                    <strong>Количество: </strong> {{ selectedDeal.quantity }}
+                    <strong>Количество: </strong> {{ selectedDeal.quantity }}{{ selectedDeal.offer_unit }}
                 </p>
 
                 <p>

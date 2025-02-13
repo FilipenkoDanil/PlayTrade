@@ -39,6 +39,9 @@ class DealService
                 'offer_description' => $offer->description,
                 'offer_attributes' => $offer->attributes,
                 'offer_server' => $offer->server,
+                'offer_game' => $offer->category->game->title,
+                'offer_category' => $offer->category->title,
+                'offer_unit' => $offer->category->unit->title,
                 'status_id' => Status::DEAL_IN_PROGRESS,
             ]);
 

@@ -14,7 +14,7 @@ class Deal extends Model implements Transactable
 {
     use HasFactory, HasSignedAmount;
 
-    protected $fillable = ['quantity', 'price', 'buyer_id', 'offer_id', 'offer_title', 'offer_description', 'offer_attributes', 'offer_server', 'status_id'];
+    protected $fillable = ['quantity', 'price', 'buyer_id', 'offer_id', 'offer_title', 'offer_description', 'offer_attributes', 'offer_server', 'offer_game', 'offer_category', 'offer_unit', 'status_id'];
 
     public function offer(): BelongsTo
     {

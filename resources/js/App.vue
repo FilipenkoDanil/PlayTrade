@@ -39,7 +39,7 @@ export default {
     <v-app>
         <v-app-bar>
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-            <v-app-bar-title>PlayTrade</v-app-bar-title>
+            <router-link :to="{name: 'home'}" class="v-toolbar-title text-decoration-none text-white">PlayTrade</router-link>
             <v-spacer></v-spacer>
             <v-btn v-if="isAuth" @click="logout" icon="mdi-logout"></v-btn>
         </v-app-bar>
@@ -50,6 +50,9 @@ export default {
             <v-list>
                 <v-list-item :to="{name: 'orders'}">Мои покупки</v-list-item>
                 <v-list-item :to="{name: 'sales'}">Мои продажи</v-list-item>
+                <v-divider></v-divider>
+                <v-list-item :to="{name: 'game.create'}">Create Game</v-list-item>
+                <v-list-item :to="{name: 'game.list'}">List Games</v-list-item>
             </v-list>
         </v-navigation-drawer>
 

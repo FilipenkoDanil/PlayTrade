@@ -26,6 +26,23 @@ const routes = [
         name: 'sales',
         component: () => import('@/pages/Sales.vue')
     },
+    //Moder
+    {
+        path: '/games/list',
+        name: 'game.list',
+        component: () => import('@/pages/Moderator/Game/List.vue')
+    },
+    {
+        path: '/games/create',
+        name: 'game.create',
+        component: () => import('@/pages/Moderator/Game/CreateGame.vue')
+    },
+    {
+      path: '/games/:id/edit',
+      name: 'game.edit',
+      component: () => import('@/pages/Moderator/Game/Edit.vue')
+    },
+    //End Moder
     {
         path: '/login',
         name: 'login',
