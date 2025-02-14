@@ -35,12 +35,17 @@ const routes = [
     {
         path: '/games/create',
         name: 'game.create',
-        component: () => import('@/pages/Moderator/Game/CreateGame.vue')
+        component: () => import('@/pages/Moderator/Game/Create.vue')
     },
     {
       path: '/games/:id/edit',
       name: 'game.edit',
       component: () => import('@/pages/Moderator/Game/Edit.vue')
+    },
+    {
+        path: '/categories/create',
+        name: 'category.create',
+        component: () => import('@/pages/Moderator/Category/Create.vue')
     },
     //End Moder
     {

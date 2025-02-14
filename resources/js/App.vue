@@ -53,6 +53,8 @@ export default {
                 <v-divider></v-divider>
                 <v-list-item :to="{name: 'game.create'}">Create Game</v-list-item>
                 <v-list-item :to="{name: 'game.list'}">List Games</v-list-item>
+                <v-divider></v-divider>
+                <v-list-item :to="{name: 'category.create'}">Create Category</v-list-item>
             </v-list>
         </v-navigation-drawer>
 
