@@ -55,11 +55,8 @@ export default {
                     return false;
                 }
 
-                if (this.searchQuery && !offer.title.toLowerCase().includes(this.searchQuery.toLowerCase())) {
-                    return false;
-                }
+                return !(this.searchQuery && !offer.title.toLowerCase().includes(this.searchQuery.toLowerCase()));
 
-                return true;
             });
         }
     }
@@ -99,7 +96,11 @@ export default {
                 </v-col>
             </v-row>
 
-            <v-divider></v-divider>
+            <div class="d-flex justify-end">
+                <v-btn @click="this.$router.push({name: 'offer.create', params: {categoryId: this.$route.params.id}})" color="indigo" class="mb-4">
+                    Продать {{ category.title }}
+                </v-btn>
+            </div>
 
             <v-data-table
                 :headers="headers"
@@ -120,7 +121,7 @@ export default {
                 </template>
 
                 <template v-slot:item.amount="{ item }">
-                    {{ item.amount }}{{ this.category.unit?.title }}
+                    {{ item.amount }} {{ this.category.unit?.title }}
                 </template>
 
                 <template v-slot:item.price="{ item }">

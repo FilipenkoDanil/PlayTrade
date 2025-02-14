@@ -1,6 +1,4 @@
 <script>
-import axios from "axios";
-
 export default {
     name: "Edit",
     data() {
@@ -62,14 +60,10 @@ export default {
                 .then(r => {
                     this.title = r.data.data.title;
                     this.description = r.data.data.description;
-                    this.game_id = r.data.data.game_id;
-                    this.selectedGame = r.data.data.game ? {
-                        id: r.data.data.game.id,
-                        title: r.data.data.game.title
-                    } : null;
+                    this.selectedGame = r.data.data.game
+                    this.game_id = r.data.data.game.id
                     this.unit_id = r.data.data.unit_id;
                     this.selectedServers = r.data.data.servers.map(s => s.id);
-                    console.log(r.data.data.servers.map(s => s.id))
                     this.selectedAttributes = r.data.data.attributes.map(a => a.id);
                 })
                 .catch(err => {
@@ -80,9 +74,14 @@ export default {
                 });
         },
 
-        deleteCategoy() {
+        deleteCategory() {
             axios.delete(`api/categories/${this.$route.params.id}`)
                 .then(() => this.$router.push({name: 'home'}))
+        },
+
+        getGames() {
+            axios.get('api/games')
+                .then(r => this.games = r.data.data)
         },
 
         getUnits() {
@@ -113,6 +112,7 @@ export default {
     },
 
     mounted() {
+        this.getGames()
         this.getServers()
         this.getUnits()
         this.getAttributes()
@@ -129,7 +129,7 @@ export default {
                           clearable></v-text-field>
             <v-textarea v-model="description" label="Описание категории"></v-textarea>
 
-            <v-select v-model="game_id" :items="[selectedGame]" item-title="title" item-value="id" label="Игра"
+            <v-select v-model="game_id" :items="games" item-title="title" item-value="id" label="Игра"
                       disabled></v-select>
 
             <v-select v-if="filteredServers.length" v-model="selectedServers" :items="filteredServers"
@@ -143,7 +143,7 @@ export default {
 
         </v-card-text>
         <v-card-actions>
-            <v-btn @click="deleteCategoy" color="red">Удалить категорию</v-btn>
+            <v-btn @click="deleteCategory" color="red">Удалить категорию</v-btn>
             <v-spacer></v-spacer>
             <v-btn :loading="loading" color="primary" @click="updateCategory">Сохранить</v-btn>
         </v-card-actions>

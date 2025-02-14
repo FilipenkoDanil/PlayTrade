@@ -7,7 +7,7 @@ const routes = [
         component: () => import('@/pages/Home.vue')
     },
     {
-        path: '/category/:id',
+        path: '/categories/:id',
         name: 'category',
         component: () => import('@/pages/Category.vue')
     },
@@ -53,6 +53,11 @@ const routes = [
         component: () => import('@/pages/Moderator/Category/Edit.vue')
     },
     //End Moder
+    {
+        path: '/categories/:categoryId/offers/create',
+        name: 'offer.create',
+        component: () => import('@/pages/Offer/Create.vue')
+    },
     {
         path: '/login',
         name: 'login',
