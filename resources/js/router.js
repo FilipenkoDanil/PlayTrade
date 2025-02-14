@@ -47,6 +47,11 @@ const routes = [
         name: 'category.create',
         component: () => import('@/pages/Moderator/Category/Create.vue')
     },
+    {
+        path: '/categories/:id/edit',
+        name: 'category.edit',
+        component: () => import('@/pages/Moderator/Category/Edit.vue')
+    },
     //End Moder
     {
         path: '/login',

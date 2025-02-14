@@ -24,9 +24,8 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|max:255|unique:categories,title,' . $this->category->id,
+            'title' => 'required|max:255',
             'description' => 'nullable',
-            'game_id' => 'required|exists:games,id',
             'unit_id' => 'required|exists:units,id',
             'attributes' => 'array',
             'attributes.*' => [

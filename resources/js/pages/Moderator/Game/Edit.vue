@@ -45,7 +45,7 @@ export default {
 
             <span class="text-h6">Категории: </span>
             <v-chip-group>
-                <v-chip v-for="cat in game.categories">{{ cat.title }}</v-chip>
+                <v-chip v-for="cat in game.categories" :to="{name: 'category.edit', params: {id: cat.id}}">{{ cat.title }}</v-chip>
             </v-chip-group>
         </v-card-text>
 
