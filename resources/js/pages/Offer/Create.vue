@@ -22,11 +22,11 @@ export default {
                 .then(r => {
                     this.category = r.data.data;
 
-                    // Создаем объект для хранения атрибутов, если они есть
+
                     if (this.category.attributes?.length) {
                         this.selectedAttributes = this.category.attributes.reduce((acc, attr) => {
-                            acc[attr.id] = ""; // Начальное значение
-                            return acc;
+                            acc[attr.id] = ""
+                            return acc
                         }, {});
                     }
                 })
@@ -45,9 +45,8 @@ export default {
                 payload.server_id = this.selectedServer
             }
 
-// Формируем массив атрибутов [{ id: 4, value: "значение" }]
             const attributesArray = Object.entries(this.selectedAttributes)
-                .filter(([_, value]) => value.trim() !== "") // Убираем пустые атрибуты
+                .filter(([_, value]) => value.trim() !== "")
                 .map(([id, value]) => ({ id: Number(id), value }));
 
             if (attributesArray.length) {
@@ -98,7 +97,6 @@ export default {
                     </v-col>
                 </v-row>
             </div>
-            {{ selectedAttributes }}
         </v-card-text>
 
         <v-card-actions>

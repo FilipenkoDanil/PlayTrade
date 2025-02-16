@@ -50,6 +50,7 @@ export default {
             <v-list>
                 <v-list-item :to="{name: 'orders'}">Мои покупки</v-list-item>
                 <v-list-item :to="{name: 'sales'}">Мои продажи</v-list-item>
+                <v-list-item :to="{name: 'user.offers'}">Мои предложения</v-list-item>
                 <v-divider></v-divider>
                 <v-list-item :to="{name: 'game.create'}">Create Game</v-list-item>
                 <v-list-item :to="{name: 'game.list'}">List Games</v-list-item>

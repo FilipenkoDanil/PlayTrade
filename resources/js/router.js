@@ -17,6 +17,11 @@ const routes = [
         component: () => import('@/pages/Offer.vue')
     },
     {
+        path: '/user/offers',
+        name: 'user.offers',
+        component: () => import('@/pages/User/Offers.vue')
+    },
+    {
         path: '/orders',
         name: 'orders',
         component: () => import('@/pages/Orders.vue')
@@ -57,6 +62,11 @@ const routes = [
         path: '/categories/:categoryId/offers/create',
         name: 'offer.create',
         component: () => import('@/pages/Offer/Create.vue')
+    },
+    {
+        path: '/user/offers/:id/edit',
+        name: 'offer.edit',
+        component: () => import('@/pages/Offer/Edit.vue')
     },
     {
         path: '/login',

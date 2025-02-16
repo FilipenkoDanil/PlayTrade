@@ -8,6 +8,7 @@ use App\Http\Requests\Offer\UpdateOfferRequest;
 use App\Http\Resources\OfferResource;
 use App\Models\Offer;
 use App\Services\OfferService;
+use Illuminate\Support\Facades\Auth;
 
 class OfferController extends Controller
 {
@@ -20,7 +21,7 @@ class OfferController extends Controller
      */
     public function index()
     {
-        return OfferResource::collection(Offer::all());
+        return OfferResource::collection(Auth::user()->offers()->get());
     }
 
     /**

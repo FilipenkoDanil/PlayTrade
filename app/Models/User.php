@@ -60,4 +60,9 @@ class User extends Authenticatable
     {
         return $this->buyerDeals->merge($this->sellerDeals)->sortByDesc('created_at');
     }
+
+    public function offers()
+    {
+        return $this->hasMany(Offer::class, 'seller_id', "id")->orderBy('created_at', 'desc');
+    }
 }
