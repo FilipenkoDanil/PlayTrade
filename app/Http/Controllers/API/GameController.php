@@ -52,6 +52,7 @@ class GameController extends Controller
     {
         DB::transaction(function () use ($game) {
             $game->categories()->delete();
+            $game->servers()->delete();
             $game->delete();
         });
 

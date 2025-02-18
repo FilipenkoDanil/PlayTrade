@@ -31,7 +31,7 @@ class ServerController extends Controller
      */
     public function show(Server $server)
     {
-        return new ServerResource($server);
+        return new ServerResource($server->load('game'));
     }
 
     /**

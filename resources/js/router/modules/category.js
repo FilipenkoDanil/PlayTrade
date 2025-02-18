@@ -2,7 +2,7 @@ export default [
     {
         path: '/categories/:id',
         name: 'category',
-        component: () => import('@/pages/Category/CategoryList.vue')
+        component: () => import('@/pages/Category/CategoryShow.vue')
     },
     {
         path: '/categories/create',

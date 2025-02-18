@@ -22,4 +22,9 @@ class Game extends Model
     {
         return $this->hasMany(Category::class);
     }
+
+    public function servers(): HasMany
+    {
+        return $this->hasMany(Server::class);
+    }
 }
