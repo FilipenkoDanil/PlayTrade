@@ -46,16 +46,55 @@ export default {
 
         <v-navigation-drawer
             v-model="drawer"
-            temporary>
-            <v-list>
-                <v-list-item :to="{name: 'orders'}">Мои покупки</v-list-item>
-                <v-list-item :to="{name: 'sales'}">Мои продажи</v-list-item>
-                <v-list-item :to="{name: 'user.offers'}">Мои предложения</v-list-item>
-                <v-divider></v-divider>
-                <v-list-item :to="{name: 'game.create'}">Create Game</v-list-item>
-                <v-list-item :to="{name: 'game.list'}">List Games</v-list-item>
-                <v-divider></v-divider>
-                <v-list-item :to="{name: 'category.create'}">Create Category</v-list-item>
+            temporary
+            color="background"
+        >
+            <v-list dense nav>
+                <v-list-subheader class="text-uppercase text-caption font-weight-bold text-grey-darken-1">
+                    Аккаунт
+                </v-list-subheader>
+                <v-list-item
+                    :to="{ name: 'user.orders' }"
+                    prepend-icon="mdi-cart"
+                    title="Мои покупки"
+                ></v-list-item>
+                <v-list-item
+                    :to="{ name: 'user.sales' }"
+                    prepend-icon="mdi-currency-usd"
+                    title="Мои продажи"
+                ></v-list-item>
+                <v-list-item
+                    :to="{ name: 'user.offers' }"
+                    prepend-icon="mdi-tag"
+                    title="Мои предложения"
+                ></v-list-item>
+
+                <v-divider class="my-2"></v-divider>
+
+                <v-list-subheader class="text-uppercase text-caption font-weight-bold text-grey-darken-1">
+                    Игры
+                </v-list-subheader>
+                <v-list-item
+                    :to="{ name: 'game.create' }"
+                    prepend-icon="mdi-plus-circle"
+                    title="Создать игру"
+                ></v-list-item>
+                <v-list-item
+                    :to="{ name: 'game.list' }"
+                    prepend-icon="mdi-format-list-bulleted"
+                    title="Список игр"
+                ></v-list-item>
+
+                <v-divider class="my-2"></v-divider>
+
+                <v-list-subheader class="text-uppercase text-caption font-weight-bold text-grey-darken-1">
+                    Категории
+                </v-list-subheader>
+                <v-list-item
+                    :to="{ name: 'category.create' }"
+                    prepend-icon="mdi-folder-plus"
+                    title="Создать категорию"
+                ></v-list-item>
             </v-list>
         </v-navigation-drawer>
 

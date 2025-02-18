@@ -1,12 +1,12 @@
 export default [
     {
-        path: '/orders',
-        name: 'orders',
+        path: '/user/orders',
+        name: 'user.orders',
         component: () => import('@/pages/User/Orders.vue')
     },
     {
-        path: '/sales',
-        name: 'sales',
+        path: '/user/sales',
+        name: 'user.sales',
         component: () => import('@/pages/User/Sales.vue')
     }
 ]
