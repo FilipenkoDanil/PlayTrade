@@ -21,7 +21,7 @@ class OfferController extends Controller
      */
     public function index()
     {
-        return OfferResource::collection(Auth::user()->offers()->get());
+        return OfferResource::collection(Auth::user()->offers()->with(['category.game', 'category.unit'])->get());
     }
 
     /**
