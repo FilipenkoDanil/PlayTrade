@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\API\AttributeController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\Chat\ChatController;
+use App\Http\Controllers\API\Chat\MessageController;
 use App\Http\Controllers\API\DealController;
 use App\Http\Controllers\API\GameController;
 use App\Http\Controllers\API\OfferController;
@@ -41,3 +43,6 @@ Route::get('sales', [DealController::class, 'sales']);
 Route::patch('deals/{deal}/confirm', [DealController::class, 'confirm'])->middleware('check.deal.status');
 Route::patch('deals/{deal}/cancel', [DealController::class, 'cancel'])->middleware('check.deal.status');
 Route::apiResource('ratings', RatingController::class);
+
+Route::apiResource('chats', ChatController::class)->except(['destroy', 'update']);
+Route::post('/messages', [MessageController::class, 'store']);

@@ -68,7 +68,11 @@ export default {
                     prepend-icon="mdi-tag"
                     title="Мои предложения"
                 ></v-list-item>
-
+                <v-list-item
+                    :to="{ name: 'user.chats' }"
+                    prepend-icon="mdi-message"
+                    title="Сообщения"
+                ></v-list-item>
                 <v-divider class="my-2"></v-divider>
 
                 <v-list-subheader class="text-uppercase text-caption font-weight-bold text-grey-darken-1">

@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -64,5 +65,15 @@ class User extends Authenticatable
     public function offers()
     {
         return $this->hasMany(Offer::class, 'seller_id', "id")->orderBy('created_at', 'desc');
+    }
+
+    public function chats(): BelongsToMany
+    {
+        return $this->belongsToMany(Chat::class)->withPivot('unread_count');
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
     }
 }

@@ -5,6 +5,7 @@ import gameRoutes from "./modules/game";
 import offerRoutes from "./modules/offer";
 import userRoutes from "./modules/user";
 import serverRoutes from "./modules/server.js"
+import chatRoutes from "./modules/chat.js"
 
 const routes = [
     {
@@ -17,7 +18,8 @@ const routes = [
     ...gameRoutes,
     ...offerRoutes,
     ...userRoutes,
-    ...serverRoutes
+    ...serverRoutes,
+    ...chatRoutes
 ]
 
 const router = createRouter({
