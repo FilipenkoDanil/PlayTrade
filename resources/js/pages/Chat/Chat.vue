@@ -8,42 +8,83 @@ export default {
     data() {
         return {
             isChatSelected: false,
+            selectedChatId: null,
+
             newMessage: "",
-            messages: [
-                { id: 1, text: "Привет!", time: "10:45", sender: "user" },
-                { id: 2, text: "Как дела?", time: "10:46", sender: "other" },
-                { id: 3, text: "Все отлично, спасибо!", time: "10:47", sender: "user" },
-                { id: 4, text: "Что нового?", time: "10:48", sender: "other" },
-            ]
-        };
+            messages: [],
+            chats: [],
+
+            currentUserId: null,
+            selectedCompanion: []
+        }
     },
+
+    methods: {
+        getChats() {
+            axios.get('api/chats')
+                .then(r => {
+                    this.chats = r.data
+                })
+        },
+
+        getCurrentUser() {
+            axios.get('/api/user')
+                .then(r => this.currentUserId = r.data.id)
+        },
+
+        showChat(chatId) {
+            this.selectedChatId = chatId;
+            axios.get(`api/chats/${chatId}`)
+                .then(r => {
+                    this.messages = r.data.map(message => ({
+                        id: message.id,
+                        text: message.message,
+                        time: message.created_at,
+                        sender: message.user_id === this.currentUserId ? 'user' : 'other'
+                    }));
+                    this.isChatSelected = true;
+
+                    const chat = this.chats.find(chat => chat.id === chatId);
+                    if (chat) {
+                        this.selectedCompanion = chat.companion;
+                    }
+                });
+        },
+
+        sendMessage(message) {
+            axios.post('api/messages', {chat_id: this.selectedChatId, message: message})
+                .then(r => {
+                    this.messages.push({
+                        id: r.data.id,
+                        text: r.data.message,
+                        time: r.data.created_at,
+                        sender: 'user'
+                    });
+                });
+        }
+    },
+
+    mounted() {
+        this.getChats()
+        this.getCurrentUser()
+    }
 }
 </script>
 
 <template>
     <v-row class="fill-height">
         <v-col cols="3" class="d-flex flex-column">
-            <ChatList @click="isChatSelected = !isChatSelected"></ChatList>
+            <ChatList @selectChat="showChat" :chats="chats"></ChatList>
         </v-col>
 
 
         <v-col cols="9" class="d-flex flex-column">
-            <ChatWindow :messages="messages" :isChatSelected="isChatSelected"></ChatWindow>
+            <ChatWindow @sendMessage="sendMessage" :messages="messages" :companion="selectedCompanion"
+                        :isChatSelected="isChatSelected"></ChatWindow>
         </v-col>
     </v-row>
 </template>
 
 <style scoped>
-.custom-scroll {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
 
-.custom-scroll::-webkit-scrollbar {
-    display: none;
-}
-
-.custom-height {
-    height: 75vh;
-}
 </style>

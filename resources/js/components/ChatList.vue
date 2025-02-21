@@ -1,17 +1,19 @@
 <script>
 export default {
-    name: "ChatList"
+    name: "ChatList",
+
+    props: ['chats']
 }
 </script>
 
 <template>
-    <v-list class="overflow-y-auto custom-scroll" style="height: 90vh;" rounded>
+    <v-list class="overflow-y-auto custom-scroll custom-height" rounded>
         <v-list-item
             class="pa-4"
-            v-for="i in 1"
-            :key="i"
+            v-for="chat in chats"
+            :key="chat.id"
             link
-            @click="isChatSelected = true"
+            @click="$emit('selectChat', chat.id)"
         >
             <template v-slot:prepend>
                 <v-avatar color="primary" size="40">
@@ -20,21 +22,32 @@ export default {
             </template>
 
             <v-list-item-title class="d-flex align-center">
-                <span class="font-weight-bold">Имя пользователя {{ i }}</span>
-                <span class="text-caption text-grey ml-2">10:4{{ i }}</span>
+                <span class="font-weight-bold">{{ chat.companion?.name }}</span>
+                <span class="text-caption text-grey ml-2">{{ chat.last_message?.date }}</span>
             </v-list-item-title>
 
             <v-list-item-subtitle class="text-truncate">
-                Это текст сообщения, который может быть очень длинным и должен обрезаться...
+                {{ chat.last_message.text }}
             </v-list-item-subtitle>
 
             <template v-slot:append>
-                <v-badge v-if="i % 2" :content="i" inline></v-badge>
+                <v-badge v-if="chat.unread_count > 0" :content="chat.unread_count" inline></v-badge>
             </template>
         </v-list-item>
     </v-list>
 </template>
 
 <style scoped>
+.custom-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
 
+.custom-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.custom-height {
+    height: 90vh;
+}
 </style>

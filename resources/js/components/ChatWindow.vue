@@ -1,14 +1,27 @@
 <script>
 export default {
     name: "ChatWindow",
-    props: ['isChatSelected', 'messages']
+    props: ['isChatSelected', 'messages', 'companion'],
+
+    data() {
+        return {
+            message: ''
+        }
+    },
+
+    methods: {
+        emitMessage() {
+            this.$emit('sendMessage', this.message)
+            this.message = ''
+        }
+    }
 }
 </script>
 
 <template>
     <v-card class="d-flex flex-column fill-height" rounded>
         <v-card-title v-if="isChatSelected">
-            <h2 class="text-h5">Имя пользователя</h2>
+            <h2 class="text-h5">{{ companion.name }}</h2>
             <v-divider></v-divider>
         </v-card-title>
 
@@ -44,12 +57,25 @@ export default {
                 label="Введите сообщение"
                 outlined
                 hide-details
+                v-model="message"
+                @keyup.enter="emitMessage"
             ></v-text-field>
-            <v-btn color="primary">Отправить</v-btn>
+            <v-btn @click="emitMessage" color="primary">Отправить</v-btn>
         </v-card-actions>
     </v-card>
 </template>
 
 <style scoped>
+.custom-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
 
+.custom-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.custom-height {
+    height: 75vh;
+}
 </style>
