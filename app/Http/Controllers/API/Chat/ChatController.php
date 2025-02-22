@@ -18,26 +18,30 @@ class ChatController extends Controller
 
         $chats = $user->chats()
             ->with([
-                'users' => function ($query) use ($user) {
-                    $query->where('users.id', '!=', $user->id);
-                },
+                'users',
                 'lastMessage.user'
             ])
             ->get()
             ->map(function ($chat) use ($user) {
+                $companion = $chat->users->where('id', '!=', $user->id)->first();
+
+                $pivot = $chat->users->where('id', $user->id)->first()->pivot;
+
                 return [
                     'id' => $chat->id,
-                    'unread_count' => $chat->users->first()->pivot->unread_count ?? 0,
-                    'companion' => $chat->users->first() ? [
-                        'id' => $chat->users->first()->id,
-                        'name' => $chat->users->first()->name,
+                    'unread_count' => $pivot ? $pivot->unread_count : 0,
+                    'companion' => $companion ? [
+                        'id' => $companion->id,
+                        'name' => $companion->name,
                     ] : null,
                     'last_message' => $chat->lastMessage ? [
                         'text' => $chat->lastMessage->message,
                         'date' => $chat->lastMessage->created_at->toDateTimeString(),
                     ] : null
                 ];
-            });
+            })->sortByDesc(function ($chat) {
+                return $chat['last_message']['date'] ?? null;
+            })->values();
 
         return response()->json($chats);
     }
@@ -80,6 +84,11 @@ class ChatController extends Controller
      */
     public function show(Chat $chat)
     {
+        $userPivot = $chat->users()->where('user_id', '=', Auth::id())->first()->pivot;
+
+        $userPivot->unread_count = 0;
+        $userPivot->save();
+
         return $chat->messages()->with('user')->get();
     }
 }
