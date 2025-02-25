@@ -6,13 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Deal\StoreDealRequest;
 use App\Http\Resources\DealResource;
 use App\Models\Deal;
+use App\Services\ChatService;
 use App\Services\DealService;
+use App\Services\MessageService;
 use Illuminate\Support\Facades\Auth;
 
 
 class DealController extends Controller
 {
-    public function __construct(private readonly DealService $dealService)
+    public function __construct(private readonly DealService $dealService, private readonly ChatService $chatService, private readonly MessageService $messageService)
     {
     }
 
@@ -34,6 +36,10 @@ class DealController extends Controller
         if (is_string($result)) {
             return response()->json(['error' => $result], 400);
         }
+
+        $chat = $this->chatService->createOrGetChat(Auth::id(), $result->offer->seller->id);
+        $message = "Покупатель  оплатил заказ #$result->id. $result->offer_game, $result->offer_category. $result->quantity$result->offer_unit . не забудьте потом нажать кнопку «Подтвердить выполнение заказа».";
+        $this->messageService->sendMessage($message, $chat->id, Auth::user());
 
         return new DealResource($result);
     }

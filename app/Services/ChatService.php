@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\DB;
 
 class ChatService
 {
-    public function createOrGetChat(int $userId, int $currentUserId): Chat
+    public function createOrGetChat(int $userFirstId, int $userSecondId): Chat
     {
-        return DB::transaction(function () use ($userId, $currentUserId) {
-            $existingChat = Chat::whereHas('users', function ($query) use ($currentUserId) {
-                $query->where('users.id', $currentUserId);
+        return DB::transaction(function () use ($userFirstId, $userSecondId) {
+            $existingChat = Chat::whereHas('users', function ($query) use ($userSecondId) {
+                $query->where('users.id', $userSecondId);
             })
-                ->whereHas('users', function ($query) use ($userId) {
-                    $query->where('users.id', $userId);
+                ->whereHas('users', function ($query) use ($userFirstId) {
+                    $query->where('users.id', $userFirstId);
                 })
                 ->first();
 
@@ -25,7 +25,7 @@ class ChatService
             }
 
             $chat = Chat::create();
-            $chat->users()->attach([$currentUserId, $userId]);
+            $chat->users()->attach([$userFirstId, $userSecondId]);
 
             return $chat;
         });

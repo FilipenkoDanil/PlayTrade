@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Http\Requests\Message\StoreMessageRequest;
 use App\Models\Chat;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -10,13 +9,13 @@ use Illuminate\Support\Facades\DB;
 
 class MessageService
 {
-    public function sendMessage(StoreMessageRequest $request, User $user)
+    public function sendMessage(string $message, int $chat_id, User $user)
     {
-        $chat = Chat::findOrFail($request->chat_id);
+        $chat = Chat::findOrFail($chat_id);
 
-        return DB::transaction(function () use ($request, $chat, $user) {
+        return DB::transaction(function () use ($message, $chat, $user) {
             $message = $chat->messages()->create([
-                'message' => $request->message,
+                'message' => $message,
                 'user_id' => Auth::id(),
             ]);
 
