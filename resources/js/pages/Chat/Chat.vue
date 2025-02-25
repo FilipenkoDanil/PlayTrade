@@ -40,7 +40,8 @@ export default {
                         id: message.id,
                         text: message.message,
                         time: message.created_at,
-                        sender: message.user_id === this.currentUserId ? 'user' : 'other'
+                        sender: message.user_id === this.currentUserId ? 'user' : 'other',
+                        type: message.type
                     }));
                     this.isChatSelected = true;
 

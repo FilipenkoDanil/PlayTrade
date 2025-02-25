@@ -3,20 +3,22 @@
 namespace App\Services;
 
 use App\Models\Chat;
+use App\Models\Deal;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MessageService
 {
-    public function sendMessage(string $message, int $chat_id, User $user)
+    public function sendMessage(string $message, int $chat_id, User $user, string $type = 'default')
     {
         $chat = Chat::findOrFail($chat_id);
 
-        return DB::transaction(function () use ($message, $chat, $user) {
+        return DB::transaction(function () use ($message, $chat, $user, $type) {
             $message = $chat->messages()->create([
                 'message' => $message,
                 'user_id' => Auth::id(),
+                'type' => $type
             ]);
 
             $this->incrementUnreadMessage($chat, $user);
@@ -33,4 +35,20 @@ class MessageService
         $companionPivot->save();
     }
 
+    public function getDealNotification(Deal $deal, string $type): string
+    {
+        return match ($type) {
+            'paid' => "Покупатель оплатил заказ #$deal->id. $deal->offer_game, $deal->offer_category. $deal->quantity$deal->offer_unit.
+            Не забудьте потом нажать кнопку «Подтвердить выполнение заказа».",
+            'confirmed' => "Покупатель подтвердил успешное выполнение заказа #$deal->id и отправил деньги продавцу.",
+            'canceled' => "Продавец отменил заказ #$deal->id. Сделка закрыта.",
+            default => "Ошибка обработки типа."
+        };
+    }
+
+    public function sendDealNotification(Deal $deal, Chat $chat, string $type): void
+    {
+        $message = $this->getDealNotification($deal, $type);
+        $this->sendMessage($message, $chat->id, Auth::user(), 'notify');
+    }
 }

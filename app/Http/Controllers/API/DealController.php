@@ -38,8 +38,7 @@ class DealController extends Controller
         }
 
         $chat = $this->chatService->createOrGetChat(Auth::id(), $result->offer->seller->id);
-        $message = "Покупатель  оплатил заказ #$result->id. $result->offer_game, $result->offer_category. $result->quantity$result->offer_unit . не забудьте потом нажать кнопку «Подтвердить выполнение заказа».";
-        $this->messageService->sendMessage($message, $chat->id, Auth::user());
+        $this->messageService->sendDealNotification($result, $chat, 'paid');
 
         return new DealResource($result);
     }
@@ -60,6 +59,9 @@ class DealController extends Controller
 
         $this->dealService->confirm($deal);
 
+        $chat = $this->chatService->createOrGetChat(Auth::id(), $deal->offer->seller->id);
+        $this->messageService->sendDealNotification($deal, $chat, 'confirmed');
+
         return response()->json(['message' => 'Deal confirmed']);
     }
 
@@ -70,6 +72,9 @@ class DealController extends Controller
         }
 
         $this->dealService->cancel($deal);
+
+        $chat = $this->chatService->createOrGetChat(Auth::id(), $deal->offer->seller->id);
+        $this->messageService->sendDealNotification($deal, $chat, 'canceled');
 
         return response()->json(['message' => 'Deal cancelled']);
     }

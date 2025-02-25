@@ -5,14 +5,59 @@ export default {
 
     data() {
         return {
-            message: ''
+            message: '',
+            showMessages: false // Скрываем сообщения, пока не проскроллим вниз
+        };
+    },
+
+    watch: {
+        isChatSelected(newVal) {
+            if (newVal) {
+                this.showMessages = false; // Скрываем перед загрузкой
+                this.$nextTick(() => {
+                    this.scrollToBottom();
+                });
+            }
+        },
+
+        messages: {
+            handler() {
+                this.$nextTick(() => {
+                    this.scrollToBottom();
+                });
+            },
+            deep: true
         }
     },
 
     methods: {
         emitMessage() {
-            this.$emit('sendMessage', this.message)
-            this.message = ''
+            if (!this.message.trim()) return;
+            this.$emit('sendMessage', this.message);
+            this.message = '';
+
+            this.$nextTick(() => {
+                this.scrollToBottom();
+            });
+        },
+
+        scrollToBottom() {
+            const container = this.$refs.messageContainer;
+            if (container) {
+                setTimeout(() => {
+                    container.scrollTop = container.scrollHeight;
+                    this.showMessages = true; // Показываем сообщения только после скролла
+                }, 50);
+            }
+        }
+    },
+
+    mounted() {
+        if (this.isChatSelected) {
+            this.showMessages = false;
+            this.$nextTick(() => {
+                this.scrollToBottom();
+            });
         }
     }
 }
@@ -32,21 +77,46 @@ export default {
 
         <v-card-text v-else class="flex-grow-1 overflow-y-auto custom-scroll custom-height">
             <div
-                v-for="message in messages"
-                :key="message.id"
-                :class="['d-flex', message.sender === 'user' ? 'justify-end' : 'justify-start']"
+                class="flex-grow-1 overflow-y-auto custom-scroll custom-height"
+                ref="messageContainer"
+                v-show="showMessages"
             >
-                <v-card
-                    class="pa-3 mb-2"
-                    :color="message.sender === 'user' ? 'primary' : 'grey-darken-3'"
+                <!-- Сообщения и уведомления -->
+                <div
+                    v-for="message in messages"
+                    :key="message.id"
+                    :class="[
+                        'd-flex',
+                        message.type === 'notify' ? 'justify-center' : (message.sender === 'user' ? 'justify-end' : 'justify-start')
+                    ]"
                 >
-                    <v-card-text class="pa-0">
-                        {{ message.text }}
-                    </v-card-text>
-                    <v-card-actions class="pa-0 mt-1">
-                        <span class="text-caption text-grey-lighten-1">{{ message.time }}</span>
-                    </v-card-actions>
-                </v-card>
+                    <!-- Уведомление -->
+                    <v-card
+                        v-if="message.type === 'notify'"
+                        class="pa-3 mb-2"
+                        color="grey-lighten-3"
+                        flat
+                    >
+                        <v-card-text class="pa-0 d-flex align-center">
+                            <v-icon class="mr-2" color="grey">mdi-bell</v-icon>
+                            <span class="text-caption">{{ message.text }}</span>
+                        </v-card-text>
+                    </v-card>
+
+                    <!-- Обычное сообщение -->
+                    <v-card
+                        v-else
+                        class="pa-3 mb-2"
+                        :color="message.sender === 'user' ? 'primary' : 'grey-darken-3'"
+                    >
+                        <v-card-text class="pa-0">
+                            {{ message.text }}
+                        </v-card-text>
+                        <v-card-actions class="pa-0 mt-1">
+                            <span class="text-caption text-grey-lighten-1">{{ message.time }}</span>
+                        </v-card-actions>
+                    </v-card>
+                </div>
             </div>
         </v-card-text>
 
@@ -58,9 +128,9 @@ export default {
                 outlined
                 hide-details
                 v-model="message"
-                @keyup.enter="emitMessage"
+                @keyup.enter.prevent="emitMessage"
             ></v-text-field>
-            <v-btn @click="emitMessage" color="primary">Отправить</v-btn>
+            <v-btn @click="emitMessage" color="primary" type="button">Отправить</v-btn>
         </v-card-actions>
     </v-card>
 </template>
