@@ -94,21 +94,18 @@ export default {
 
                 <!-- Атрибуты -->
                 <v-row>
-                    <v-col cols="12" sm="6" v-for="attribute in offer.attributes">
-                        <div class="d-flex align-center py-2">
-                            <span class="text-subtitle-2 text-disabled">{{ attribute.title }}:</span>
-                            <span class="ml-2">{{ attribute.value }}</span>
-                        </div>
-                        <v-divider v-if="!$vuetify.display.smAndUp"/>
+                    <v-col cols="12" sm="6" v-for="attribute in offer.attributes" :key="attribute.title">
+                        <v-chip class="ma-1" color="primary" variant="outlined">
+                            {{ attribute.title }}: {{ attribute.value }}
+                        </v-chip>
                     </v-col>
                 </v-row>
 
                 <v-row v-if="offer.server">
                     <v-col>
-                        <div class="d-flex align-center py-2">
-                            <span class="text-subtitle-2 text-disabled">Сервер:</span>
-                            <span class="ml-2">{{ offer.server.title }}</span>
-                        </div>
+                        <v-chip class="ma-1" color="secondary" variant="outlined">
+                            Сервер: {{ offer.server.title }}
+                        </v-chip>
                     </v-col>
                 </v-row>
             </v-col>
@@ -143,16 +140,29 @@ export default {
                     class="mt-3"
                 ></v-text-field>
 
+                <!-- Прогресс-бар доступного количества -->
+                <v-progress-linear
+                    :model-value="(quantity / offer.amount) * 100"
+                    color="primary"
+                    height="10"
+                    class="mt-2"
+                ></v-progress-linear>
+
                 <!-- Итоговая стоимость -->
-                <p class="text-body-2 text-grey-darken-1">
+                <p class="text-body-2 text-grey-darken-1 mt-3">
                     Получите <strong>{{ quantity }}{{ offer.category?.unit.title }} </strong>, заплатите <strong>{{ totalPrice }}</strong> ₽
                 </p>
 
                 <!-- Кнопка "Купить" -->
                 <v-btn @click="createDeal" color="primary" class="mt-3" block large>
+                    <v-icon left>mdi-cart</v-icon>
                     Купить
                 </v-btn>
-                <span class="text-disabled text-body-2">Продавец не сможет получить оплату до тех пор, пока вы не подтвердите выполнение им всех обязательств.</span>
+
+                <!-- Предупреждение -->
+                <v-alert type="info" variant="tonal" class="mt-3">
+                    Продавец не сможет получить оплату до тех пор, пока вы не подтвердите выполнение им всех обязательств.
+                </v-alert>
             </v-col>
         </v-row>
     </v-card>
@@ -162,27 +172,34 @@ export default {
         <h3 class="text-subtitle-1 font-weight-bold mb-2">Отзывы покупателей:</h3>
         <v-list lines="three">
             <v-list-item v-for="(review, index) in reviews" :key="index">
-                <v-avatar size="40">
-                    <v-img :src="review.avatar"></v-img>
-                </v-avatar>
+                <template v-slot:prepend>
+                    <v-avatar size="40">
+                        <v-img :src="review.avatar"></v-img>
+                    </v-avatar>
+                </template>
+
                 <v-list-item-title class="font-weight-bold">{{ review.user }}</v-list-item-title>
-                <v-list-item-subtitle class="review-text">
-                    ⭐ {{ review.rating }} – {{ review.comment }}
+
+                <!-- Рейтинг -->
+                <v-rating
+                    v-model="review.rating"
+                    readonly
+                    size="small"
+                    color="amber"
+                    density="compact"
+                    class="mt-1"
+                ></v-rating>
+
+                <!-- Текст отзыва -->
+                <v-list-item-subtitle class="mt-1">
+                    {{ review.comment }}
                 </v-list-item-subtitle>
+
+                <v-divider v-if="index < reviews.length - 1" class="my-2"></v-divider>
             </v-list-item>
         </v-list>
     </v-card>
-
-    <v-snackbar
-        v-model="showSnack"
-        :timeout="2000"
-        :color="snackOptions.color"
-        variant="outlined"
-    >
-        {{ snackOptions.text }}
-    </v-snackbar>
 </template>
-
 
 <style scoped>
 .offer-details {
