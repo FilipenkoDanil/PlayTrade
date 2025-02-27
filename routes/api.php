@@ -45,4 +45,5 @@ Route::patch('deals/{deal}/cancel', [DealController::class, 'cancel'])->middlewa
 Route::apiResource('ratings', RatingController::class);
 
 Route::apiResource('chats', ChatController::class)->except(['destroy', 'update']);
+Route::post('chats/find', [ChatController::class, 'find']);
 Route::post('/messages', [MessageController::class, 'store']);

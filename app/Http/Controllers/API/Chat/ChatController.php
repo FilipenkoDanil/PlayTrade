@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\StoreChatRequest;
 use App\Models\Chat;
 use App\Services\ChatService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
@@ -43,5 +44,10 @@ class ChatController extends Controller
     public function show(Chat $chat)
     {
         return $this->chatService->getChatMessages($chat, Auth::id());
+    }
+
+    public function find(Request $request)
+    {
+        return $this->chatService->createOrGetChat($request->userFirst, $request->userSecond);
     }
 }

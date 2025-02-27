@@ -1,6 +1,9 @@
 <script>
+import ChatWindow from "@/components/ChatWindow.vue";
+
 export default {
     name: "Deal",
+    components: {ChatWindow},
     data() {
         return {
             selectedDeal: {
@@ -15,7 +18,14 @@ export default {
                 quantity: null,
                 offer_unit: '',
                 status_id: null
-            }
+            },
+
+            messages: [],
+            message: '',
+
+            currentUserId: null,
+
+            chatId: null,
         }
     },
 
@@ -24,7 +34,61 @@ export default {
             axios.get(`api/deals/${this.$route.params.id}`)
                 .then(r => {
                     this.selectedDeal = r.data.data
+                    this.getChat()
                 })
+        },
+
+        getCurrentUser() {
+            axios.get('/api/user')
+                .then(r => this.currentUserId = r.data.id)
+        },
+
+        getChat() {
+            axios.post('api/chats/find', {
+                userFirst: this.selectedDeal.buyer_id,
+                userSecond: this.selectedDeal.seller.id
+            }).then(r => {
+                this.chatId = r.data.id
+                axios.get(`api/chats/${r.data.id}`)
+                    .then(r => {
+                        this.messages = r.data.map(message => ({
+                            id: message.id,
+                            text: message.message,
+                            time: message.created_at,
+                            sender: message.user_id === this.currentUserId ? 'user' : 'other',
+                            type: message.type
+                        }))
+
+                        this.$nextTick(() => {
+                            this.scrollToBottom();
+                        })
+                    })
+            })
+        },
+
+        sendMessage() {
+            axios.post('api/messages', {chat_id: this.chatId, message: this.message})
+                .then(r => {
+                    this.messages.push({
+                        id: r.data.id,
+                        text: r.data.message,
+                        time: r.data.created_at,
+                        sender: 'user'
+                    })
+                    this.message = '';
+
+                    this.scrollToBottom()
+                })
+        },
+
+        scrollToBottom() {
+            const container = this.$refs.messageContainer;
+            if (container) {
+                setTimeout(() => {
+                    container.scrollTop = container.scrollHeight;
+                    this.showMessages = true; // Показываем сообщения только после скролла
+                }, 50);
+            }
         },
 
         confirmDeal(dealId) {
@@ -33,6 +97,7 @@ export default {
                     this.getDeal()
                 })
         },
+
         getStatusText(statusId) {
             switch (statusId) {
                 case 1:
@@ -65,6 +130,7 @@ export default {
 
     mounted() {
         this.getDeal()
+        this.getCurrentUser()
     }
 }
 </script>
@@ -129,7 +195,7 @@ export default {
 
                     </v-card-text>
 
-                    <v-card-actions>
+                    <v-card-actions v-if="selectedDeal.status_id === 1">
                         <v-btn @click="confirmDeal(selectedDeal.id)" v-if="selectedDeal.status_id === 1" color="green">
                             Подтвердить сделку
                         </v-btn>
@@ -138,8 +204,68 @@ export default {
             </v-col>
 
             <v-col cols="7">
-                <v-card>
-                    <v-card-title>Чат</v-card-title>
+                <v-card class="d-flex flex-column" rounded>
+                    <v-card-title>
+                        <h2 class="text-h5">Чат</h2>
+                        <v-divider></v-divider>
+                    </v-card-title>
+
+                    <v-card-text class="flex-grow-1 overflow-y-auto custom-scroll custom-height">
+                        <div
+                            class="flex-grow-1 overflow-y-auto custom-scroll custom-height"
+                            ref="messageContainer"
+                        >
+                            <!-- Сообщения и уведомления -->
+                            <div
+                                v-for="message in messages"
+                                :key="message.id"
+                                :class="[
+                        'd-flex',
+                        message.type === 'notify' ? 'justify-center' : (message.sender === 'user' ? 'justify-end' : 'justify-start')
+                    ]"
+                            >
+                                <!-- Уведомление -->
+                                <v-card
+                                    v-if="message.type === 'notify'"
+                                    class="pa-3 mb-2"
+                                    color="grey-lighten-3"
+                                    flat
+                                >
+                                    <v-card-text class="pa-0 d-flex align-center">
+                                        <v-icon class="mr-2" color="grey">mdi-bell</v-icon>
+                                        <span class="text-caption">{{ message.text }}</span>
+                                    </v-card-text>
+                                </v-card>
+
+                                <!-- Обычное сообщение -->
+                                <v-card
+                                    v-else
+                                    class="pa-3 mb-2"
+                                    :color="message.sender === 'user' ? 'primary' : 'grey-darken-3'"
+                                >
+                                    <v-card-text class="pa-0">
+                                        {{ message.text }}
+                                    </v-card-text>
+                                    <v-card-actions class="pa-0 mt-1">
+                                        <span class="text-caption text-grey-lighten-1">{{ message.time }}</span>
+                                    </v-card-actions>
+                                </v-card>
+                            </div>
+                        </div>
+                    </v-card-text>
+
+                    <v-divider></v-divider>
+
+                    <v-card-actions class="pa-3">
+                        <v-text-field
+                            label="Введите сообщение"
+                            outlined
+                            hide-details
+                            v-model="message"
+                            @keyup.enter="sendMessage"
+                        ></v-text-field>
+                        <v-btn @click="sendMessage" color="primary" type="button">Отправить</v-btn>
+                    </v-card-actions>
                 </v-card>
             </v-col>
         </v-row>
@@ -147,5 +273,17 @@ export default {
 </template>
 
 <style scoped>
+.custom-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
 
+.custom-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.custom-height {
+    height: 75vh;
+    max-height: 75vh;
+}
 </style>

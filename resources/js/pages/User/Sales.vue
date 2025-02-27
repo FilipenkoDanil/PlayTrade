@@ -31,6 +31,11 @@ export default {
                     this.dialog = false
                 })
         },
+
+        goToDeal(id) {
+            this.$router.push({name: 'user.deal', params: {id: id}})
+        },
+
         getStatusText(statusId) {
             switch (statusId) {
                 case 1:
@@ -152,8 +157,8 @@ export default {
             </v-card-text>
 
             <v-card-actions>
-                <v-btn @click="cancelDeal(selectedDeal.id)" v-if="selectedDeal.status_id === 1" color="red">
-                    Отменить сделку
+                <v-btn @click="goToDeal(selectedDeal.id)">
+                    Подробнее
                 </v-btn>
                 <v-btn color="primary" @click="dialog = false">Закрыть</v-btn>
             </v-card-actions>
