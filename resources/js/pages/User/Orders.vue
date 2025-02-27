@@ -8,6 +8,7 @@ export default {
                 {title: 'Дата', value: 'created_at'},
                 {title: 'Заказ', value: 'id'},
                 {title: 'Название', value: 'offer_title'},
+                {title: 'Продавец', value: 'seller.name'},
                 {title: 'Количество', value: 'quantity'},
                 {title: 'Сумма', value: 'price'},
                 {title: 'Статус', value: 'status_id'}
@@ -112,6 +113,9 @@ export default {
                 Заказ #{{ selectedDeal.id }}
             </v-card-title>
             <v-card-text>
+                <p><strong>Игра:</strong> {{ selectedDeal.offer_game }}</p>
+                <p><strong>Категория:</strong> {{ selectedDeal.offer_category }}</p>
+                <v-divider class="my-3"></v-divider>
                 <p><strong>Название оффера:</strong> {{ selectedDeal.offer_title }}</p>
                 <p><strong>Описание:</strong> {{ selectedDeal.offer_description }}</p>
 

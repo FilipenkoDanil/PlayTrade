@@ -49,7 +49,7 @@ class User extends Authenticatable
 
     public function buyerDeals(): HasMany
     {
-        return $this->hasMany(Deal::class, 'buyer_id', "id")->orderBy('created_at', 'desc');
+        return $this->hasMany(Deal::class, 'buyer_id', "id")->with('offer.seller')->orderBy('created_at', 'desc');
     }
 
     public function sellerDeals(): HasManyThrough

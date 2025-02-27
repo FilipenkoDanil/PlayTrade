@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Deal\StoreDealRequest;
+use App\Http\Resources\Deal\DealListResource;
 use App\Http\Resources\DealResource;
 use App\Models\Deal;
 use App\Services\ChatService;
@@ -81,7 +82,7 @@ class DealController extends Controller
 
     public function orders()
     {
-        return DealResource::collection(Auth::user()->buyerDeals()->get());
+        return DealListResource::collection(Auth::user()->buyerDeals()->get());
     }
 
     public function sales()
