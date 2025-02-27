@@ -199,6 +199,15 @@ export default {
             </v-list-item>
         </v-list>
     </v-card>
+
+    <v-snackbar
+        v-model="showSnack"
+        :timeout="2000"
+        :color="snackOptions.color"
+        variant="outlined"
+    >
+        {{ snackOptions.text }}
+    </v-snackbar>
 </template>
 
 <style scoped>

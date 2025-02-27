@@ -25,13 +25,11 @@ export default {
                     this.deals = r.data.data
                 })
         },
-        confirmDeal(dealId) {
-            axios.patch(`/api/deals/${dealId}/confirm`)
-                .then(() => {
-                    this.getOrders()
-                    this.dialog = false
-                })
+
+        goToDeal(id) {
+            this.$router.push({name: 'user.deal', params: {id: id}})
         },
+
         getStatusText(statusId) {
             switch (statusId) {
                 case 1:
@@ -156,8 +154,8 @@ export default {
             </v-card-text>
 
             <v-card-actions>
-                <v-btn @click="confirmDeal(selectedDeal.id)" v-if="selectedDeal.status_id === 1" color="green">
-                    Подтвердить сделку
+                <v-btn @click="goToDeal(selectedDeal.id)">
+                    Подробнее
                 </v-btn>
                 <v-btn color="primary" @click="dialog = false">Закрыть</v-btn>
             </v-card-actions>
