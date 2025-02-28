@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Deal;
 
+use App\Http\Resources\RatingResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -34,6 +35,7 @@ class DealListResource extends JsonResource
             'buyer' => new UserResource($this->whenLoaded('buyer')),
             'seller' => $this->offer->seller,
             'status' => new StatusResource($this->whenLoaded('status')),
+            'rating' => new RatingResource($this->whenLoaded('rating')),
         ];
     }
 }

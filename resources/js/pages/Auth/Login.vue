@@ -18,9 +18,13 @@ export default {
                         password: this.password
                     })
                         .then(() => {
-                            localStorage.setItem('isAuth', 'true')
-                            this.setAuth(true);
-                            this.$router.push({name: 'home'})
+                            axios.get('api/user')
+                                .then(r => {
+                                    localStorage.setItem('isAuth', 'true')
+                                    localStorage.setItem('userId', r.data.id)
+                                    this.setAuth(true);
+                                    this.$router.push({name: 'home'})
+                                })
                         })
                 })
         },

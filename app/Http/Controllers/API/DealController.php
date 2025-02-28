@@ -49,7 +49,7 @@ class DealController extends Controller
      */
     public function show(Deal $deal)
     {
-        return new DealListResource($deal->load('offer.seller'));
+        return new DealListResource($deal->load('offer.seller', 'rating'));
     }
 
     public function confirm(Deal $deal)

@@ -6,14 +6,14 @@ export default {
     data() {
         return {
             message: '',
-            showMessages: false // Скрываем сообщения, пока не проскроллим вниз
+            showMessages: false
         };
     },
 
     watch: {
         isChatSelected(newVal) {
             if (newVal) {
-                this.showMessages = false; // Скрываем перед загрузкой
+                this.showMessages = false
                 this.$nextTick(() => {
                     this.scrollToBottom();
                 });

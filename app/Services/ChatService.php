@@ -12,7 +12,7 @@ class ChatService
     public function createOrGetChat(int $userFirstId, int $userSecondId): Chat
     {
         return DB::transaction(function () use ($userFirstId, $userSecondId) {
-            $existingChat = Chat::whereHas('users', function ($query) use ($userSecondId) {
+            $existingChat = Chat::with('users')->whereHas('users', function ($query) use ($userSecondId) {
                 $query->where('users.id', $userSecondId);
             })
                 ->whereHas('users', function ($query) use ($userFirstId) {

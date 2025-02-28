@@ -14,7 +14,7 @@ export default {
             messages: [],
             chats: [],
 
-            currentUserId: null,
+            currentUserId: parseInt(localStorage.getItem('userId')),
             selectedCompanion: []
         }
     },
@@ -27,10 +27,6 @@ export default {
                 })
         },
 
-        getCurrentUser() {
-            axios.get('/api/user')
-                .then(r => this.currentUserId = r.data.id)
-        },
 
         showChat(chatId) {
             this.selectedChatId = chatId;
@@ -67,7 +63,6 @@ export default {
 
     mounted() {
         this.getChats()
-        this.getCurrentUser()
     }
 }
 </script>

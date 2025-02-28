@@ -1,9 +1,7 @@
 <script>
-import ChatWindow from "@/components/ChatWindow.vue";
 
 export default {
     name: "Deal",
-    components: {ChatWindow},
     data() {
         return {
             selectedDeal: {
@@ -23,9 +21,14 @@ export default {
             messages: [],
             message: '',
 
-            currentUserId: null,
-
+            currentUserId: parseInt(localStorage.getItem('userId')),
             chatId: null,
+            companion: {},
+
+            rating: {
+                rating: 0,
+                comment: ''
+            },
         }
     },
 
@@ -34,14 +37,11 @@ export default {
             axios.get(`api/deals/${this.$route.params.id}`)
                 .then(r => {
                     this.selectedDeal = r.data.data
+                    this.rating = r.data.data.rating || { rating: 0, comment: '' }
                     this.getChat()
                 })
         },
 
-        getCurrentUser() {
-            axios.get('/api/user')
-                .then(r => this.currentUserId = r.data.id)
-        },
 
         getChat() {
             axios.post('api/chats/find', {
@@ -49,6 +49,7 @@ export default {
                 userSecond: this.selectedDeal.seller.id
             }).then(r => {
                 this.chatId = r.data.id
+                this.companion = r.data.users.find(user => user.id !== this.currentUserId)
                 axios.get(`api/chats/${r.data.id}`)
                     .then(r => {
                         this.messages = r.data.map(message => ({
@@ -64,6 +65,20 @@ export default {
                         })
                     })
             })
+        },
+
+        updateRating() {
+            axios.post('api/ratings', {
+                deal_id: this.selectedDeal.id,
+                rating: this.rating.rating,
+                comment: this.rating.comment
+            })
+                .then(() => this.getDeal())
+        },
+
+        deleteRating() {
+            axios.delete(`api/ratings/${this.rating.id}`)
+                .then(() => this.getDeal())
         },
 
         sendMessage() {
@@ -93,9 +108,12 @@ export default {
 
         confirmDeal(dealId) {
             axios.patch(`/api/deals/${dealId}/confirm`)
-                .then(() => {
-                    this.getDeal()
-                })
+                .then(() => this.getDeal())
+        },
+
+        cancelDeal(dealId) {
+            axios.patch(`api/deals/${dealId}/cancel`)
+                .then(() => this.getDeal())
         },
 
         getStatusText(statusId) {
@@ -112,6 +130,7 @@ export default {
                     return 'Unknown';
             }
         },
+
         getStatusColor(statusId) {
             switch (statusId) {
                 case 1:
@@ -130,7 +149,6 @@ export default {
 
     mounted() {
         this.getDeal()
-        this.getCurrentUser()
     }
 }
 </script>
@@ -184,29 +202,46 @@ export default {
                             </v-chip>
                         </p>
 
-
                         <div v-if="selectedDeal.status_id === 2">
                             <v-divider class="my-3"></v-divider>
-                            <h3>Добавить отзыв</h3>
-                            <v-rating color="yellow"></v-rating>
-                            <v-textarea></v-textarea>
-                            <v-btn color="primary">Сохранить</v-btn>
+
+                            <div v-if="currentUserId === selectedDeal.buyer_id">
+                                <h3 v-if="!selectedDeal.rating">Добавить отзыв</h3>
+                                <h3 v-else>Изменить отзыв</h3>
+                                <v-rating v-model="rating.rating" color="yellow"></v-rating>
+                                <v-textarea v-model="rating.comment" placeholder="Оставьте ваш отзыв."></v-textarea>
+                                <div class="d-flex">
+                                    <v-btn @click="updateRating" color="primary">Сохранить</v-btn>
+                                    <v-spacer></v-spacer>
+                                    <v-btn v-if="selectedDeal.rating" @click="deleteRating" color="red">Удалить</v-btn>
+                                </div>
+                            </div>
+
+                            <div v-else-if="selectedDeal.rating">
+                                <h3>Отзыв покупателя</h3>
+                                <v-rating v-model="selectedDeal.rating.rating" color="yellow" readonly></v-rating>
+                                <p class="text-subtitle-2">{{ selectedDeal.rating.comment }}</p>
+                            </div>
                         </div>
 
                     </v-card-text>
 
                     <v-card-actions v-if="selectedDeal.status_id === 1">
-                        <v-btn @click="confirmDeal(selectedDeal.id)" v-if="selectedDeal.status_id === 1" color="green">
+                        <v-btn @click="confirmDeal(selectedDeal.id)" v-if="currentUserId === selectedDeal.buyer_id" color="green">
                             Подтвердить сделку
+                        </v-btn>
+                        <v-btn @click="cancelDeal(selectedDeal.id)" v-else color="red">
+                            Отменить сделку
                         </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
 
+            <!-- Чат -->
             <v-col cols="7">
                 <v-card class="d-flex flex-column" rounded>
                     <v-card-title>
-                        <h2 class="text-h5">Чат</h2>
+                        <h2 class="text-h5">Чат с {{ companion.name }}</h2>
                         <v-divider></v-divider>
                     </v-card-title>
 
