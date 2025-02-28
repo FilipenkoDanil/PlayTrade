@@ -10,6 +10,7 @@ use App\Http\Controllers\API\OfferController;
 use App\Http\Controllers\API\RatingController;
 use App\Http\Controllers\API\ServerController;
 use App\Http\Controllers\API\StatusController;
+use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\UnitController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,9 @@ Route::get('sales', [DealController::class, 'sales']);
 Route::patch('deals/{deal}/confirm', [DealController::class, 'confirm'])->middleware('check.deal.status');
 Route::patch('deals/{deal}/cancel', [DealController::class, 'cancel'])->middleware('check.deal.status');
 Route::apiResource('ratings', RatingController::class);
+
+Route::apiResource('transactions', TransactionController::class)->except('destroy', 'update', 'show', 'store');
+
 
 Route::apiResource('chats', ChatController::class)->except(['destroy', 'update']);
 Route::post('chats/find', [ChatController::class, 'find']);
