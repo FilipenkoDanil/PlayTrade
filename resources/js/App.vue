@@ -76,7 +76,7 @@ export default {
                 ></v-list-item>
                 <v-list-item
                     :to="{ name: 'user.transactions' }"
-                    prepend-icon="mdi-message"
+                    prepend-icon="mdi-wallet"
                     title="Финансы"
                 ></v-list-item>
                 <v-divider class="my-2"></v-divider>
