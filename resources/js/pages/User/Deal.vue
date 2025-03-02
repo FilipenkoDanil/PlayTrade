@@ -190,7 +190,7 @@ export default {
 
                         <p>
                             <v-divider class="my-3"></v-divider>
-                            <strong>Сумма: </strong> {{ selectedDeal.price }}
+                            <strong>Сумма: </strong> {{ selectedDeal.price }} ₴
                             <strong>Количество: </strong> {{ selectedDeal.quantity }}{{ selectedDeal.offer_unit }}
                         </p>
 

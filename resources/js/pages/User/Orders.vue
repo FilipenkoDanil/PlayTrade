@@ -101,7 +101,7 @@ export default {
         </template>
 
         <template v-slot:item.price="{ item }">
-            <span class="text-red-accent-2">-{{ item.price }}</span>
+            <span class="text-red-accent-2">-{{ item.price }} ₴</span>
         </template>
     </v-data-table>
 
@@ -139,7 +139,7 @@ export default {
 
                 <p>
                     <v-divider class="my-3"></v-divider>
-                    <strong>Сумма: </strong> {{ selectedDeal.price }}
+                    <strong>Сумма: </strong> {{ selectedDeal.price }} ₴
                     <strong>Количество: </strong> {{ selectedDeal.quantity }}{{ selectedDeal.offer_unit }}
                 </p>
 

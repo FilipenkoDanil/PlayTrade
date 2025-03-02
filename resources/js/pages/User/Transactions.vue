@@ -257,7 +257,7 @@ export default {
                     prepend-icon="mdi-cash"
                     :rules="[rules.required, rules.minAmount]"
                     type="number"
-                    min="100"
+                    min="50"
                 ></v-text-field>
 
                 <v-text-field
