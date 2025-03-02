@@ -8,6 +8,7 @@ export default {
             category: {},
             title: '',
             description: '',
+            autoMessage: '',
             price: null,
             amount: null,
             selectedServer: null,
@@ -34,6 +35,7 @@ export default {
             const payload = {
                 title: this.title,
                 description: this.description,
+                auto_message: this.autoMessage,
                 price: this.price,
                 amount: this.amount,
                 category_id: this.category.id
@@ -100,6 +102,9 @@ export default {
 
             <v-skeleton-loader v-if="!category.id" type="text" class="mb-2"/>
             <v-textarea v-else v-model="description" label="Описание"></v-textarea>
+
+            <v-skeleton-loader v-if="!category.id" type="text" class="mb-2"/>
+            <v-textarea v-else v-model="autoMessage" label="Автоосообщение"></v-textarea>
 
             <div v-if="category.attributes?.length">
                 <p class="text-subtitle-1 font-weight-medium">Атрибуты</p>

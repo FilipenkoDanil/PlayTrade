@@ -41,6 +41,10 @@ class DealController extends Controller
         $chat = $this->chatService->createOrGetChat(Auth::id(), $result->offer->seller->id);
         $this->messageService->sendDealNotification($result, $chat, 'paid');
 
+        if ($result->offer->auto_message) {
+            $this->messageService->sendMessage($result->offer->auto_message, $chat->id, $result->offer->seller_id);
+        }
+
         return new DealResource($result);
     }
 
@@ -74,7 +78,7 @@ class DealController extends Controller
 
         $this->dealService->cancel($deal);
 
-        $chat = $this->chatService->createOrGetChat(Auth::id(), $deal->offer->seller->id);
+        $chat = $this->chatService->createOrGetChat(Auth::id(), $deal->buyer_id);
         $this->messageService->sendDealNotification($deal, $chat, 'canceled');
 
         return response()->json(['message' => 'Deal cancelled']);

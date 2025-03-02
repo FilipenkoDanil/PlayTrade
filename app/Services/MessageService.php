@@ -4,33 +4,33 @@ namespace App\Services;
 
 use App\Models\Chat;
 use App\Models\Deal;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MessageService
 {
-    public function sendMessage(string $message, int $chat_id, User $user, string $type = 'default')
+    public function sendMessage(string $message, int $chat_id, int $senderId, string $type = 'default')
     {
         $chat = Chat::findOrFail($chat_id);
 
-        return DB::transaction(function () use ($message, $chat, $user, $type) {
+        return DB::transaction(function () use ($message, $chat, $senderId, $type) {
             $message = $chat->messages()->create([
                 'message' => $message,
-                'user_id' => Auth::id(),
+                'user_id' => $senderId,
                 'type' => $type
             ]);
 
-            $this->incrementUnreadMessage($chat, $user);
+            $companion = $chat->users->where('id', '!=', $senderId)->first();
+            $this->incrementUnreadMessage($chat, $companion->id);
 
             return $message;
         });
     }
 
 
-    public function incrementUnreadMessage(Chat $chat, User $user): void
+    public function incrementUnreadMessage(Chat $chat, int $userId): void
     {
-        $companionPivot = $chat->users->where('id', '!=', $user->id)->first()->pivot;
+        $companionPivot = $chat->users->where('id', $userId)->first()->pivot;
         $companionPivot->unread_count += 1;
         $companionPivot->save();
     }
@@ -50,6 +50,6 @@ class MessageService
     public function sendDealNotification(Deal $deal, Chat $chat, string $type): void
     {
         $message = $this->getDealNotification($deal, $type);
-        $this->sendMessage($message, $chat->id, Auth::user(), 'notify');
+        $this->sendMessage($message, $chat->id, Auth::id(), 'notify');
     }
 }

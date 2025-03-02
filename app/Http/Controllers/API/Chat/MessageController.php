@@ -19,7 +19,7 @@ class MessageController extends Controller
      */
     public function store(StoreMessageRequest $request)
     {
-        return $this->messageService->sendMessage($request->message, $request->chat_id, Auth::user());
+        return $this->messageService->sendMessage($request->message, $request->chat_id, Auth::id());
     }
 
 }

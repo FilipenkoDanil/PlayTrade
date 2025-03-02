@@ -44,6 +44,7 @@ export default {
             const payload = {
                 title: this.offer.title,
                 description: this.offer.description,
+                auto_message: this.offer.auto_message,
                 amount: this.offer.amount,
                 price: this.offer.price,
                 is_active: this.offer.is_active,
@@ -117,6 +118,8 @@ export default {
             </v-row>
 
             <v-textarea v-model="offer.description" label="Описание"></v-textarea>
+
+            <v-textarea v-model="offer.auto_message" label="Автосообщение"></v-textarea>
 
             <v-checkbox v-model="offer.is_active" label="Активно" :false-value="0" :true-value="1"></v-checkbox>
 
