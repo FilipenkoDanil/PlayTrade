@@ -7,19 +7,31 @@ export default {
             transactions: [],
             selectedType: null,
             operationTypes: [
-                { title: 'Все операции', value: null },
-                { title: 'Заказ', value: 'App\\Models\\Deal' },
-                { title: 'Пополнение', value: 'App\\Models\\Deposit' },
-                { title: 'Вывод', value: 'App\\Models\\Withdrawal' },
+                {title: 'Все операции', value: null},
+                {title: 'Заказ', value: 'App\\Models\\Deal'},
+                {title: 'Пополнение', value: 'App\\Models\\Deposit'},
+                {title: 'Вывод', value: 'App\\Models\\Withdrawal'},
             ],
             headers: [
-                { title: 'Дата', value: 'created_at' },
-                { title: 'Описание', value: 'description' },
-                { title: 'Статус', value: 'status' },
-                { title: 'Сумма', value: 'amount' },
+                {title: 'Дата', value: 'created_at'},
+                {title: 'Описание', value: 'description'},
+                {title: 'Статус', value: 'status'},
+                {title: 'Сумма', value: 'amount'},
             ],
-            dialog: false, // Открытие/закрытие диалогового окна
-            selectedTransaction: null, // Выбранная транзакция для отображения в диалоге
+
+            dialog: false,
+            selectedTransaction: null,
+
+            withdrawDialog: false,
+            userBalance: 0,
+            cardNumber: '',
+            amount: 0,
+            amountToReceive: 0,
+            rules: {
+                required: value => !!value || 'Обязательное поле',
+                cardNumber: value => (value && value.length === 16) || 'Некорректный номер карты',
+                minAmount: value => (value && value >= 50) || 'Минимальная сумма 50 ₴',
+            },
         }
     },
 
@@ -27,6 +39,11 @@ export default {
         getTransactions() {
             axios.get('api/transactions')
                 .then(r => this.transactions = r.data.data)
+        },
+
+        getUserBalance() {
+            axios.get('api/user')
+                .then(r => this.userBalance = r.data.balance)
         },
 
         getStatusColor(statusId) {
@@ -40,7 +57,7 @@ export default {
                 case 4:
                     return 'orange'; // Disputed
                 case 5:
-                    return 'grey'; // Pending
+                    return 'deep-purple'; // Pending
                 case 6:
                     return 'green'; // Completed
                 case 7:
@@ -54,10 +71,18 @@ export default {
             }
         },
 
-        openDialog(event, { item }) {
+        openDialog(event, {item}) {
             this.selectedTransaction = item;
             this.dialog = true;
         },
+
+        createWithdrawal() {
+            axios.post('api/withdrawals', {
+                requested_amount: this.amount,
+                card_number: this.cardNumber
+            })
+                .then(() => this.getTransactions())
+        }
     },
 
     computed: {
@@ -69,10 +94,25 @@ export default {
                 transaction => transaction.transactable_type === this.selectedType
             );
         },
+
+        isFormValid() {
+            return this.cardNumber && this.amount && this.amount >= 100 && this.amount <= this.userBalance;
+        },
+    },
+
+    watch: {
+        amount(newVal) {
+            if (newVal) {
+                this.amountToReceive = (newVal * 0.95).toFixed(2)
+            } else {
+                this.amountToReceive = 0
+            }
+        },
     },
 
     mounted() {
         this.getTransactions()
+        this.getUserBalance()
     }
 }
 </script>
@@ -91,7 +131,7 @@ export default {
         </v-col>
 
         <v-col cols="auto">
-            <v-btn color="primary" variant="tonal">
+            <v-btn @click="withdrawDialog = !withdrawDialog" color="primary" variant="tonal">
                 Вывести деньги
             </v-btn>
         </v-col>
@@ -108,9 +148,13 @@ export default {
         </template>
 
         <template v-slot:item.description="{ item }">
-      <span v-if="item.transactable_type === 'App\\Models\\Deal'">
-        Заказ #{{ item.transactable.id }}
-      </span>
+          <span v-if="item.transactable_type === 'App\\Models\\Deal'">
+            Заказ #{{ item.transactable.id }}
+          </span>
+
+         <span v-if="item.transactable_type === 'App\\Models\\Withdrawal'">
+            Вывод #{{ item.transactable.id }}
+         </span>
         </template>
 
         <template v-slot:item.status="{ item }">
@@ -120,7 +164,7 @@ export default {
         </template>
 
         <template v-slot:item.amount="{ item }">
-              <span class="font-weight-bold" >
+              <span class="font-weight-bold">
                 {{ item.amount > 0 ? `+${item.amount}` : item.amount }}
               </span>
         </template>
@@ -136,7 +180,8 @@ export default {
 
                 <p><strong>Описание:</strong>
                     <span v-if="selectedTransaction.transactable_type === 'App\\Models\\Deal'">
-              <router-link class="text-decoration-none cursor-pointer text-blue" :to="{name: 'user.deal', params: {id: selectedTransaction.transactable.id}}">
+              <router-link class="text-decoration-none cursor-pointer text-blue"
+                           :to="{name: 'user.deal', params: {id: selectedTransaction.transactable.id}}">
                   Заказ #{{ selectedTransaction.transactable.id }}
               </router-link>
             </span>
@@ -144,8 +189,12 @@ export default {
               Пополнение
             </span>
                     <span v-else-if="selectedTransaction.transactable_type === 'App\\Models\\Withdrawal'">
-              Вывод
+              Вывод #{{ selectedTransaction.transactable.id }}
             </span>
+                </p>
+
+                <p v-if="selectedTransaction.transactable_type === 'App\\Models\\Withdrawal'"><strong>Карта: </strong>
+                    <span>{{ selectedTransaction.transactable.card_number }}</span>
                 </p>
 
                 <p><strong>Статус: </strong>
@@ -155,8 +204,18 @@ export default {
                 </p>
 
                 <p><strong>Сумма: </strong>
-                    <span :class="{'text-green': selectedTransaction.amount > 0, 'text-red': selectedTransaction.amount < 0}" class="font-weight-bold">
-              {{ selectedTransaction.amount > 0 ? `+${selectedTransaction.amount}` : selectedTransaction.amount }}
+                    <span
+                        :class="{'text-green': selectedTransaction.amount > 0, 'text-red': selectedTransaction.amount < 0}"
+                        class="font-weight-bold">
+              {{ selectedTransaction.amount > 0 ? `+${selectedTransaction.amount}` : selectedTransaction.amount }} ₴
+            </span>
+                </p>
+
+                <p v-if="selectedTransaction.transactable_type === 'App\\Models\\Withdrawal'">
+                    <strong>Сумма к получению: </strong>
+                    <span
+                        class="font-weight-bold text-green">
+              {{ selectedTransaction.transactable.payout_amount }} ₴
             </span>
                 </p>
             </v-card-text>
@@ -164,6 +223,59 @@ export default {
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" @click="dialog = false">Закрыть</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+
+
+    <v-dialog v-model="withdrawDialog" max-width="400" persistent>
+        <v-card class="rounded-lg">
+            <v-card-title class="headline primary white--text">
+                <v-icon left>mdi-bank-transfer-out</v-icon>
+                Вывод средств
+            </v-card-title>
+            <v-card-text class="pt-4">
+                <v-alert type="info" class="mb-4">
+                    Ваш текущий баланс: <strong>{{ userBalance }} ₴</strong>
+                </v-alert>
+
+                <v-text-field
+                    v-model="cardNumber"
+                    outlined
+                    label="Номер карты"
+                    placeholder="0000 0000 0000 0000"
+                    prepend-icon="mdi-credit-card"
+                    :rules="[rules.required, rules.cardNumber]"
+                ></v-text-field>
+
+                <v-text-field
+                    v-model="amount"
+                    outlined
+                    label="Сумма"
+                    placeholder="Введите сумму"
+                    hint="Комиссия 5%"
+                    prepend-icon="mdi-cash"
+                    :rules="[rules.required, rules.minAmount]"
+                    type="number"
+                    min="100"
+                ></v-text-field>
+
+                <v-text-field
+                    v-model="amountToReceive"
+                    outlined
+                    disabled
+                    label="К получению"
+                    placeholder="0"
+                    prepend-icon="mdi-wallet"
+                    readonly
+                ></v-text-field>
+            </v-card-text>
+            <v-card-actions class="pa-4">
+                <v-spacer></v-spacer>
+                <v-btn color="secondary" @click="withdrawDialog = false">Отмена</v-btn>
+                <v-btn color="primary" @click="createWithdrawal" :disabled="!isFormValid">
+                    Подтвердить
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

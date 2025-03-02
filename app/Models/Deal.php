@@ -36,7 +36,7 @@ class Deal extends Model implements Transactable
         return $this->hasOne(Rating::class);
     }
 
-    public function amount(): float
+    public function getAmount(): float
     {
         return $this->price;
     }

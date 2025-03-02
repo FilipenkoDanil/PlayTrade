@@ -12,6 +12,7 @@ use App\Http\Controllers\API\ServerController;
 use App\Http\Controllers\API\StatusController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\UnitController;
+use App\Http\Controllers\API\WithdrawalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -46,7 +47,7 @@ Route::patch('deals/{deal}/cancel', [DealController::class, 'cancel'])->middlewa
 Route::apiResource('ratings', RatingController::class);
 
 Route::apiResource('transactions', TransactionController::class)->except('destroy', 'update', 'show', 'store');
-
+Route::apiResource('withdrawals', WithdrawalController::class);
 
 Route::apiResource('chats', ChatController::class)->except(['destroy', 'update']);
 Route::post('chats/find', [ChatController::class, 'find']);

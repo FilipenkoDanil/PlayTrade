@@ -4,5 +4,5 @@ namespace App\Contracts;
 
 interface Transactable
 {
-    public function amount(): float;
+    public function getAmount(): float;
 }
