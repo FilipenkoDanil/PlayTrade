@@ -2,8 +2,10 @@
 export default {
     data() {
         return {
-            offer: {},
-            quantity: 1, // Количество товара
+            offer: {
+                price: 0
+            },
+            quantity: 0,
             reviews: [
                 {
                     user: "IvanP",
@@ -28,7 +30,9 @@ export default {
             snackOptions: {
                 color: 'success',
                 text: 'Сделка успешно создана.'
-            }
+            },
+
+            userBalance: 0,
         };
     },
 
@@ -55,17 +59,53 @@ export default {
                     this.snackOptions.color = 'red'
                     this.showSnack = true
                 })
+        },
+
+        createPayment() {
+            axios.post('api/payment/create', {
+                amount: this.missingMoney
+            })
+                .then(r => {
+                    const form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = r.data.payment_url;
+                    form.target = "_blank";
+
+                    for (const [key, value] of Object.entries(r.data.payment_data)) {
+                        const input = document.createElement("input");
+                        input.type = "hidden";
+                        input.name = key;
+                        input.value = Array.isArray(value) ? value.join(",") : value;
+                        form.appendChild(input);
+                    }
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    document.body.removeChild(form);
+                });
+        },
+
+        getUserBalance() {
+            if (localStorage.getItem('isAuth')) {
+                axios.get('api/user')
+                    .then(r => this.userBalance = r.data.balance)
+            }
         }
     },
 
     mounted() {
         this.getOffer()
+        this.getUserBalance()
     },
 
     computed: {
         totalPrice() {
-            return (this.quantity * this.offer.price).toFixed(2);
+            return (this.quantity * this.offer.price).toFixed(2)
         },
+
+        missingMoney() {
+            return (this.totalPrice - this.userBalance).toFixed(2)
+        }
     },
 };
 </script>
@@ -128,36 +168,55 @@ export default {
                 </p>
 
                 <!-- Цена -->
-                <h3 class="text-h5 font-weight-bold mt-4">{{ offer.price }} ₽</h3>
+                <h3 class="text-body-1 font-weight-bold mt-4">{{ offer.price }} ₴ за 1{{ offer.category?.unit.title }}</h3>
 
-                <!-- Поле ввода количества -->
-                <v-text-field
-                    label="Количество"
-                    type="number"
-                    min="1"
-                    :max="offer.amount"
-                    v-model="quantity"
-                    class="mt-3"
-                ></v-text-field>
+                <v-row align="center" justify="center">
+                    <v-col cols="5" class="text-center">
+                        <v-text-field
+                            v-model="quantity"
+                            type="number"
+                            min="1"
+                            :max="offer.amount"
+                            variant="outlined"
+                            hide-details
+                            density="compact"
+                            :suffix="offer.category?.unit.title"
+                        ></v-text-field>
+                    </v-col>
 
-                <!-- Прогресс-бар доступного количества -->
-                <v-progress-linear
-                    :model-value="(quantity / offer.amount) * 100"
-                    color="primary"
-                    height="10"
-                    class="mt-2"
-                ></v-progress-linear>
+                    <v-col cols="2" class="text-center">
+                        <v-icon size="24">mdi-swap-horizontal</v-icon>
+                    </v-col>
 
-                <!-- Итоговая стоимость -->
-                <p class="text-body-2 text-grey-darken-1 mt-3">
-                    Получите <strong>{{ quantity }}{{ offer.category?.unit.title }} </strong>, заплатите <strong>{{ totalPrice }}</strong> ₽
-                </p>
+                    <v-col cols="5" class="text-center">
+                        <v-text-field
+                            :model-value="totalPrice"
+                            readonly
+                            variant="outlined"
+                            hide-details
+                            density="compact"
+                            suffix="₴"
+                            class="text-end"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+
 
                 <!-- Кнопка "Купить" -->
-                <v-btn @click="createDeal" color="primary" class="mt-3" block large>
+                <v-btn v-if="missingMoney <= 0" @click="createDeal" color="indigo-darken-1" class="mt-3" block large :disabled="!quantity">
                     <v-icon left>mdi-cart</v-icon>
                     Купить
                 </v-btn>
+
+                <template v-else>
+                    <v-alert type="error" variant="tonal" class="mt-3" icon="mdi-alert">
+                        На балансе не хватает {{ missingMoney }} ₴
+                    </v-alert>
+                    <v-btn @click="createPayment" color="green-darken-2" class="mt-3" block large>
+                        <v-icon left>mdi-wallet</v-icon>
+                        Пополнить баланс
+                    </v-btn>
+                </template>
 
                 <!-- Предупреждение -->
                 <v-alert type="info" variant="tonal" class="mt-3">

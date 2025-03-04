@@ -65,7 +65,7 @@ export default {
                 case 8:
                     return 'red'; // Cancelled
                 case 9:
-                    return 'blue'; // Refunded
+                    return 'blue-grey-lighten-2'; // Refunded
                 default:
                     return 'grey'; // Unknown
             }
@@ -152,8 +152,12 @@ export default {
             Заказ #{{ item.transactable.id }}
           </span>
 
-         <span v-if="item.transactable_type === 'App\\Models\\Withdrawal'">
+            <span v-if="item.transactable_type === 'App\\Models\\Withdrawal'">
             Вывод #{{ item.transactable.id }}
+         </span>
+
+            <span v-if="item.transactable_type === 'App\\Models\\Deposit'">
+            Пополнение #{{ item.transactable.deposit_id }}
          </span>
         </template>
 

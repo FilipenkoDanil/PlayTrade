@@ -7,6 +7,7 @@ use App\Http\Controllers\API\Chat\MessageController;
 use App\Http\Controllers\API\DealController;
 use App\Http\Controllers\API\GameController;
 use App\Http\Controllers\API\OfferController;
+use App\Http\Controllers\API\Payment\PaymentController;
 use App\Http\Controllers\API\RatingController;
 use App\Http\Controllers\API\ServerController;
 use App\Http\Controllers\API\StatusController;
@@ -52,3 +53,8 @@ Route::apiResource('withdrawals', WithdrawalController::class);
 Route::apiResource('chats', ChatController::class)->except(['destroy', 'update']);
 Route::post('chats/find', [ChatController::class, 'find']);
 Route::post('/messages', [MessageController::class, 'store']);
+
+
+
+Route::post('/payment/create', [PaymentController::class, 'payment']);
+Route::post('/payment/serviceUrl', [PaymentController::class, 'service']);

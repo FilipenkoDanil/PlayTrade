@@ -38,4 +38,14 @@ class TransactionService
 
         $this->create($seller->id, $deal, Transaction::DEAL_SALE);
     }
+
+    public function incrementBalance(User $user, float $amount): void
+    {
+        $user->increment('balance', $amount);
+    }
+
+    public function decrementBalance(User $user, float $amount): void
+    {
+        $user->decrement('balance', $amount);
+    }
 }
