@@ -82,7 +82,8 @@ export default {
                 <template v-else>
                     <v-btn v-for="cat in category.game.categories" :key="cat.id" :to="{name: 'category', params: {id: cat.id}}"
                            active-color="indigo-darken-4" rounded size="large" class="mr-2 my-2">
-                        {{ cat.title }} <span class="text-medium-emphasis text-subtitle-1">320</span>
+                        {{ cat.title }}
+                        <span class="text-medium-emphasis text-subtitle-2">{{ cat.offers_count }}</span>
                     </v-btn>
                 </template>
 

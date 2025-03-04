@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\User\UserProfileResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -27,7 +28,7 @@ class OfferResource extends JsonResource
             'server_id' => $this->server_id,
             'server' => new ServerResource($this->whenLoaded('server')),
             'category' => new CategoryResource($this->whenLoaded('category')),
-            'seller' => new UserResource($this->whenLoaded('seller')),
+            'seller' => new UserProfileResource($this->whenLoaded('seller')),
             'attributes' => AttributeResource::collection($this->whenLoaded('attributes')),
         ];
     }

@@ -81,4 +81,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function activeOffers()
+    {
+        return $this->offers()->where('is_active', true);
+    }
 }

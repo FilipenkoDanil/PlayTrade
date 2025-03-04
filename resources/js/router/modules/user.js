@@ -18,5 +18,10 @@ export default [
         path: '/user/transactions',
         name: 'user.transactions',
         component: () => import('@/pages/User/Transactions.vue')
+    },
+    {
+        path: '/user/:id/profile',
+        name: 'user.profile',
+        component: () => import('@/pages/User/Profile.vue')
     }
 ]

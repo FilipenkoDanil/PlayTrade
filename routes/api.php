@@ -13,6 +13,7 @@ use App\Http\Controllers\API\ServerController;
 use App\Http\Controllers\API\StatusController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\UnitController;
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\WithdrawalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -58,3 +59,6 @@ Route::post('/messages', [MessageController::class, 'store']);
 
 Route::post('/payment/create', [PaymentController::class, 'payment']);
 Route::post('/payment/serviceUrl', [PaymentController::class, 'service']);
+
+
+Route::apiResource('users', UserController::class);

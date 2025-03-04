@@ -241,7 +241,7 @@ export default {
             <v-col cols="7">
                 <v-card class="d-flex flex-column" rounded>
                     <v-card-title>
-                        <h2 class="text-h5">Чат с {{ companion.name }}</h2>
+                        <h2 class="text-h5">Чат с <router-link class="text-decoration-none text-white" :to="{name: 'user.profile', params: {id: companion.id }}">{{ companion.name }}</router-link></h2>
                         <v-divider></v-divider>
                     </v-card-title>
 

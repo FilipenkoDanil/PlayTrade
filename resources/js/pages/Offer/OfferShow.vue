@@ -152,16 +152,18 @@ export default {
 
             <!-- Правая часть: продавец, цена, покупка -->
             <v-col cols="12" md="4" class="text-center">
-                <!-- Аватар продавца -->
-                <v-avatar size="80">
-                    <v-img src="https://picsum.photos/200" alt="Seller Avatar"></v-img>
-                </v-avatar>
+                <router-link class="text-decoration-none text-white" :to="{name: 'user.profile', params: {id: offer.seller?.id}}">
+                    <!-- Аватар продавца -->
+                    <v-avatar size="80">
+                        <v-img src="https://picsum.photos/200" alt="Seller Avatar"></v-img>
+                    </v-avatar>
 
-                <!-- Имя продавца -->
-                <h2 class="text-subtitle-1 font-weight-bold mt-2">
-                    MatveyCrueliti
-                </h2>
+                    <!-- Имя продавца -->
+                    <h2 class="text-subtitle-1 font-weight-bold mt-2">
+                        {{ offer.seller?.name }}
+                    </h2>
 
+                </router-link>
                 <!-- Рейтинг и время на сайте -->
                 <p class="text-caption text-grey-darken-1">
                     ⭐ 1764 | на сайте 8 лет
@@ -202,7 +204,6 @@ export default {
                 </v-row>
 
 
-                <!-- Кнопка "Купить" -->
                 <v-btn v-if="missingMoney <= 0" @click="createDeal" color="indigo-darken-1" class="mt-3" block large :disabled="!quantity">
                     <v-icon left>mdi-cart</v-icon>
                     Купить

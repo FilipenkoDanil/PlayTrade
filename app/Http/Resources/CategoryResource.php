@@ -25,6 +25,7 @@ class CategoryResource extends JsonResource
             'offers' => OfferResource::collection($this->whenLoaded('offers')),
             'servers' => ServerResource::collection($this->whenLoaded('servers')),
             'attributes' => AttributeResource::collection($this->whenLoaded('attributes')),
+            'offers_count' => $this->offers_count
         ];
     }
 }
