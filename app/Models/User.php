@@ -86,4 +86,14 @@ class User extends Authenticatable
     {
         return $this->offers()->where('is_active', true);
     }
+
+    public function ratings()
+    {
+        return Rating::whereHas('deal.offer', function ($query) {
+            $query->where('seller_id', $this->id);
+        })
+            ->orderBy('created_at', 'desc')
+            ->with(['deal', 'user'])
+            ->get();
+    }
 }

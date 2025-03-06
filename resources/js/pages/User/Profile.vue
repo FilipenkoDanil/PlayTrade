@@ -12,7 +12,8 @@ export default {
                 {title: 'Название', value: 'title'},
                 {title: 'Наличие', value: 'amount', sortable: true},
                 {title: 'Цена', value: 'price', sortable: true},
-            ]
+            ],
+            reviews: []
         }
     },
 
@@ -22,6 +23,7 @@ export default {
                 .then(r => {
                     this.user = r.data.data
                     this.offers = r.data.data.offers
+                    this.reviews = r.data[0]
                 })
         },
 
@@ -61,26 +63,21 @@ export default {
 </script>
 
 <template>
-    <!-- Блок профиля -->
     <v-card class="pa-5 mb-5 elevation-3">
         <v-row align="center">
             <v-col cols="auto">
-                <!-- Аватар -->
                 <v-avatar size="100" class="mb-3">
                     <img src="https://picsum.photos/800" alt="Avatar">
                 </v-avatar>
             </v-col>
             <v-col cols="auto">
-                <!-- Имя пользователя -->
                 <h2 class="font-weight-bold text-h5">{{ user.name }}</h2>
 
-                <!-- Статус онлайн -->
                 <v-chip color="green" variant="outlined" class="mt-2">
                     <v-icon small left>mdi-checkbox-blank-circle</v-icon>
                     Онлайн
                 </v-chip>
 
-                <!-- Дата регистрации -->
                 <p class="text-grey-darken-2 mt-2">
                     Дата регистрации: {{ user.created_at }}
                 </p>
@@ -142,6 +139,66 @@ export default {
             <v-card>
                 <v-card-title>Чат с {{ user.name }}</v-card-title>
             </v-card>
+        </v-col>
+    </v-row>
+
+    <v-row>
+        <v-col cols="12" sm="6">
+            <template v-if="reviews.length === 0">
+                <v-alert type="info" variant="tonal" class="mb-4">
+                    Нет отзывов.
+                </v-alert>
+            </template>
+
+            <template v-else>
+                <v-card>
+                    <v-card-text>
+                        <h3 class="text-h5 font-weight-bold mb-4">Отзывы</h3>
+                        <v-list>
+                            <template v-for="(review, index) in reviews" :key="index">
+                                <v-list-item class="pa-3">
+                                    <template v-slot:prepend>
+                                        <v-avatar size="56" class="mr-4">
+                                            <v-img src="https://picsum.photos/200" alt="Аватар"></v-img>
+                                        </v-avatar>
+                                    </template>
+
+                                    <v-list-item-title class="d-flex justify-space-between font-weight-bold">
+                                        <div>
+                                            <router-link
+                                                class="text-decoration-none text-white"
+                                                :to="{ name: 'user.profile', params: { id: review.user.id } }"
+                                            >
+                                                {{ review.user.name }}
+                                            </router-link>
+                                            <span class="ml-2 text-medium-emphasis text-subtitle-2">
+                      {{ review.deal.offer_game }}, {{ Math.round(review.deal.price) }} ₴
+                    </span>
+                                        </div>
+                                        <span class="text-medium-emphasis text-subtitle-2">{{
+                                                review.created_at
+                                            }}</span>
+                                    </v-list-item-title>
+
+                                    <v-rating
+                                        v-model="review.rating"
+                                        color="amber"
+                                        half-increments
+                                        readonly
+                                        size="24"
+                                    ></v-rating>
+
+                                    <v-list-item-subtitle>
+                                        {{ review.comment }}
+                                    </v-list-item-subtitle>
+                                </v-list-item>
+
+                                <v-divider v-if="index < reviews.length - 1"></v-divider>
+                            </template>
+                        </v-list>
+                    </v-card-text>
+                </v-card>
+            </template>
         </v-col>
     </v-row>
 </template>

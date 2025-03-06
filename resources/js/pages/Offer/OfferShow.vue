@@ -6,26 +6,7 @@ export default {
                 price: 0
             },
             quantity: 0,
-            reviews: [
-                {
-                    user: "IvanP",
-                    rating: 5,
-                    comment: "Отличный аккаунт, продавец быстро ответил!",
-                    avatar: "https://i.pravatar.cc/40?img=1"
-                },
-                {
-                    user: "Nikolay87",
-                    rating: 4,
-                    comment: "Все как в описании, но пришлось ждать ответа.",
-                    avatar: "https://i.pravatar.cc/40?img=2"
-                },
-                {
-                    user: "Alex_Gamer",
-                    rating: 5,
-                    comment: "Сделка прошла гладко, спасибо!",
-                    avatar: "https://i.pravatar.cc/40?img=3"
-                }
-            ],
+            reviews: [],
             showSnack: false,
             snackOptions: {
                 color: 'success',
@@ -41,6 +22,7 @@ export default {
             axios.get(`api/offers/${this.$route.params.id}`)
                 .then(res => {
                     this.offer = res.data.data
+                    this.reviews = res.data[0]
                 })
         },
 
@@ -152,7 +134,8 @@ export default {
 
             <!-- Правая часть: продавец, цена, покупка -->
             <v-col cols="12" md="4" class="text-center">
-                <router-link class="text-decoration-none text-white" :to="{name: 'user.profile', params: {id: offer.seller?.id}}">
+                <router-link class="text-decoration-none text-white"
+                             :to="{name: 'user.profile', params: {id: offer.seller?.id}}">
                     <!-- Аватар продавца -->
                     <v-avatar size="80">
                         <v-img src="https://picsum.photos/200" alt="Seller Avatar"></v-img>
@@ -170,7 +153,9 @@ export default {
                 </p>
 
                 <!-- Цена -->
-                <h3 class="text-body-1 font-weight-bold mt-4">{{ offer.price }} ₴ за 1{{ offer.category?.unit.title }}</h3>
+                <h3 class="text-body-1 font-weight-bold mt-4">{{ offer.price }} ₴ за 1{{
+                        offer.category?.unit.title
+                    }}</h3>
 
                 <v-row align="center" justify="center">
                     <v-col cols="5" class="text-center">
@@ -204,7 +189,8 @@ export default {
                 </v-row>
 
 
-                <v-btn v-if="missingMoney <= 0" @click="createDeal" color="indigo-darken-1" class="mt-3" block large :disabled="!quantity">
+                <v-btn v-if="missingMoney <= 0" @click="createDeal" color="indigo-darken-1" class="mt-3" block large
+                       :disabled="!quantity">
                     <v-icon left>mdi-cart</v-icon>
                     Купить
                 </v-btn>
@@ -221,43 +207,68 @@ export default {
 
                 <!-- Предупреждение -->
                 <v-alert type="info" variant="tonal" class="mt-3">
-                    Продавец не сможет получить оплату до тех пор, пока вы не подтвердите выполнение им всех обязательств.
+                    Продавец не сможет получить оплату до тех пор, пока вы не подтвердите выполнение им всех
+                    обязательств.
                 </v-alert>
             </v-col>
         </v-row>
     </v-card>
 
     <!-- Блок отзывов -->
-    <v-card class="offer-details pa-4 mt-6" elevation="2">
-        <h3 class="text-subtitle-1 font-weight-bold mb-2">Отзывы покупателей:</h3>
-        <v-list lines="three">
-            <v-list-item v-for="(review, index) in reviews" :key="index">
-                <template v-slot:prepend>
-                    <v-avatar size="40">
-                        <v-img :src="review.avatar"></v-img>
-                    </v-avatar>
-                </template>
+    <v-card class="offer-details  mt-6">
+        <template v-if="reviews.length === 0">
+            <v-alert type="info" variant="tonal">
+                Нет отзывов.
+            </v-alert>
+        </template>
 
-                <v-list-item-title class="font-weight-bold">{{ review.user }}</v-list-item-title>
+        <template v-else>
+            <v-card>
+                <v-card-text>
+                    <h3 class="text-h5 font-weight-bold">Отзывы</h3>
+                    <v-list>
+                        <template v-for="(review, index) in reviews" :key="index">
+                            <v-list-item class="pa-3">
+                                <template v-slot:prepend>
+                                    <v-avatar size="56" class="mr-4">
+                                        <v-img src="https://picsum.photos/200" alt="Аватар"></v-img>
+                                    </v-avatar>
+                                </template>
 
-                <!-- Рейтинг -->
-                <v-rating
-                    v-model="review.rating"
-                    readonly
-                    size="small"
-                    color="amber"
-                    density="compact"
-                    class="mt-1"
-                ></v-rating>
+                                <v-list-item-title class="d-flex justify-space-between font-weight-bold">
+                                    <div>
+                                        <router-link
+                                            class="text-decoration-none text-white"
+                                            :to="{ name: 'user.profile', params: { id: review.user.id } }"
+                                        >
+                                            {{ review.user.name }}
+                                        </router-link>
+                                        <span class="ml-2 text-medium-emphasis text-subtitle-2">
+                      {{ review.deal.offer_game }}, {{ Math.round(review.deal.price) }} ₴
+                    </span>
+                                    </div>
+                                    <span class="text-medium-emphasis text-subtitle-2">{{ review.created_at }}</span>
+                                </v-list-item-title>
 
-                <!-- Текст отзыва -->
-                <v-list-item-subtitle class="mt-1">
-                    {{ review.comment }}
-                </v-list-item-subtitle>
+                                <v-rating
+                                    v-model="review.rating"
+                                    color="amber"
+                                    half-increments
+                                    readonly
+                                    size="24"
+                                ></v-rating>
 
-                <v-divider v-if="index < reviews.length - 1" class="my-2"></v-divider>
-            </v-list-item>
-        </v-list>
+                                <v-list-item-subtitle>
+                                    {{ review.comment }}
+                                </v-list-item-subtitle>
+                            </v-list-item>
+
+                            <v-divider v-if="index < reviews.length - 1"></v-divider>
+                        </template>
+                    </v-list>
+                </v-card-text>
+            </v-card>
+        </template>
     </v-card>
 
     <v-snackbar

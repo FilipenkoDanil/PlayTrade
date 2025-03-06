@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Offer\StoreOfferRequest;
 use App\Http\Requests\Offer\UpdateOfferRequest;
 use App\Http\Resources\OfferResource;
+use App\Http\Resources\RatingResource;
 use App\Models\Offer;
 use App\Services\OfferService;
 use Illuminate\Support\Facades\Auth;
@@ -37,7 +38,7 @@ class OfferController extends Controller
      */
     public function show(Offer $offer)
     {
-        return new OfferResource($offer->load(['attributes', 'category.unit', 'server', 'seller']));
+        return (new OfferResource($offer->load(['attributes', 'category.unit', 'server', 'seller'])))->additional([RatingResource::collection($offer->seller->ratings())]);
     }
 
     /**

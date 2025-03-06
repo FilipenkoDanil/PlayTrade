@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Deal\DealInfoResource;
+use App\Http\Resources\User\UserProfileResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,8 +22,9 @@ class RatingResource extends JsonResource
             'comment' => $this->comment,
             'deal_id' => $this->deal_id,
             'user_id' => $this->user_id,
-            'deal' => new DealResource($this->whenLoaded('deal')),
-            'user' => new UserResource($this->whenLoaded('user')),
+            'created_at' => $this->created_at->diffForHumans(),
+            'deal' => new DealInfoResource($this->whenLoaded('deal')),
+            'user' => new UserProfileResource($this->whenLoaded('user')),
         ];
     }
 }
