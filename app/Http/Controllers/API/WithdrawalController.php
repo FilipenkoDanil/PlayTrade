@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Status;
 use App\Models\Transaction;
 use App\Models\Withdrawal;
 use App\Http\Requests\StoreWithdrawalRequest;
@@ -68,5 +69,26 @@ class WithdrawalController extends Controller
     public function destroy(Withdrawal $withdrawal)
     {
         //
+    }
+
+    public function cancel(Withdrawal $withdrawal)
+    {
+        $user = Auth::user();
+
+        if ($user->id !== $withdrawal->user_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        if ($withdrawal->status_id !== Status::TRANSACTION_PENDING) {
+            return response()->json(['message' => 'Withdrawal cannot be canceled'], 403);
+        }
+
+        DB::transaction(function () use ($withdrawal, $user) {
+            $withdrawal->status_id = Status::TRANSACTION_CANCELED;
+            $this->transactionService->unfreezeBalance($user, $withdrawal->getAmount());
+            $withdrawal->save();
+
+            return $withdrawal;
+        });
     }
 }

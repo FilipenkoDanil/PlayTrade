@@ -82,6 +82,11 @@ export default {
                 card_number: this.cardNumber
             })
                 .then(() => this.getTransactions())
+        },
+
+        cancelWithdrawal() {
+            axios.post(`api/withdrawals/${this.selectedTransaction.transactable_id}/cancel`)
+                .then(() => this.getTransactions())
         }
     },
 
@@ -225,6 +230,10 @@ export default {
             </v-card-text>
 
             <v-card-actions>
+                <v-btn v-if="selectedTransaction.transactable_type === 'App\\Models\\Withdrawal' && selectedTransaction.transactable.status_id === 5"
+                       color="red"
+                       @click="cancelWithdrawal"
+                >Отменить вывод</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" @click="dialog = false">Закрыть</v-btn>
             </v-card-actions>

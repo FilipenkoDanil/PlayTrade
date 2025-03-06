@@ -50,6 +50,7 @@ Route::apiResource('ratings', RatingController::class);
 
 Route::apiResource('transactions', TransactionController::class)->except('destroy', 'update', 'show', 'store');
 Route::apiResource('withdrawals', WithdrawalController::class);
+Route::post('withdrawals/{withdrawal}/cancel', [WithdrawalController::class, 'cancel']);
 
 Route::apiResource('chats', ChatController::class)->except(['destroy', 'update']);
 Route::post('chats/find', [ChatController::class, 'find']);

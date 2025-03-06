@@ -88,9 +88,9 @@ export default {
     <v-row>
         <v-col cols="12" md="6">
             <template v-if="groupedOffers.length > 0">
-                <v-row v-for="group in groupedOffers" :key="group.category" class="mb-4">
+                <v-row v-for="group in groupedOffers" :key="group.category">
                     <v-col cols="12">
-                        <v-card class="elevation-3 mb-4">
+                        <v-card>
                             <v-card-title class="text-h6 font-weight-bold">
                                 {{ group.category }} {{ group.game }}
                             </v-card-title>
