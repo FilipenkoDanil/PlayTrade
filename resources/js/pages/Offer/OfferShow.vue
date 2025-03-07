@@ -1,3 +1,99 @@
+<script>
+import Chat from "@/components/Chat.vue";
+
+export default {
+    components: {Chat},
+    data() {
+        return {
+            offer: {
+                price: 0
+            },
+            quantity: 0,
+            reviews: [],
+            showSnack: false,
+            snackOptions: {
+                color: 'success',
+                text: 'Сделка успешно создана.'
+            },
+            userBalance: 0,
+        };
+    },
+
+    methods: {
+        getOffer() {
+            axios.get(`api/offers/${this.$route.params.id}`)
+                .then(res => {
+                    this.offer = res.data.data;
+                    this.reviews = res.data[0];
+                });
+        },
+
+        createDeal() {
+            axios.post('api/deals', {
+                quantity: this.quantity,
+                offer_id: this.offer.id
+            })
+                .then(() => {
+                    this.snackOptions.text = 'Сделка успешно создана.';
+                    this.snackOptions.color = 'success';
+                    this.showSnack = true;
+                })
+                .catch(err => {
+                    this.snackOptions.text = err.response.data.error;
+                    this.snackOptions.color = 'red';
+                    this.showSnack = true;
+                });
+        },
+
+        createPayment() {
+            axios.post('api/payment/create', {
+                amount: this.missingMoney
+            })
+                .then(r => {
+                    const form = document.createElement("form");
+                    form.method = "POST";
+                    form.action = r.data.payment_url;
+                    form.target = "_blank";
+
+                    for (const [key, value] of Object.entries(r.data.payment_data)) {
+                        const input = document.createElement("input");
+                        input.type = "hidden";
+                        input.name = key;
+                        input.value = Array.isArray(value) ? value.join(",") : value;
+                        form.appendChild(input);
+                    }
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    document.body.removeChild(form);
+                });
+        },
+
+        getUserBalance() {
+            if (localStorage.getItem('isAuth')) {
+                axios.get('api/user')
+                    .then(r => this.userBalance = r.data.balance);
+            }
+        }
+    },
+
+    mounted() {
+        this.getOffer();
+        this.getUserBalance();
+    },
+
+    computed: {
+        totalPrice() {
+            return (this.quantity * this.offer.price).toFixed(2);
+        },
+
+        missingMoney() {
+            return (this.totalPrice - this.userBalance).toFixed(2);
+        }
+    },
+}
+</script>
+
 <template>
     <v-row justify="center">
         <!-- Левая часть: предложение, продавец, выбор количества и отзывы -->
@@ -176,102 +272,6 @@
         {{ snackOptions.text }}
     </v-snackbar>
 </template>
-
-<script>
-import Chat from "@/components/Chat.vue";
-
-export default {
-    components: {Chat},
-    data() {
-        return {
-            offer: {
-                price: 0
-            },
-            quantity: 0,
-            reviews: [],
-            showSnack: false,
-            snackOptions: {
-                color: 'success',
-                text: 'Сделка успешно создана.'
-            },
-            userBalance: 0,
-        };
-    },
-
-    methods: {
-        getOffer() {
-            axios.get(`api/offers/${this.$route.params.id}`)
-                .then(res => {
-                    this.offer = res.data.data;
-                    this.reviews = res.data[0];
-                });
-        },
-
-        createDeal() {
-            axios.post('api/deals', {
-                quantity: this.quantity,
-                offer_id: this.offer.id
-            })
-                .then(() => {
-                    this.snackOptions.text = 'Сделка успешно создана.';
-                    this.snackOptions.color = 'success';
-                    this.showSnack = true;
-                })
-                .catch(err => {
-                    this.snackOptions.text = err.response.data.error;
-                    this.snackOptions.color = 'red';
-                    this.showSnack = true;
-                });
-        },
-
-        createPayment() {
-            axios.post('api/payment/create', {
-                amount: this.missingMoney
-            })
-                .then(r => {
-                    const form = document.createElement("form");
-                    form.method = "POST";
-                    form.action = r.data.payment_url;
-                    form.target = "_blank";
-
-                    for (const [key, value] of Object.entries(r.data.payment_data)) {
-                        const input = document.createElement("input");
-                        input.type = "hidden";
-                        input.name = key;
-                        input.value = Array.isArray(value) ? value.join(",") : value;
-                        form.appendChild(input);
-                    }
-
-                    document.body.appendChild(form);
-                    form.submit();
-                    document.body.removeChild(form);
-                });
-        },
-
-        getUserBalance() {
-            if (localStorage.getItem('isAuth')) {
-                axios.get('api/user')
-                    .then(r => this.userBalance = r.data.balance);
-            }
-        }
-    },
-
-    mounted() {
-        this.getOffer();
-        this.getUserBalance();
-    },
-
-    computed: {
-        totalPrice() {
-            return (this.quantity * this.offer.price).toFixed(2);
-        },
-
-        missingMoney() {
-            return (this.totalPrice - this.userBalance).toFixed(2);
-        }
-    },
-};
-</script>
 
 <style scoped>
 

@@ -1,6 +1,5 @@
 <template>
     <template v-if="isAuthenticated">
-        <!-- Если пользователь пытается написать сам себе -->
         <template v-if="isSelfChat">
             <v-card class="d-flex flex-column align-center justify-center pa-6" rounded>
                 <v-icon size="64" color="grey">mdi-chat-remove</v-icon>
@@ -8,8 +7,6 @@
                 <p class="text-body-1 text-grey mt-2">Выберите другого пользователя для общения.</p>
             </v-card>
         </template>
-
-        <!-- Если нормальный чат -->
         <template v-else>
             <v-card class="d-flex flex-column" rounded>
                 <v-card-title>
@@ -24,54 +21,52 @@
                     </h2>
                     <v-divider></v-divider>
                 </v-card-title>
-
-                <!-- Блок с сообщениями -->
                 <v-card-text class="flex-grow-1 overflow-y-auto custom-scroll custom-height">
-                    <div
-                        class="flex-grow-1 overflow-y-auto custom-scroll custom-height"
-                        ref="messageContainer"
-                    >
-                        <div
-                            v-for="message in messages"
-                            :key="message.id"
-                            :class="[
+                    <div class="flex-grow-1 overflow-y-auto custom-scroll custom-height" ref="messageContainer">
+                        <template v-if="messages.length === 0">
+                            <div class="d-flex flex-column align-center justify-center text-center h-100">
+                                <v-icon size="64" color="grey">mdi-message-outline</v-icon>
+                                <h3 class="text-h6 mt-4">Сообщений пока нет</h3>
+                                <p class="text-body-2 text-grey">Напишите первое сообщение, чтобы начать беседу.</p>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <div
+                                v-for="message in messages"
+                                :key="message.id"
+                                :class="[
                                 'd-flex',
                                 message.type === 'notify' ? 'justify-center' : (message.sender === 'user' ? 'justify-end' : 'justify-start')
                             ]"
-                        >
-                            <!-- Уведомление -->
-                            <v-card
-                                v-if="message.type === 'notify'"
-                                class="pa-3 mb-2"
-                                color="grey-lighten-3"
-                                flat
                             >
-                                <v-card-text class="pa-0 d-flex align-center">
-                                    <v-icon class="mr-2" color="grey">mdi-bell</v-icon>
-                                    <span class="text-caption">{{ message.text }}</span>
-                                </v-card-text>
-                            </v-card>
-
-                            <!-- Обычное сообщение -->
-                            <v-card
-                                v-else
-                                class="pa-3 mb-2"
-                                :color="message.sender === 'user' ? 'primary' : 'grey-darken-3'"
-                            >
-                                <v-card-text class="pa-0">
-                                    {{ message.text }}
-                                </v-card-text>
-                                <v-card-actions class="pa-0 mt-1">
-                                    <span class="text-caption text-grey-lighten-1">{{ message.time }}</span>
-                                </v-card-actions>
-                            </v-card>
-                        </div>
+                                <v-card
+                                    v-if="message.type === 'notify'"
+                                    class="pa-3 mb-2"
+                                    color="grey-lighten-3"
+                                    flat
+                                >
+                                    <v-card-text class="pa-0 d-flex align-center">
+                                        <v-icon class="mr-2" color="grey">mdi-bell</v-icon>
+                                        <span class="text-caption">{{ message.text }}</span>
+                                    </v-card-text>
+                                </v-card>
+                                <v-card
+                                    v-else
+                                    class="pa-3 mb-2"
+                                    :color="message.sender === 'user' ? 'primary' : 'grey-darken-3'"
+                                >
+                                    <v-card-text class="pa-0">
+                                        {{ message.text }}
+                                    </v-card-text>
+                                    <v-card-actions class="pa-0 mt-1">
+                                        <span class="text-caption text-grey-lighten-1">{{ message.time }}</span>
+                                    </v-card-actions>
+                                </v-card>
+                            </div>
+                        </template>
                     </div>
                 </v-card-text>
-
                 <v-divider></v-divider>
-
-                <!-- Блок ввода сообщения -->
                 <v-card-actions class="pa-3">
                     <v-text-field
                         label="Введите сообщение"
@@ -85,8 +80,6 @@
             </v-card>
         </template>
     </template>
-
-    <!-- Если пользователь не авторизован -->
     <template v-else>
         <v-card class="d-flex flex-column align-center justify-center pa-6" rounded>
             <v-icon size="64" color="grey">mdi-chat</v-icon>
@@ -115,26 +108,24 @@ export default {
     },
 
     computed: {
-        // Проверка, не пишет ли пользователь сам себе
         isSelfChat() {
             return this.currentUserId === this.secondUser;
         }
     },
 
     methods: {
-        // Проверка авторизации
         checkAuth() {
-            const userId = localStorage.getItem('userId');
+            const userId = localStorage.getItem('userId')
             if (userId) {
                 this.currentUserId = parseInt(userId);
-                this.isAuthenticated = true;
+                this.isAuthenticated = true
             } else {
-                this.isAuthenticated = false;
+                this.isAuthenticated = false
             }
         },
 
         getChat() {
-            if (!this.isAuthenticated || this.isSelfChat) return; // Проверка на самого себя
+            if (!this.isAuthenticated || this.isSelfChat) return
 
             axios.post('api/chats/find', {
                 userFirst: this.currentUserId,
@@ -152,9 +143,7 @@ export default {
                             type: message.type
                         }));
 
-                        this.$nextTick(() => {
-                            this.scrollToBottom();
-                        });
+                        this.scrollToBottom()
                     });
             });
         },
@@ -172,17 +161,17 @@ export default {
                     });
                     this.message = '';
 
-                    this.scrollToBottom();
+                    this.scrollToBottom()
                 });
         },
 
         scrollToBottom() {
-            const container = this.$refs.messageContainer;
-            if (container) {
-                setTimeout(() => {
+            this.$nextTick(() => {
+                const container = this.$refs.messageContainer;
+                if (container) {
                     container.scrollTop = container.scrollHeight;
-                }, 50);
-            }
+                }
+            });
         },
     },
 
@@ -191,11 +180,18 @@ export default {
             if (this.isAuthenticated) {
                 this.getChat();
             }
+        },
+
+        messages: {
+            handler() {
+                this.scrollToBottom();
+            },
+            deep: true,
         }
     },
 
     mounted() {
-        this.checkAuth();
+        this.checkAuth()
     }
 };
 </script>

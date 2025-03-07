@@ -27,7 +27,7 @@ class ChatService
             $chat = Chat::create();
             $chat->users()->attach([$userFirstId, $userSecondId]);
 
-            return $chat;
+            return $chat->load('users');
         });
     }
 
