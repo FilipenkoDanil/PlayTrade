@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\Chat;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Chat\FindChatRequest;
 use App\Http\Requests\Chat\StoreChatRequest;
 use App\Models\Chat;
 use App\Services\ChatService;
@@ -46,7 +47,7 @@ class ChatController extends Controller
         return $this->chatService->getChatMessages($chat, Auth::id());
     }
 
-    public function find(Request $request)
+    public function find(FindChatRequest $request)
     {
         return $this->chatService->createOrGetChat($request->userFirst, $request->userSecond);
     }
