@@ -69,4 +69,9 @@ class ChatService
 
         return $chat->messages()->with('user')->get();
     }
+
+    public function getCompanion(Chat $chat, int $userId)
+    {
+        return $chat->users()->where('id', '!=', $userId)->first()->pivot;
+    }
 }

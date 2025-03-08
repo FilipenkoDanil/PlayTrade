@@ -84,6 +84,18 @@ class DealController extends Controller
         return response()->json(['message' => 'Deal cancelled']);
     }
 
+    public function dispute(Deal $deal)
+    {
+        if (Auth::id() !== $deal->buyer_id && Auth::id() !== $deal->offer->seller_id) {
+            return response()->json(['error' => 'Only the seller or buyer can dispute this deal.'], 403);
+        }
+
+        $this->dealService->dispute($deal);
+
+        $chat = $this->chatService->createOrGetChat(Auth::id(), Auth::id() == $deal->buyer_id ? $deal->offer->seller_id : $deal->buyer_id);
+        $this->messageService->sendDealNotification($deal, $chat, 'disputed');
+    }
+
     public function orders()
     {
         return DealListResource::collection(Auth::user()->buyerDeals()->get());

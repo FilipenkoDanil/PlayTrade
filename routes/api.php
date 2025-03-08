@@ -46,6 +46,7 @@ Route::get('orders', [DealController::class, 'orders']);
 Route::get('sales', [DealController::class, 'sales']);
 Route::patch('deals/{deal}/confirm', [DealController::class, 'confirm'])->middleware('check.deal.status');
 Route::patch('deals/{deal}/cancel', [DealController::class, 'cancel'])->middleware('check.deal.status');
+Route::patch('deals/{deal}/dispute', [DealController::class, 'dispute'])->middleware('check.deal.status');
 Route::apiResource('ratings', RatingController::class);
 
 Route::apiResource('transactions', TransactionController::class)->except('destroy', 'update', 'show', 'store');

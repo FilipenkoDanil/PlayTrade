@@ -77,4 +77,11 @@ class DealService
             $this->transactionService->unfreezeBalance($deal->buyer, $deal->price);
         });
     }
+
+    public function dispute(Deal $deal): void
+    {
+        DB::transaction(function () use ($deal) {
+            $deal->update(['status_id' => Status::DEAL_DISPUTED]);
+        });
+    }
 }

@@ -61,7 +61,7 @@ export default {
                         }))
 
                         this.$nextTick(() => {
-                            this.scrollToBottom();
+                            this.scrollToBottom()
                         })
                     })
             })
@@ -100,9 +100,9 @@ export default {
             const container = this.$refs.messageContainer;
             if (container) {
                 setTimeout(() => {
-                    container.scrollTop = container.scrollHeight;
-                    this.showMessages = true; // Показываем сообщения только после скролла
-                }, 50);
+                    container.scrollTop = container.scrollHeight
+                    this.showMessages = true
+                }, 50)
             }
         },
 
@@ -113,6 +113,11 @@ export default {
 
         cancelDeal(dealId) {
             axios.patch(`api/deals/${dealId}/cancel`)
+                .then(() => this.getDeal())
+        },
+
+        disputeDeal(dealId) {
+            axios.patch(`api/deals/${dealId}/dispute`)
                 .then(() => this.getDeal())
         },
 
@@ -158,8 +163,10 @@ export default {
         <v-row>
             <v-col cols="5">
                 <v-card>
-                    <v-card-title>
+                    <v-card-title class="d-flex align-center">
                         Заказ #{{ selectedDeal.id }}
+                        <v-spacer></v-spacer>
+                        <v-btn v-if="selectedDeal.status_id === 1" @click="disputeDeal(selectedDeal.id)" color="orange-darken-4" variant="text" size="small">Открыть спор</v-btn>
                     </v-card-title>
                     <v-card-text>
                         <p><strong>Игра:</strong> {{ selectedDeal.offer_game }}</p>
