@@ -96,28 +96,40 @@ export default {
 
 <template>
     <v-row justify="center">
-        <!-- Левая часть: предложение, продавец, выбор количества и отзывы -->
         <v-col cols="12" md="5">
-            <!-- Блок с предложением и продавцом -->
             <v-card class="pa-4 mb-6" elevation="2">
-                <v-btn variant="text" color="primary" @click="$router.go(-1)">
+                <v-btn class="mb-1" variant="text" color="primary" @click="$router.push({name: 'category', params: {id: offer.category.id}})">
                     <v-icon left>mdi-arrow-left</v-icon>
-                    Назад
+                    {{ offer.category?.title }}
                 </v-btn>
 
-                <!-- Заголовок -->
+                <v-row class="my-2">
+                    <v-divider></v-divider>
+                    <v-col cols="12">
+                        <router-link class="text-decoration-none text-white"
+                                     :to="{name: 'user.profile', params: {id: offer.seller?.id}}">
+                            <v-avatar size="50">
+                                <v-img src="https://picsum.photos/200" alt="Seller Avatar"></v-img>
+                            </v-avatar>
+
+                            <span class="ml-2 text-subtitle-1 font-weight-bold mt-2">
+                                {{ offer.seller?.name }}
+                            </span>
+                        </router-link>
+                    </v-col>
+                    <v-divider></v-divider>
+                </v-row>
+
                 <h1 class="text-h5 font-weight-bold mb-4">
                     {{ offer.title }}
                 </h1>
 
-                <!-- Описание -->
                 <p class="text-body-2 mb-4">
                     {{ offer.description }}
                 </p>
 
                 <v-divider class="my-4"></v-divider>
 
-                <!-- Атрибуты -->
                 <v-row>
                     <v-col cols="12" sm="6" v-for="attribute in offer.attributes" :key="attribute.title">
                         <v-chip class="ma-1" color="primary" variant="outlined">
@@ -134,15 +146,22 @@ export default {
                     </v-col>
                 </v-row>
 
+                <v-row>
+                    <v-col>
+                        <v-chip class="ma-1 border-dashed" color="warning" variant="outlined">
+                            Наличие: {{ offer.amount }}{{ offer.category?.unit.title }}
+                        </v-chip>
+                    </v-col>
+                </v-row>
+
+
                 <v-row class="mt-4">
                     <v-divider></v-divider>
                     <v-col cols="12" class="text-center">
-                        <!-- Цена -->
                         <h3 class="text-body-1 font-weight-bold my-4">{{ offer.price }} ₴ за 1{{
                                 offer.category?.unit.title
                             }}</h3>
 
-                        <!-- Выбор количества -->
                         <v-row align="center" justify="center">
                             <v-col cols="5" class="text-center">
                                 <v-text-field
@@ -193,7 +212,6 @@ export default {
                             </v-btn>
                         </template>
 
-                        <!-- Предупреждение -->
                         <v-alert type="info" variant="tonal" class="mt-3">
                             Продавец не сможет получить оплату до тех пор, пока вы не подтвердите выполнение им всех
                             обязательств.
@@ -202,7 +220,6 @@ export default {
                 </v-row>
             </v-card>
 
-            <!-- Блок с отзывами -->
             <v-card class="pa-4" elevation="2">
                 <template v-if="reviews.length === 0">
                     <v-alert type="info" variant="tonal">
@@ -256,13 +273,11 @@ export default {
             </v-card>
         </v-col>
 
-        <!-- Правая часть: чат -->
         <v-col cols="12" md="4">
             <Chat :secondUser="offer.seller?.id"/>
         </v-col>
     </v-row>
 
-    <!-- Снекбар для уведомлений -->
     <v-snackbar
         v-model="showSnack"
         :timeout="2000"
