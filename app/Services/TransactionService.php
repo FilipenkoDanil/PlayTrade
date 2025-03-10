@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Contracts\Transactable;
+use App\Models\Deal;
+use App\Models\Status;
 use App\Models\Transaction;
 use App\Models\User;
 

@@ -20,10 +20,12 @@ class MessageService
                 'type' => $type
             ]);
 
-            $companion = $chat->users->where('id', '!=', $senderId)->first();
-            $this->incrementUnreadMessage($chat, $companion->id);
+            $companions = $chat->users->where('id', '!=', $senderId);
+            foreach ($companions as $companion) {
+                $this->incrementUnreadMessage($chat, $companion->id);
+            }
 
-            return $message;
+            return $message->load('user');
         });
     }
 
@@ -44,6 +46,9 @@ class MessageService
             'canceled' => "Продавец отменил заказ #$deal->id. Сделка закрыта.",
             'disputed' => "Открыт спор по сделке #$deal->id. Ождиайте решение модератора.",
             'rating' => "Покупатель оставил отзыв к заказу #$deal->id.",
+            'refundSeller' => "Модератор принял решение закрыть сделку #$deal->id в сторону продавца.",
+            'refundBuyer' => "Модератор принял решение закрыть сделку #$deal->id в сторону покупателя.",
+            'refundFiftyFifty' => "Модератор принял решение закрыть сделку #$deal->id с разделением средств между продавцом и покупателем поровну.",
             default => "Ошибка обработки типа."
         };
     }

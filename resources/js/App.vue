@@ -116,6 +116,17 @@ export default {
                     prepend-icon="mdi-server"
                     title="Создать сервер"
                 ></v-list-item>
+
+                <v-divider class="my-2"></v-divider>
+
+                <v-list-subheader class="text-uppercase text-caption font-weight-bold text-grey-darken-1">
+                    Споры
+                </v-list-subheader>
+                <v-list-item
+                    :to="{ name: 'dispute' }"
+                    prepend-icon="mdi-format-list-bulleted"
+                    title="Активные споры"
+                ></v-list-item>
             </v-list>
         </v-navigation-drawer>
 

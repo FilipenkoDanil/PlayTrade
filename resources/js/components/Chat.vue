@@ -1,3 +1,111 @@
+<script>
+export default {
+    name: "Chat",
+
+    props: ['secondUser'],
+
+    data() {
+        return {
+            messages: [],
+            message: '',
+            currentUserId: null,
+            chatId: null,
+            companion: {},
+            isAuthenticated: false
+        };
+    },
+
+    computed: {
+        isSelfChat() {
+            return this.currentUserId === this.secondUser;
+        }
+    },
+
+    methods: {
+        checkAuth() {
+            const userId = localStorage.getItem('userId')
+            if (userId) {
+                this.currentUserId = parseInt(userId);
+                this.isAuthenticated = true
+            } else {
+                this.isAuthenticated = false
+            }
+        },
+
+        getChat() {
+            if (!this.isAuthenticated || this.isSelfChat) return
+
+            axios.post('api/chats/find', {
+                userFirst: this.currentUserId,
+                userSecond: this.secondUser,
+            }).then(r => {
+                this.chatId = r.data.id;
+                this.companion = r.data.users.find(user => user.id !== this.currentUserId);
+                axios.get(`api/chats/${r.data.id}`)
+                    .then(r => {
+                        this.messages = r.data.map(message => ({
+                            id: message.id,
+                            text: message.message,
+                            time: message.created_at,
+                            sender: message.type === 'moder' ? 'moder' : (message.user_id === this.currentUserId ? 'user' : 'other'),
+                            type: message.type,
+                            name: message.user.name,
+                        }));
+
+                        this.scrollToBottom()
+                    });
+            });
+        },
+
+        sendMessage() {
+            if (!this.isAuthenticated || this.isSelfChat) return
+
+            axios.post('api/messages', {chat_id: this.chatId, message: this.message})
+                .then(r => {
+                    this.messages.push({
+                        id: r.data.id,
+                        text: r.data.message,
+                        time: r.data.created_at,
+                        sender: 'user',
+                        name: r.data.user.name,
+                    });
+                    this.message = '';
+
+                    this.scrollToBottom()
+                });
+        },
+
+        scrollToBottom() {
+            this.$nextTick(() => {
+                const container = this.$refs.messageContainer;
+                if (container) {
+                    container.scrollTop = container.scrollHeight;
+                }
+            });
+        },
+    },
+
+    watch: {
+        secondUser() {
+            if (this.isAuthenticated) {
+                this.getChat();
+            }
+        },
+
+        messages: {
+            handler() {
+                this.scrollToBottom();
+            },
+            deep: true,
+        }
+    },
+
+    mounted() {
+        this.checkAuth()
+    }
+}
+</script>
+
 <template>
     <template v-if="isAuthenticated">
         <template v-if="isSelfChat">
@@ -55,7 +163,12 @@
                                     class="pa-3 mb-2"
                                     :color="message.sender === 'user' ? 'primary' : 'grey-darken-3'"
                                 >
-                                    <v-card-text class="pa-0">
+                                    <v-card-text class="pa-0 text-white">
+                                        <strong>{{ message.name }}</strong>
+                                        <strong v-if="message.type === 'moder'">
+                                            <v-chip color="red-darken-2" variant="text" size="small">Moder</v-chip>
+                                        </strong>
+                                        <br>
                                         {{ message.text }}
                                     </v-card-text>
                                     <v-card-actions class="pa-0 mt-1">
@@ -89,112 +202,6 @@
         </v-card>
     </template>
 </template>
-
-<script>
-export default {
-    name: "Chat",
-
-    props: ['secondUser'],
-
-    data() {
-        return {
-            messages: [],
-            message: '',
-            currentUserId: null,
-            chatId: null,
-            companion: {},
-            isAuthenticated: false
-        };
-    },
-
-    computed: {
-        isSelfChat() {
-            return this.currentUserId === this.secondUser;
-        }
-    },
-
-    methods: {
-        checkAuth() {
-            const userId = localStorage.getItem('userId')
-            if (userId) {
-                this.currentUserId = parseInt(userId);
-                this.isAuthenticated = true
-            } else {
-                this.isAuthenticated = false
-            }
-        },
-
-        getChat() {
-            if (!this.isAuthenticated || this.isSelfChat) return
-
-            axios.post('api/chats/find', {
-                userFirst: this.currentUserId,
-                userSecond: this.secondUser,
-            }).then(r => {
-                this.chatId = r.data.id;
-                this.companion = r.data.users.find(user => user.id !== this.currentUserId);
-                axios.get(`api/chats/${r.data.id}`)
-                    .then(r => {
-                        this.messages = r.data.map(message => ({
-                            id: message.id,
-                            text: message.message,
-                            time: message.created_at,
-                            sender: message.user_id === this.currentUserId ? 'user' : 'other',
-                            type: message.type
-                        }));
-
-                        this.scrollToBottom()
-                    });
-            });
-        },
-
-        sendMessage() {
-            if (!this.isAuthenticated || this.isSelfChat) return; // Проверка на самого себя
-
-            axios.post('api/messages', {chat_id: this.chatId, message: this.message})
-                .then(r => {
-                    this.messages.push({
-                        id: r.data.id,
-                        text: r.data.message,
-                        time: r.data.created_at,
-                        sender: 'user'
-                    });
-                    this.message = '';
-
-                    this.scrollToBottom()
-                });
-        },
-
-        scrollToBottom() {
-            this.$nextTick(() => {
-                const container = this.$refs.messageContainer;
-                if (container) {
-                    container.scrollTop = container.scrollHeight;
-                }
-            });
-        },
-    },
-
-    watch: {
-        secondUser() {
-            if (this.isAuthenticated) {
-                this.getChat();
-            }
-        },
-
-        messages: {
-            handler() {
-                this.scrollToBottom();
-            },
-            deep: true,
-        }
-    },
-
-    mounted() {
-        this.checkAuth()
-    }
-};
-</script>
 
 <style scoped>
 .custom-scroll {

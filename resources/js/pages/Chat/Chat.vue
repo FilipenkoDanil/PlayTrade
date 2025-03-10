@@ -36,7 +36,8 @@ export default {
                         id: message.id,
                         text: message.message,
                         time: message.created_at,
-                        sender: message.user_id === this.currentUserId ? 'user' : 'other',
+                        sender: message.type === 'moder' ? 'moder' : (message.user_id === this.currentUserId ? 'user' : 'other'),
+                        name: message.user.name,
                         type: message.type
                     }));
                     this.isChatSelected = true;
@@ -55,7 +56,8 @@ export default {
                         id: r.data.id,
                         text: r.data.message,
                         time: r.data.created_at,
-                        sender: 'user'
+                        sender: 'user',
+                        name: r.data.user.name
                     });
                 });
         }

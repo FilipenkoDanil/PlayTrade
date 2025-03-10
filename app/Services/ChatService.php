@@ -61,17 +61,15 @@ class ChatService
             })->values();
     }
 
-    public function getChatMessages(Chat $chat, int $userId): Collection
+    public function getChatMessages(Chat $chat): Collection
     {
-        $userPivot = $chat->users()->where('user_id', '=', $userId)->first()->pivot;
-        $userPivot->unread_count = 0;
-        $userPivot->save();
-
         return $chat->messages()->with('user')->get();
     }
 
-    public function getCompanion(Chat $chat, int $userId)
+    public function markReadMessages(Chat $chat, int $userId): void
     {
-        return $chat->users()->where('id', '!=', $userId)->first()->pivot;
+        $userPivot = $chat->users()->where('user_id', $userId)->first()->pivot;
+        $userPivot->unread_count = 0;
+        $userPivot->save();
     }
 }

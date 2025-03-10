@@ -6,6 +6,7 @@ import offerRoutes from "./modules/offer";
 import userRoutes from "./modules/user";
 import serverRoutes from "./modules/server.js"
 import chatRoutes from "./modules/chat.js"
+import disputeRoutes from "./modules/dispute.js"
 
 const routes = [
     {
@@ -19,7 +20,8 @@ const routes = [
     ...offerRoutes,
     ...userRoutes,
     ...serverRoutes,
-    ...chatRoutes
+    ...chatRoutes,
+    ...disputeRoutes
 ]
 
 const router = createRouter({

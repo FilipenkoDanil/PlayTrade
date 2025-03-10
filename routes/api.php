@@ -6,6 +6,8 @@ use App\Http\Controllers\API\Chat\ChatController;
 use App\Http\Controllers\API\Chat\MessageController;
 use App\Http\Controllers\API\DealController;
 use App\Http\Controllers\API\GameController;
+use App\Http\Controllers\API\Moder\DisputeController;
+use App\Http\Controllers\API\Moder\ModerController;
 use App\Http\Controllers\API\OfferController;
 use App\Http\Controllers\API\Payment\PaymentController;
 use App\Http\Controllers\API\RatingController;
@@ -57,7 +59,15 @@ Route::apiResource('chats', ChatController::class)->except(['destroy', 'update']
 Route::post('chats/find', [ChatController::class, 'find']);
 Route::post('/messages', [MessageController::class, 'store']);
 
+Route::post('moder/chats/find', [ModerController::class, 'findChat']);
+Route::post('moder/messages', [ModerController::class, 'sendMessage']);
+Route::get('moder/chats/{chat}', [ModerController::class, 'showChat']);
 
+Route::post('moder/disputes/refund-buyer', [DisputeController::class, 'refundBuyer']);
+Route::post('moder/disputes/refund-seller', [DisputeController::class, 'refundSeller']);
+Route::post('moder/disputes/refund-fifty', [DisputeController::class, 'refundFiftyFifty']);
+
+Route::get('disputes', [DisputeController::class, 'index']);
 
 Route::post('/payment/create', [PaymentController::class, 'payment']);
 Route::post('/payment/serviceUrl', [PaymentController::class, 'service']);

@@ -8,7 +8,7 @@ export default {
                 {title: 'Дата', value: 'created_at'},
                 {title: 'Заказ', value: 'id'},
                 {title: 'Название', value: 'offer_title'},
-                {title: 'Продавец', value: 'seller.name'},
+                {title: 'Продавец', value: 'offer.seller.name'},
                 {title: 'Количество', value: 'quantity'},
                 {title: 'Сумма', value: 'price'},
                 {title: 'Статус', value: 'status_id'}

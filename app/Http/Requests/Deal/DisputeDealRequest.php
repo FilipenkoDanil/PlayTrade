@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Http\Requests\Chat;
+namespace App\Http\Requests\Deal;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class FindChatRequest extends FormRequest
+class DisputeDealRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return true;
     }
 
     /**
@@ -23,8 +22,7 @@ class FindChatRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'userFirst' => 'required|integer|exists:users,id',
-            'userSecond' => 'required|integer|exists:users,id|different:userFirst',
+            'deal_id' => 'required|exists:deals,id',
         ];
     }
 }

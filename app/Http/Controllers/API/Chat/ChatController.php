@@ -44,7 +44,10 @@ class ChatController extends Controller
      */
     public function show(Chat $chat)
     {
-        return $this->chatService->getChatMessages($chat, Auth::id());
+        $messages = $this->chatService->getChatMessages($chat);
+        $this->chatService->markReadMessages($chat, Auth::id());
+
+        return $messages;
     }
 
     public function find(FindChatRequest $request)

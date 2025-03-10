@@ -1,7 +1,10 @@
 <script>
 
+import Chat from "@/components/Chat.vue";
+
 export default {
     name: "Deal",
+    components: {Chat},
     data() {
         return {
             selectedDeal: {
@@ -46,7 +49,7 @@ export default {
         getChat() {
             axios.post('api/chats/find', {
                 userFirst: this.selectedDeal.buyer_id,
-                userSecond: this.selectedDeal.seller.id
+                userSecond: this.selectedDeal.offer.seller.id
             }).then(r => {
                 this.chatId = r.data.id
                 this.companion = r.data.users.find(user => user.id !== this.currentUserId)
@@ -57,7 +60,8 @@ export default {
                             text: message.message,
                             time: message.created_at,
                             sender: message.user_id === this.currentUserId ? 'user' : 'other',
-                            type: message.type
+                            type: message.type,
+                            name: message.user.name
                         }))
 
                         this.$nextTick(() => {
@@ -88,7 +92,8 @@ export default {
                         id: r.data.id,
                         text: r.data.message,
                         time: r.data.created_at,
-                        sender: 'user'
+                        sender: 'user',
+                        name: r.data.user.name
                     })
                     this.message = '';
 
@@ -246,86 +251,12 @@ export default {
 
             <!-- Чат -->
             <v-col cols="7">
-                <v-card class="d-flex flex-column" rounded>
-                    <v-card-title>
-                        <h2 class="text-h5">Чат с <router-link class="text-decoration-none text-white" :to="{name: 'user.profile', params: {id: companion.id }}">{{ companion.name }}</router-link></h2>
-                        <v-divider></v-divider>
-                    </v-card-title>
-
-                    <v-card-text class="flex-grow-1 overflow-y-auto custom-scroll custom-height">
-                        <div
-                            class="flex-grow-1 overflow-y-auto custom-scroll custom-height"
-                            ref="messageContainer"
-                        >
-                            <!-- Сообщения и уведомления -->
-                            <div
-                                v-for="message in messages"
-                                :key="message.id"
-                                :class="[
-                        'd-flex',
-                        message.type === 'notify' ? 'justify-center' : (message.sender === 'user' ? 'justify-end' : 'justify-start')
-                    ]"
-                            >
-                                <!-- Уведомление -->
-                                <v-card
-                                    v-if="message.type === 'notify'"
-                                    class="pa-3 mb-2"
-                                    color="grey-lighten-3"
-                                    flat
-                                >
-                                    <v-card-text class="pa-0 d-flex align-center">
-                                        <v-icon class="mr-2" color="grey">mdi-bell</v-icon>
-                                        <span class="text-caption">{{ message.text }}</span>
-                                    </v-card-text>
-                                </v-card>
-
-                                <!-- Обычное сообщение -->
-                                <v-card
-                                    v-else
-                                    class="pa-3 mb-2"
-                                    :color="message.sender === 'user' ? 'primary' : 'grey-darken-3'"
-                                >
-                                    <v-card-text class="pa-0">
-                                        {{ message.text }}
-                                    </v-card-text>
-                                    <v-card-actions class="pa-0 mt-1">
-                                        <span class="text-caption text-grey-lighten-1">{{ message.time }}</span>
-                                    </v-card-actions>
-                                </v-card>
-                            </div>
-                        </div>
-                    </v-card-text>
-
-                    <v-divider></v-divider>
-
-                    <v-card-actions class="pa-3">
-                        <v-text-field
-                            label="Введите сообщение"
-                            outlined
-                            hide-details
-                            v-model="message"
-                            @keyup.enter="sendMessage"
-                        ></v-text-field>
-                        <v-btn @click="sendMessage" color="primary" type="button">Отправить</v-btn>
-                    </v-card-actions>
-                </v-card>
+                <Chat :secondUser="selectedDeal.buyer_id === currentUserId ? selectedDeal.offer.seller.id : selectedDeal.buyer_id"></Chat>
             </v-col>
         </v-row>
     </v-container>
 </template>
 
 <style scoped>
-.custom-scroll {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
 
-.custom-scroll::-webkit-scrollbar {
-    display: none;
-}
-
-.custom-height {
-    height: 75vh;
-    max-height: 75vh;
-}
 </style>

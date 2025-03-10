@@ -109,7 +109,12 @@ export default {
                         class="pa-3 mb-2"
                         :color="message.sender === 'user' ? 'primary' : 'grey-darken-3'"
                     >
-                        <v-card-text class="pa-0">
+                        <v-card-text class="pa-0 text-white">
+                            <strong>{{ message.name }}</strong>
+                            <strong v-if="message.type === 'moder'">
+                                <v-chip color="red-darken-2" variant="text" size="small">Moder</v-chip>
+                            </strong>
+                            <br>
                             {{ message.text }}
                         </v-card-text>
                         <v-card-actions class="pa-0 mt-1">
