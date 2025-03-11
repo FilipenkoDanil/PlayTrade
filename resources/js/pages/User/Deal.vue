@@ -41,34 +41,7 @@ export default {
                 .then(r => {
                     this.selectedDeal = r.data.data
                     this.rating = r.data.data.rating || { rating: 0, comment: '' }
-                    this.getChat()
                 })
-        },
-
-
-        getChat() {
-            axios.post('api/chats/find', {
-                userFirst: this.selectedDeal.buyer_id,
-                userSecond: this.selectedDeal.offer.seller.id
-            }).then(r => {
-                this.chatId = r.data.id
-                this.companion = r.data.users.find(user => user.id !== this.currentUserId)
-                axios.get(`api/chats/${r.data.id}`)
-                    .then(r => {
-                        this.messages = r.data.map(message => ({
-                            id: message.id,
-                            text: message.message,
-                            time: message.created_at,
-                            sender: message.user_id === this.currentUserId ? 'user' : 'other',
-                            type: message.type,
-                            name: message.user.name
-                        }))
-
-                        this.$nextTick(() => {
-                            this.scrollToBottom()
-                        })
-                    })
-            })
         },
 
         updateRating() {
@@ -83,32 +56,6 @@ export default {
         deleteRating() {
             axios.delete(`api/ratings/${this.rating.id}`)
                 .then(() => this.getDeal())
-        },
-
-        sendMessage() {
-            axios.post('api/messages', {chat_id: this.chatId, message: this.message})
-                .then(r => {
-                    this.messages.push({
-                        id: r.data.id,
-                        text: r.data.message,
-                        time: r.data.created_at,
-                        sender: 'user',
-                        name: r.data.user.name
-                    })
-                    this.message = '';
-
-                    this.scrollToBottom()
-                })
-        },
-
-        scrollToBottom() {
-            const container = this.$refs.messageContainer;
-            if (container) {
-                setTimeout(() => {
-                    container.scrollTop = container.scrollHeight
-                    this.showMessages = true
-                }, 50)
-            }
         },
 
         confirmDeal(dealId) {
