@@ -2,6 +2,7 @@ import './bootstrap';
 
 import {createApp} from "vue";
 import router from "./router/router.js";
+import LaravelPermissionToVueJS from 'laravel-permission-to-vuejs'
 
 import App from "./App.vue";
 
@@ -22,4 +23,4 @@ const vuetify = createVuetify({
 })
 
 
-createApp(App).use(vuetify).use(router).mount('#app')
+createApp(App).use(vuetify).use(router).use(LaravelPermissionToVueJS).mount('#app')
