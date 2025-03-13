@@ -18,8 +18,11 @@ export default {
                 v-if="chat.last_message"
             >
                 <template v-slot:prepend>
-                    <v-avatar color="primary" size="40">
-                        <v-icon dark>mdi-account</v-icon>
+                    <v-avatar
+                        size="55"
+                        :class="chat.companion?.is_online ? 'online-avatar' : 'offline-avatar'"
+                    >
+                        <v-img src="https://picsum.photos/500" alt="Avatar"></v-img>
                     </v-avatar>
                 </template>
 
@@ -52,5 +55,13 @@ export default {
 
 .custom-height {
     height: 90vh;
+}
+
+.online-avatar {
+    border: 2px solid green;
+}
+
+.offline-avatar {
+    border: 2px solid red;
 }
 </style>

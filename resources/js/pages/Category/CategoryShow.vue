@@ -127,10 +127,20 @@ export default {
                     </template>
 
                     <template v-slot:item.seller.name="{ item }">
-                        <v-avatar size="40">
-                            <v-img src="https://picsum.photos/500" alt="Avatar"></v-img>
-                        </v-avatar>
-                        {{ item.seller.name }}
+                        <div class="d-flex align-center">
+                            <!-- Аватар с рамкой -->
+                            <v-avatar
+                                size="40"
+                                class="mr-2"
+                                :class="item.seller.is_online ? 'online-avatar' : 'offline-avatar'"
+                            >
+                                <v-img src="https://picsum.photos/500" alt="Avatar"></v-img>
+                            </v-avatar>
+
+                            <!-- Имя продавца -->
+                            <span class="mr-2">{{ item.seller.name }}</span>
+
+                        </div>
                     </template>
 
                     <template v-slot:item.amount="{ item }">
@@ -171,5 +181,13 @@ export default {
 .offer-table {
     border-radius: 8px;
     overflow: hidden;
+}
+
+.online-avatar {
+    border: 2px solid green;
+}
+
+.offline-avatar {
+    border: 2px solid red;
 }
 </style>

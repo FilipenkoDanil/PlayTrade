@@ -50,6 +50,8 @@ class ChatService
                     'companion' => $companion ? [
                         'id' => $companion->id,
                         'name' => $companion->name,
+                        'is_online' => $companion->isOnline(),
+                        'last_activity_at' => $companion->last_activity_at,
                     ] : null,
                     'last_message' => $chat->lastMessage ? [
                         'text' => $chat->lastMessage->message,

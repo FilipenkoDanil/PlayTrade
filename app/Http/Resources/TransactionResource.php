@@ -19,7 +19,7 @@ class TransactionResource extends JsonResource
             'transactable_type' => $this->transactable_type,
             'transactable_id' => $this->transactable_id,
             'transactable' => $this->transactable,
-            'created_at' => $this->created_at
+            'created_at' => $this->created_at->format('d.m.Y')
         ];
     }
 }

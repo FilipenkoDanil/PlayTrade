@@ -25,6 +25,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'balance',
+        'frozen_balance',
+        'last_activity_at'
     ];
 
     /**
@@ -44,6 +47,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'last_activity_at' => 'datetime',
         'password' => 'hashed',
     ];
 
@@ -95,5 +99,10 @@ class User extends Authenticatable
             ->orderBy('created_at', 'desc')
             ->with(['deal', 'user'])
             ->get();
+    }
+
+    public function isOnline():bool
+    {
+        return $this->last_activity_at > now()->subMinutes(5);
     }
 }

@@ -19,6 +19,8 @@ class UserProfileResource extends JsonResource
             'name' => $this->name,
             'created_at' => $this->created_at->diffForHumans(),
             'offers' => $this->whenLoaded('activeOffers'),
+            'is_online' => $this->isOnline(),
+            'last_activity_at' => $this->last_activity_at->diffForHumans(),
         ];
     }
 }

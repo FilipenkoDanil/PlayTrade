@@ -74,12 +74,23 @@ export default {
             <v-col cols="auto">
                 <h2 class="font-weight-bold text-h5">{{ user.name }}</h2>
 
-                <v-chip color="green" variant="outlined" class="mt-2">
+                <!-- Статус онлайн/оффлайн -->
+                <v-chip
+                    :color="user.is_online ? 'green' : 'red'"
+                    variant="outlined"
+                    class="mt-2"
+                >
                     <v-icon small left>mdi-checkbox-blank-circle</v-icon>
-                    Онлайн
+                    {{ user.is_online ? 'Онлайн' : 'Оффлайн' }}
                 </v-chip>
 
-                <p class="text-grey-darken-2 mt-2">
+                <!-- Дата последнего захода (если оффлайн) -->
+                <p v-if="!user.is_online" class="text-grey-darken-2 mt-2">
+                    Был в сети: {{ user.last_activity_at }}
+                </p>
+
+                <!-- Дата регистрации (если онлайн) -->
+                <p v-else class="text-grey-darken-2 mt-2">
                     Дата регистрации: {{ user.created_at }}
                 </p>
             </v-col>

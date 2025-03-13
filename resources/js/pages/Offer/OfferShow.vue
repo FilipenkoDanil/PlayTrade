@@ -108,8 +108,12 @@ export default {
                     <v-col cols="12">
                         <router-link class="text-decoration-none text-white"
                                      :to="{name: 'user.profile', params: {id: offer.seller?.id}}">
-                            <v-avatar size="50">
-                                <v-img src="https://picsum.photos/200" alt="Seller Avatar"></v-img>
+                            <v-avatar
+                                size="50"
+                                class="mr-2"
+                                :class="offer.seller?.is_online ? 'online-avatar' : 'offline-avatar'"
+                            >
+                                <v-img src="https://picsum.photos/500" alt="Avatar"></v-img>
                             </v-avatar>
 
                             <span class="ml-2 text-subtitle-1 font-weight-bold mt-2">
@@ -289,5 +293,11 @@ export default {
 </template>
 
 <style scoped>
+.online-avatar {
+    border: 2px solid green;
+}
 
+.offline-avatar {
+    border: 2px solid red;
+}
 </style>
