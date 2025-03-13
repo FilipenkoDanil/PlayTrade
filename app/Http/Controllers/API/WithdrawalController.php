@@ -20,14 +20,6 @@ class WithdrawalController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreWithdrawalRequest $request)
@@ -45,30 +37,6 @@ class WithdrawalController extends Controller
 
             return $withdrawal;
         });
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Withdrawal $withdrawal)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateWithdrawalRequest $request, Withdrawal $withdrawal)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Withdrawal $withdrawal)
-    {
-        //
     }
 
     public function cancel(Withdrawal $withdrawal)

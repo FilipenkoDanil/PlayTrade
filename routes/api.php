@@ -35,42 +35,64 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('games', GameController::class);
-Route::get('trash/games', [GameController::class, 'trashed']);
-Route::apiResource('units', UnitController::class);
-Route::apiResource('categories', CategoryController::class);
-Route::apiResource('attributes', AttributeController::class);
-Route::apiResource('servers', ServerController::class);
-Route::apiResource('offers', OfferController::class);
-Route::apiResource('statuses', StatusController::class);
-Route::apiResource('deals', DealController::class)->except(['update', 'destroy']);
-Route::get('orders', [DealController::class, 'orders']);
-Route::get('sales', [DealController::class, 'sales']);
-Route::patch('deals/{deal}/confirm', [DealController::class, 'confirm'])->middleware('check.deal.status');
-Route::patch('deals/{deal}/cancel', [DealController::class, 'cancel'])->middleware('check.deal.status');
-Route::patch('deals/{deal}/dispute', [DealController::class, 'dispute'])->middleware('check.deal.status');
-Route::apiResource('ratings', RatingController::class);
-
-Route::apiResource('transactions', TransactionController::class)->except('destroy', 'update', 'show', 'store');
-Route::apiResource('withdrawals', WithdrawalController::class);
-Route::post('withdrawals/{withdrawal}/cancel', [WithdrawalController::class, 'cancel']);
-
-Route::apiResource('chats', ChatController::class)->except(['destroy', 'update']);
-Route::post('chats/find', [ChatController::class, 'find']);
-Route::post('/messages', [MessageController::class, 'store']);
-
-Route::post('moder/chats/find', [ModerController::class, 'findChat']);
-Route::post('moder/messages', [ModerController::class, 'sendMessage']);
-Route::get('moder/chats/{chat}', [ModerController::class, 'showChat']);
-
-Route::post('moder/disputes/refund-buyer', [DisputeController::class, 'refundBuyer']);
-Route::post('moder/disputes/refund-seller', [DisputeController::class, 'refundSeller']);
-Route::post('moder/disputes/refund-fifty', [DisputeController::class, 'refundFiftyFifty']);
-
-Route::get('disputes', [DisputeController::class, 'index']);
+Route::apiResource('games', GameController::class)->only('index', 'show');
+Route::apiResource('units', UnitController::class)->only('index', 'show');
+Route::apiResource('categories', CategoryController::class)->only('index', 'show');
+Route::apiResource('attributes', AttributeController::class)->only('index', 'show');
+Route::apiResource('servers', ServerController::class)->only('index', 'show');
+Route::apiResource('offers', OfferController::class)->only('show');
+Route::apiResource('statuses', StatusController::class)->only('show');
+Route::apiResource('ratings', RatingController::class)->only('index', 'show');
+Route::apiResource('users', UserController::class)->only('show');
 
 Route::post('/payment/create', [PaymentController::class, 'payment']);
 Route::post('/payment/serviceUrl', [PaymentController::class, 'service']);
 
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('offers', [OfferController::class, 'index']);
+    Route::post('offers', [OfferController::class, 'store']);
+    Route::put('offers/{offer}', [OfferController::class, 'update']);
+    Route::delete('offers/{offer}', [OfferController::class, 'destroy']);
 
-Route::apiResource('users', UserController::class);
+    Route::apiResource('deals', DealController::class)->except(['update', 'destroy']);
+    Route::get('orders', [DealController::class, 'orders']);
+    Route::get('sales', [DealController::class, 'sales']);
+    Route::patch('deals/{deal}/confirm', [DealController::class, 'confirm'])->middleware('check.deal.status');
+    Route::patch('deals/{deal}/cancel', [DealController::class, 'cancel'])->middleware('check.deal.status');
+    Route::patch('deals/{deal}/dispute', [DealController::class, 'dispute'])->middleware('check.deal.status');
+
+    Route::apiResource('chats', ChatController::class)->except(['destroy', 'update']);
+    Route::post('chats/find', [ChatController::class, 'find']);
+    Route::post('/messages', [MessageController::class, 'store']);
+
+    Route::post('ratings', [RatingController::class, 'store']);
+    Route::put('ratings/{rating}', [RatingController::class, 'update']);
+    Route::delete('ratings/{rating}', [RatingController::class, 'destroy']);
+
+    Route::apiResource('transactions', TransactionController::class)->only('index');
+    Route::apiResource('withdrawals', WithdrawalController::class)->only('store');
+    Route::post('withdrawals/{withdrawal}/cancel', [WithdrawalController::class, 'cancel']);
+
+
+    Route::group(['middleware' => 'role:moder'], function () {
+        Route::prefix('moder')->group(function () {
+            Route::post('chats/find', [ModerController::class, 'findChat']);
+            Route::post('messages', [ModerController::class, 'sendMessage']);
+            Route::get('chats/{chat}', [ModerController::class, 'showChat']);
+
+            Route::post('disputes/refund-buyer', [DisputeController::class, 'refundBuyer']);
+            Route::post('disputes/refund-seller', [DisputeController::class, 'refundSeller']);
+            Route::post('disputes/refund-fifty', [DisputeController::class, 'refundFiftyFifty']);
+        });
+
+        Route::apiResource('games', GameController::class)->except('index', 'show');
+        Route::get('trash/games', [GameController::class, 'trashed']);
+        Route::apiResource('units', UnitController::class)->except('index', 'show');
+        Route::apiResource('categories', CategoryController::class)->except('index', 'show');
+        Route::apiResource('attributes', AttributeController::class)->except('index', 'show');
+        Route::apiResource('servers', ServerController::class)->except('index', 'show');
+        Route::apiResource('statuses', StatusController::class)->except('show');
+
+        Route::get('disputes', [DisputeController::class, 'index']);
+    });
+});

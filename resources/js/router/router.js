@@ -31,16 +31,15 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const isAuth = localStorage.getItem('isAuth')
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
 
-    if (isAuth) {
-        if (to.name === 'login' || to.name === 'register') {
-            return next({
-                name: 'home'
-            })
-        }
+    if (requiresAuth && !isAuth) {
+        next({ name: 'login' })
+    } else if (isAuth && (to.name === 'login' || to.name === 'register')) {
+        next({ name: 'home' })
+    } else {
+        next();
     }
-
-    next()
 })
 
 export default router

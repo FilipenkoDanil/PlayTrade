@@ -7,16 +7,19 @@ export default [
     {
         path: '/user/offers',
         name: 'user.offers',
-        component: () => import('@/pages/Offer/OfferList.vue')
+        component: () => import('@/pages/Offer/OfferList.vue'),
+        meta: { requiresAuth: true }
     },
     {
         path: '/categories/:categoryId/offers/create',
         name: 'offer.create',
-        component: () => import('@/pages/Offer/OfferCreate.vue')
+        component: () => import('@/pages/Offer/OfferCreate.vue'),
+        meta: { requiresAuth: true }
     },
     {
         path: '/user/offers/:id/edit',
         name: 'offer.edit',
-        component: () => import('@/pages/Offer/OfferEdit.vue')
+        component: () => import('@/pages/Offer/OfferEdit.vue'),
+        meta: { requiresAuth: true }
     }
 ]

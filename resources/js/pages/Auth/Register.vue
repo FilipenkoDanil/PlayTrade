@@ -1,4 +1,5 @@
 <script>
+import { reloadRolesAndPermissions } from 'laravel-permission-to-vuejs'
 export default {
     inject: ['isAuth', 'setAuth'],
     name: "Register",
@@ -27,6 +28,7 @@ export default {
                                     localStorage.setItem('isAuth', 'true')
                                     localStorage.setItem('userId', r.data.id)
                                     this.setAuth(true);
+                                    reloadRolesAndPermissions()
                                     this.$router.push({name: 'home'})
                                 })
                         })

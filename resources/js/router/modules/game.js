@@ -7,11 +7,13 @@ export default [
     {
         path: '/games/create',
         name: 'game.create',
-        component: () => import('@/pages/Game/GameCreate.vue')
+        component: () => import('@/pages/Game/GameCreate.vue'),
+        meta: { requiresAuth: true }
     },
     {
         path: '/games/:id/edit',
         name: 'game.edit',
-        component: () => import('@/pages/Game/GameEdit.vue')
+        component: () => import('@/pages/Game/GameEdit.vue'),
+        meta: { requiresAuth: true }
     }
 ]

@@ -7,11 +7,13 @@ export default [
     {
         path: '/categories/create',
         name: 'category.create',
-        component: () => import('@/pages/Category/CategoryCreate.vue')
+        component: () => import('@/pages/Category/CategoryCreate.vue'),
+        meta: { requiresAuth: true }
     },
     {
         path: '/categories/:id/edit',
         name: 'category.edit',
-        component: () => import('@/pages/Category/CategoryEdit.vue')
+        component: () => import('@/pages/Category/CategoryEdit.vue'),
+        meta: { requiresAuth: true }
     }
 ]
