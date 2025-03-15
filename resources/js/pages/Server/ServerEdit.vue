@@ -31,7 +31,6 @@ export default {
                 .then(() => {
                     this.snackMessage = "Сервер успешно обновлен";
                     this.snackColor = "success";
-                    this.title = "";
                 })
                 .catch(r => {
                     this.snackMessage = r.response.data.message;

@@ -1,12 +1,11 @@
 <script>
 export default {
-    name: "ServerCreate",
+    name: "AttributeEdit",
 
     data() {
         return {
             title: '',
-            games: [],
-            game_id: null,
+            game: null,
 
             loading: false,
             snack: false,
@@ -16,9 +15,9 @@ export default {
     },
 
     methods: {
-        createServer() {
+        updateAttribute() {
             if (!this.title.trim()) {
-                this.snackMessage = "Название сервера не может быть пустым";
+                this.snackMessage = "Название атрибута не может быть пустым";
                 this.snackColor = "error";
                 this.snack = true;
                 return;
@@ -26,14 +25,12 @@ export default {
 
             this.loading = true;
 
-            axios.post("api/servers", {
+            axios.put(`api/attributes/${this.$route.params.id}`, {
                 title: this.title,
-                game_id: this.game_id,
             })
                 .then(() => {
-                    this.snackMessage = "Сервер успешно добавлен";
+                    this.snackMessage = "Атрибут успешно обновлен";
                     this.snackColor = "success";
-                    this.title = "";
                 })
                 .catch(r => {
                     this.snackMessage = r.response.data.message;
@@ -45,30 +42,35 @@ export default {
                 });
         },
 
-        getGames() {
-            axios.get('api/games')
-                .then(r => this.games = r.data.data)
-        }
+        getAttribute() {
+            axios.get(`api/attributes/${this.$route.params.id}`)
+                .then(r => {
+                    this.title = r.data.data.title
+                    this.game = r.data.data.game
+                    console.log(r.data)
+                })
+        },
+
     },
 
     mounted() {
-        this.getGames()
+        this.getAttribute()
     }
 }
 </script>
 
 <template>
     <v-card class="pa-4  mx-auto" max-width="500">
-        <v-card-title class="text-h5">Добавить сервер</v-card-title>
+        <v-card-title class="text-h5">Обновить атрибут</v-card-title>
         <v-card-text>
-            <v-text-field v-model="title" label="Название сервера" placeholder="Введите название"
+            <v-text-field v-model="title" label="Название атрибута" placeholder="Введите название"
                           clearable></v-text-field>
-            <v-select v-model="game_id" :items="games" item-title="title" item-value="id" label="Игра"></v-select>
+            <v-select v-model="game"  item-title="title" item-value="id" label="Игра" disabled></v-select>
 
         </v-card-text>
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :loading="loading" color="primary" @click="createServer">Добавить</v-btn>
+            <v-btn :loading="loading" color="primary" @click="updateAttribute">Сохранить</v-btn>
         </v-card-actions>
     </v-card>
 

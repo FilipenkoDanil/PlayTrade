@@ -31,7 +31,7 @@ class AttributeController extends Controller
      */
     public function show(Attribute $attribute)
     {
-        return new AttributeResource($attribute);
+        return new AttributeResource($attribute->load('game'));
     }
 
     /**

@@ -14,6 +14,7 @@ export default {
             axios.get(`api/games/${this.$route.params.id}`)
                 .then(r => {
                     this.game = r.data.data
+                    console.log(r.data.data)
                 })
         },
 
@@ -46,6 +47,16 @@ export default {
             <span class="text-h6">Категории: </span>
             <v-chip-group>
                 <v-chip v-for="cat in game.categories" :to="{name: 'category.edit', params: {id: cat.id}}">{{ cat.title }}</v-chip>
+            </v-chip-group>
+
+            <span class="text-h6">Атрибуты: </span>
+            <v-chip-group>
+                <v-chip v-for="attr in game.attributes" :to="{name: 'attribute.edit', params: {id: attr.id}}">{{ attr.title }}</v-chip>
+            </v-chip-group>
+
+            <span class="text-h6">Сервера: </span>
+            <v-chip-group>
+                <v-chip v-for="serv in game.servers" :to="{name: 'server.edit', params: {id: serv.id}}">{{ serv.title }}</v-chip>
             </v-chip-group>
         </v-card-text>
 

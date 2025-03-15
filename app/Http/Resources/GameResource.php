@@ -19,6 +19,7 @@ class GameResource extends JsonResource
             'title' => $this->title,
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'attributes' => AttributeResource::collection($this->whenLoaded('attributes')),
+            'servers' => ServerResource::collection($this->whenLoaded('servers')),
         ];
     }
 }
