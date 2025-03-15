@@ -132,7 +132,6 @@ export default {
                     {{ offer.description }}
                 </p>
 
-                <v-divider class="my-4"></v-divider>
 
                 <v-row>
                     <v-col cols="12" sm="6" v-for="attribute in offer.attributes" :key="attribute.title">

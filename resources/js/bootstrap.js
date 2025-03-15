@@ -14,8 +14,8 @@ window.axios.defaults.withCredentials = true
 
 window.axios.interceptors.response.use({}, err => {
     if (err.response.status === 401 || err.response.status === 419) {
-        const isAuth = localStorage.getItem('isAuth')
-        isAuth ? localStorage.removeItem('isAuth') : ''
+        localStorage.removeItem('isAuth')
+        localStorage.removeItem('userId')
 
         router.push({name: 'login'})
     }

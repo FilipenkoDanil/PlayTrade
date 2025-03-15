@@ -27,7 +27,7 @@ export default {
                         text: r.data.message,
                         time: r.data.created_at,
                         name: r.data.user.name,
-                        sender: 'user',
+                        sender: 'moder',
                         type: 'moder'
                     });
                     this.message = '';
@@ -112,6 +112,7 @@ export default {
                 hide-details
                 class="text-white"
                 color="white"
+                @keyup.enter="sendMessage"
             ></v-text-field>
             <v-btn @click="sendMessage" color="primary" type="button">Отправить</v-btn>
         </v-card-actions>
