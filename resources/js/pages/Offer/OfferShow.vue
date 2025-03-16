@@ -124,16 +124,18 @@ export default {
                     <v-divider></v-divider>
                 </v-row>
 
-                <h1 class="text-h5 font-weight-bold mb-4">
-                    {{ offer.title }}
-                </h1>
+                <div v-if="offer.category?.type === 1">
+                    <h1 class="text-h5 font-weight-bold mb-4">
+                        {{ offer.title }}
+                    </h1>
 
-                <p class="text-body-2 mb-4">
-                    {{ offer.description }}
-                </p>
+                    <p class="text-body-2 mb-4">
+                        {{ offer.description }}
+                    </p>
+                </div>
 
 
-                <v-row>
+                <v-row v-if="offer.category?.type === 1">
                     <v-col cols="12" sm="6" v-for="attribute in offer.attributes" :key="attribute.title">
                         <v-chip class="ma-1" color="primary" variant="outlined">
                             {{ attribute.title }}: {{ attribute.value }}

@@ -97,7 +97,15 @@ export default {
         </template>
 
         <template v-slot:item.offer_title="{ item }">
-            {{ item.offer_title }}
+            <span v-if="item.offer.category.type !== 1">
+                {{ JSON.parse(item.offer_server).title }}
+                {{ item.quantity }}
+                {{ item.offer_unit }}
+                {{ item.offer_category }}
+            </span>
+            <span v-else>
+                {{ item.offer_title }}
+            </span>
             <br>
             <span class="text-disabled">{{ item.offer_game }} - {{ item.offer_category }}</span>
         </template>
@@ -117,23 +125,29 @@ export default {
                 Заказ #{{ selectedDeal.id }}
             </v-card-title>
             <v-card-text>
-                <p><strong>Название оффера:</strong> {{ selectedDeal.offer_title }}</p>
-                <p><strong>Описание:</strong> {{ selectedDeal.offer_description }}</p>
+                <p><strong>Игра:</strong> {{ selectedDeal.offer_game }}</p>
+                <p><strong>Категория:</strong> {{ selectedDeal.offer_category }}</p>
 
-                <div v-if="selectedDeal.offer_attributes &&  JSON.parse(selectedDeal.offer_attributes).length">
+                <template v-if="selectedDeal.offer.category.type === 1">
                     <v-divider class="my-3"></v-divider>
-                    <p><strong>Атрибуты:</strong></p>
-                    <v-list dense>
-                        <v-list-item
-                            v-for="attr in JSON.parse(selectedDeal.offer_attributes)"
-                            :key="attr.id"
-                        >
-                            <v-list-item-title>
-                                <strong>{{ attr.title }}</strong>: {{ attr.pivot.value }}
-                            </v-list-item-title>
-                        </v-list-item>
-                    </v-list>
-                </div>
+                    <p><strong>Название оффера:</strong> {{ selectedDeal.offer_title }}</p>
+                    <p><strong>Описание:</strong> {{ selectedDeal.offer_description }}</p>
+
+                    <div v-if="selectedDeal.offer_attributes && JSON.parse(selectedDeal.offer_attributes).length">
+                        <v-divider class="my-3"></v-divider>
+                        <p><strong>Атрибуты:</strong></p>
+                        <v-list dense>
+                            <v-list-item
+                                v-for="attr in JSON.parse(selectedDeal.offer_attributes)"
+                                :key="attr.id"
+                            >
+                                <v-list-item-title>
+                                    <strong>{{ attr.title }}</strong>: {{ attr.pivot.value }}
+                                </v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </div>
+                </template>
 
                 <p v-if="selectedDeal.offer_server">
                     <v-divider class="my-3"></v-divider>

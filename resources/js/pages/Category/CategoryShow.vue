@@ -14,7 +14,6 @@ export default {
             searchQuery: "",
             attributeFilters: {},
             headers: [
-                {title: 'Название', value: 'title'},
                 {title: 'Продавец', value: 'seller.name'},
                 {title: 'Количество', value: 'amount', sortable: true},
                 {title: 'Цена', value: 'price', sortable: true}
@@ -35,6 +34,10 @@ export default {
                     this.offers = res.data.data.offers;
                     this.filteredOffers = [...this.offers];
                     this.loading = false;
+
+                    if (this.category.type === 1) {
+                        this.headers.unshift({title: 'Название', value: 'title'});
+                    }
 
                     if (this.category.servers?.length) {
                         this.headers.unshift({title: 'Сервер', value: 'server.title'});

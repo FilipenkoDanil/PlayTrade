@@ -35,6 +35,23 @@ export default {
         findServerById(servers, serverId) {
             return servers.find(server => server.id === serverId);
         },
+
+        getHeaders(group) {
+            const baseHeaders = [
+                {title: 'Наличие', value: 'amount', sortable: true},
+                {title: 'Цена', value: 'price', sortable: true},
+            ];
+
+            if (group.type === 1) {
+                baseHeaders.unshift({title: 'Название', value: 'title'});
+            }
+
+            if (group.hasServers) {
+                baseHeaders.unshift({title: 'Сервер', value: 'server'});
+            }
+
+            return baseHeaders;
+        },
     },
 
     mounted() {
@@ -50,8 +67,9 @@ export default {
                     groups[key] = {
                         category: offer.category.title,
                         game: offer.category.game.title,
+                        type: offer.category.type, // Добавляем тип категории
                         offers: [],
-                        hasServers: offer.category.servers.length > 0, // Проверка наличия серверов
+                        hasServers: offer.category.servers.length > 0,
                     };
                 }
                 groups[key].offers.push(offer);
@@ -59,7 +77,6 @@ export default {
             return Object.values(groups);
         },
     },
-
 }
 </script>
 
@@ -98,7 +115,6 @@ export default {
     </v-card>
 
     <v-row>
-        <!-- Колонка с предложениями и отзывами -->
         <v-col cols="12" md="6">
             <template v-if="groupedOffers.length > 0">
                 <v-row v-for="group in groupedOffers" :key="group.category">
@@ -110,28 +126,28 @@ export default {
                             <v-card-text>
                                 <v-data-table
                                     @click:row="goToOffer"
-                                    :headers="group.hasServers ? [{ title: 'Сервер', value: 'server' }, ...headers] : headers"
-                                    :items="group.offers"
-                                    :items-per-page="100"
-                                    hide-default-footer
-                                    hover
+                                    :headers="getHeaders(group)"
+                                :items="group.offers"
+                                :items-per-page="100"
+                                hide-default-footer
+                                hover
                                 >
-                                    <template v-slot:item.server="{ item }">
-                  <span v-if="item.server_id" class="text-medium-emphasis">
-                    {{
-                          findServerById(item.category.servers, item.server_id)?.title || 'Сервер не найден'
-                      }}
-                  </span>
-                                        <span v-else>Нет сервера</span>
-                                    </template>
+                                <template v-slot:item.server="{ item }">
+                                        <span v-if="item.server_id" class="text-medium-emphasis">
+                                            {{
+                                                findServerById(item.category.servers, item.server_id)?.title || 'Сервер не найден'
+                                            }}
+                                        </span>
+                                    <span v-else>Нет сервера</span>
+                                </template>
 
-                                    <template v-slot:item.amount="{ item }">
-                                        {{ item.amount }}{{ item.category?.unit.title }}
-                                    </template>
+                                <template v-slot:item.amount="{ item }">
+                                    {{ item.amount }}{{ item.category?.unit.title }}
+                                </template>
 
-                                    <template v-slot:item.price="{ item }">
-                                        {{ item.price }} ₴
-                                    </template>
+                                <template v-slot:item.price="{ item }">
+                                    {{ item.price }} ₴
+                                </template>
                                 </v-data-table>
                             </v-card-text>
                         </v-card>
@@ -175,8 +191,10 @@ export default {
                                                         {{ review.user.name }}
                                                     </router-link>
                                                     <span class="ml-2 text-medium-emphasis text-subtitle-2">
-                          {{ review.deal.offer_game }}, {{ Math.round(review.deal.price) }} ₴
-                        </span>
+                                                        {{ review.deal.offer_game }}, {{
+                                                            Math.round(review.deal.price)
+                                                        }} ₴
+                                                    </span>
                                                 </div>
                                                 <span class="text-medium-emphasis text-subtitle-2">{{
                                                         review.created_at

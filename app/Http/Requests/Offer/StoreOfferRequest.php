@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Offer;
 
+use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreOfferRequest extends FormRequest
@@ -21,8 +22,11 @@ class StoreOfferRequest extends FormRequest
      */
     public function rules(): array
     {
+        $category = Category::findOrFail($this->input('category_id'));
+        $isCurrency = $category->type === 2;
+
         return [
-            'title' => 'nullable|string|max:100',
+            'title' => $isCurrency ? 'nullable|string|max:100' : 'required|string|max:100',
             'amount' => 'required|numeric|min:1',
             'price' => 'required|numeric|min:1',
             'description' => 'string|nullable|max:255',

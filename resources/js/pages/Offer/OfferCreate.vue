@@ -1,5 +1,4 @@
 <script>
-
 export default {
     name: "Create",
 
@@ -33,24 +32,27 @@ export default {
 
         createOffer() {
             const payload = {
-                title: this.title,
-                description: this.description,
-                auto_message: this.autoMessage,
                 price: this.price,
                 amount: this.amount,
                 category_id: this.category.id
+            };
+
+            if (this.category.type === 1) {
+                payload.title = this.title
+                payload.description = this.description
+                payload.auto_message = this.autoMessage
+
+                const attributesArray = Object.entries(this.selectedAttributes)
+                    .filter(([_, value]) => value && value.trim() !== "")
+                    .map(([id, value]) => ({ id: Number(id), value }))
+
+                if (attributesArray.length) {
+                    payload.attributes = attributesArray
+                }
             }
 
             if (this.selectedServer) {
                 payload.server_id = this.selectedServer
-            }
-
-            const attributesArray = Object.entries(this.selectedAttributes)
-                .filter(([_, value]) => value.trim() !== "")
-                .map(([id, value]) => ({ id: Number(id), value }));
-
-            if (attributesArray.length) {
-                payload.attributes = attributesArray;
             }
 
             axios.post('api/offers', payload)
@@ -78,7 +80,7 @@ export default {
         <v-card-text>
             <v-skeleton-loader v-if="!category.id" type="paragraph" class="mb-4"/>
 
-            <v-row>
+            <v-row v-if="category.type === 1">
                 <v-col cols="12">
                     <v-skeleton-loader v-if="!category.id" type="text" />
                     <v-text-field v-else v-model="title" label="Название"></v-text-field>
@@ -101,12 +103,12 @@ export default {
             </v-row>
 
             <v-skeleton-loader v-if="!category.id" type="text" class="mb-2"/>
-            <v-textarea v-else v-model="description" label="Описание"></v-textarea>
+            <v-textarea v-if="category.type === 1" v-model="description" label="Описание"></v-textarea>
 
             <v-skeleton-loader v-if="!category.id" type="text" class="mb-2"/>
-            <v-textarea v-else v-model="autoMessage" label="Автоосообщение"></v-textarea>
+            <v-textarea v-if="category.type === 1" v-model="autoMessage" label="Автоосообщение"></v-textarea>
 
-            <div v-if="category.attributes?.length">
+            <div v-if="category.attributes?.length && category.type === 1">
                 <p class="text-subtitle-1 font-weight-medium">Атрибуты</p>
                 <v-row>
                     <v-col cols="4" v-for="attr in category.attributes" :key="attr.id">

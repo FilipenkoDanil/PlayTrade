@@ -1,6 +1,4 @@
 <script>
-import axios from "axios";
-
 export default {
     name: "Edit",
 
@@ -95,12 +93,14 @@ export default {
                 </v-col>
             </v-row>
 
-            <v-row>
+            <!-- Поле "Название" -->
+            <v-row v-if="offer.category?.type === 1">
                 <v-col cols="12">
                     <v-text-field v-model="offer.title" label="Название"></v-text-field>
                 </v-col>
             </v-row>
 
+            <!-- Поля "Количество" и "Цена" -->
             <v-row>
                 <v-col cols="6">
                     <v-text-field v-model="offer.amount" :label="'Количество ' + category.unit?.title" type="number"
@@ -111,19 +111,24 @@ export default {
                                   min="1"></v-text-field>
                 </v-col>
 
+                <!-- Поле "Сервер" -->
                 <v-col v-if="category?.servers?.length" cols="12">
                     <v-select v-model="selectedServerId" :items="category.servers" label="Сервер" item-title="title"
                               item-value="id"></v-select>
                 </v-col>
             </v-row>
 
-            <v-textarea v-model="offer.description" label="Описание"></v-textarea>
+            <!-- Поле "Описание" -->
+            <v-textarea v-if="offer.category?.type === 1" v-model="offer.description" label="Описание"></v-textarea>
 
-            <v-textarea v-model="offer.auto_message" label="Автосообщение"></v-textarea>
+            <!-- Поле "Автосообщение" -->
+            <v-textarea v-if="offer.category?.type === 1" v-model="offer.auto_message" label="Автосообщение"></v-textarea>
 
+            <!-- Чекбокс "Активно" -->
             <v-checkbox v-model="offer.is_active" label="Активно" :false-value="0" :true-value="1"></v-checkbox>
 
-            <div v-if="attributes.length">
+            <!-- Атрибуты -->
+            <div v-if="offer.category?.type === 1 && attributes.length">
                 <p class="text-subtitle-1 font-weight-medium">Атрибуты</p>
                 <v-row>
                     <v-col cols="4" v-for="(attr, index) in attributes" :key="attr.id">
