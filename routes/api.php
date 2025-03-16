@@ -45,10 +45,11 @@ Route::apiResource('statuses', StatusController::class)->only('show');
 Route::apiResource('ratings', RatingController::class)->only('index', 'show');
 Route::apiResource('users', UserController::class)->only('show');
 
-Route::post('/payment/create', [PaymentController::class, 'payment']);
 Route::post('/payment/serviceUrl', [PaymentController::class, 'service']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::post('/payment/create', [PaymentController::class, 'payment']);
+
     Route::get('offers', [OfferController::class, 'index']);
     Route::post('offers', [OfferController::class, 'store']);
     Route::put('offers/{offer}', [OfferController::class, 'update']);

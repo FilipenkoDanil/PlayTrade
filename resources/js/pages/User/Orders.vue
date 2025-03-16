@@ -91,7 +91,7 @@ export default {
         </template>
 
         <template v-slot:item.offer_title="{ item }">
-            <span v-if="item.offer.category.type !== 1">
+            <span v-if="item.offer?.category?.type !== 1">
                 {{ JSON.parse(item.offer_server).title }}
                 {{ item.quantity }}
                 {{ item.offer_unit }}
