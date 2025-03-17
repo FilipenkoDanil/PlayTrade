@@ -14,7 +14,6 @@ export default {
             axios.get(`api/games/${this.$route.params.id}`)
                 .then(r => {
                     this.game = r.data.data
-                    console.log(r.data.data)
                 })
         },
 
@@ -22,7 +21,6 @@ export default {
             axios.patch(`api/games/${this.game.id}`, {
                 title: this.game.title
             })
-                .then(() => console.log('OK'))
         },
 
         deleteGame() {

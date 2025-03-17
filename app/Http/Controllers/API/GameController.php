@@ -36,7 +36,8 @@ class GameController extends Controller
                 Category::create([
                     'title' => $category['title'],
                     'unit_id' => $category['unit_id'],
-                    'game_id' => $game->id
+                    'game_id' => $game->id,
+                    'type' => $category['type']
                 ]);
             }
 

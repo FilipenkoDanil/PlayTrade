@@ -27,6 +27,7 @@ class StoreGameRequest extends FormRequest
             'categories' => 'nullable|array',
             'categories.*.title' => 'required|string|max:255',
             'categories.*.unit_id' => 'required|exists:units,id',
+            'categories.*.type' => 'required|in:1,2',
 
             'servers' => 'nullable|array',
             'servers.*.title' => 'required|string|max:255',

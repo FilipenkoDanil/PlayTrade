@@ -11,7 +11,11 @@ export default {
             units: [],
             categories: [],
             servers: [],
-            attributes: []
+            attributes: [],
+            categoryTypes: [
+                { value: '1', text: 'Аккаунты' },
+                { value: '2', text: 'Валюта' },
+            ]
         }
     },
     mounted() {
@@ -30,13 +34,13 @@ export default {
                 });
         },
         addCategory() {
-            this.categories.push({title: "", unit_id: null})
+            this.categories.push({ title: "", unit_id: null, type: '1' })
         },
         addServer() {
-            this.servers.push({title: ""})
+            this.servers.push({ title: "" })
         },
         addAttribute() {
-            this.attributes.push({title: ""})
+            this.attributes.push({ title: "" })
         },
         removeCategory(index) {
             this.categories.splice(index, 1)
@@ -81,9 +85,9 @@ export default {
         },
         resetForm() {
             this.title = "";
-            this.categories = [{title: "", unit_id: null}];
-            this.servers = [{title: ""}];
-            this.attributes = [{title: ""}];
+            this.categories = [{ title: "", unit_id: null, type: 'other' }];
+            this.servers = [{ title: "" }];
+            this.attributes = [{ title: "" }];
         }
     }
 };
@@ -100,8 +104,8 @@ export default {
             <h3>Категории</h3>
             <div v-for="(category, index) in categories" :key="'cat-' + index" class="d-flex align-center mb-2">
                 <v-text-field v-model="category.title" label="Название категории" class="mr-2"></v-text-field>
-                <v-select v-model="category.unit_id" :items="units" item-value="id" item-title="title" label="Ед. изм."
-                          class="mr-2"></v-select>
+                <v-select v-model="category.type" :items="categoryTypes" item-value="value" item-title="text" label="Тип категории" class="mr-2"></v-select>
+                <v-select v-model="category.unit_id" :items="units" item-value="id" item-title="title" label="Ед. изм." class="mr-2"></v-select>
                 <v-btn icon size="small" color="red" @click="removeCategory(index)">
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>
