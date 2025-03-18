@@ -53,6 +53,25 @@ export default {
                         }));
 
                         this.scrollToBottom()
+
+                        if (this.echoChannel) {
+                            this.echoChannel.unsubscribe();
+                        }
+
+                        this.echoChannel = window.Echo.private(`chat.${this.chatId}`);
+                        this.echoChannel.listen(".chat-message", (data) => {
+                            this.messages.push({
+                                id: data.message.id,
+                                text: data.message.message,
+                                time: data.message.created_at,
+                                sender:
+                                    data.message.user_id === this.currentUserId
+                                        ? "user"
+                                        : "other",
+                                name: data.message.user.name,
+                                type: data.message.type,
+                            });
+                        });
                     });
             });
         },
@@ -88,7 +107,7 @@ export default {
     watch: {
         secondUser() {
             if (this.isAuthenticated) {
-                this.getChat();
+                this.getChat()
             }
         },
 

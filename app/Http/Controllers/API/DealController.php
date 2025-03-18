@@ -53,7 +53,15 @@ class DealController extends Controller
      */
     public function show(Deal $deal)
     {
-        return new DealListResource($deal->load('offer.seller', 'offer.category', 'rating', 'buyer'));
+        return new DealListResource(
+            $deal->load([
+                'offer' => function ($query) {
+                    $query->withTrashed()->with(['seller', 'category']);
+                },
+                'rating',
+                'buyer'
+            ])
+        );
     }
 
     public function confirm(Deal $deal)

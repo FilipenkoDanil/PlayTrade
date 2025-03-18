@@ -59,7 +59,7 @@ class User extends Authenticatable
 
     public function sellerDeals(): HasManyThrough
     {
-        return $this->hasManyThrough(Deal::class, Offer::class, 'seller_id', 'offer_id', 'id', 'id')->with(['offer.seller', 'offer.category'])->orderBy('created_at', 'desc');
+        return $this->hasManyThrough(Deal::class, Offer::class, 'seller_id', 'offer_id', 'id', 'id')->withTrashedParents()->with(['offer.seller', 'offer.category'])->orderBy('created_at', 'desc');
     }
 
     public function allDeals()
@@ -69,7 +69,7 @@ class User extends Authenticatable
 
     public function offers()
     {
-        return $this->hasMany(Offer::class, 'seller_id', "id")->orderBy('created_at', 'desc');
+        return $this->hasMany(Offer::class, 'seller_id', 'id')->latest();
     }
 
     public function chats(): BelongsToMany

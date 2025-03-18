@@ -14,60 +14,113 @@ export default {
             messages: [],
             chats: [],
 
-            currentUserId: parseInt(localStorage.getItem('userId')),
-            selectedCompanion: []
-        }
+            currentUserId: parseInt(localStorage.getItem("userId")),
+            selectedCompanion: [],
+            echoChannel: null,
+        };
     },
 
     methods: {
         getChats() {
-            axios.get('api/chats')
-                .then(r => {
-                    this.chats = r.data
-                })
+            axios.get("api/chats").then((r) => {
+                this.chats = r.data;
+            });
         },
 
+        markMessagesAsRead(chatId) {
+            axios.post(`/api/chats/${chatId}/mark-read`, {
+                user_id: this.currentUserId,
+            }).then(() => {
+                const chat = this.chats.find(chat => chat.id === chatId);
+                if (chat) {
+                    chat.unread_count = 0;
+                }
+            });
+        },
 
         showChat(chatId) {
             this.selectedChatId = chatId;
-            axios.get(`api/chats/${chatId}`)
-                .then(r => {
-                    this.messages = r.data.map(message => ({
-                        id: message.id,
-                        text: message.message,
-                        time: message.created_at,
-                        sender: message.type === 'moder' ? 'moder' : (message.user_id === this.currentUserId ? 'user' : 'other'),
-                        name: message.user.name,
-                        type: message.type
-                    }));
-                    this.isChatSelected = true;
 
-                    const chat = this.chats.find(chat => chat.id === chatId);
-                    if (chat) {
-                        this.selectedCompanion = chat.companion;
-                    }
+            if (this.echoChannel) {
+                this.echoChannel.unsubscribe();
+            }
+
+            this.echoChannel = window.Echo.private(`chat.${chatId}`);
+            this.echoChannel.listen(".chat-message", (data) => {
+                this.messages.push({
+                    id: data.message.id,
+                    text: data.message.message,
+                    time: data.message.created_at,
+                    sender:
+                        data.message.user_id === this.currentUserId
+                            ? "user"
+                            : "other",
+                    name: data.message.user.name,
+                    type: data.message.type,
                 });
+
+                this.markMessagesAsRead(this.selectedChatId);
+                this.getChats()
+            });
+
+            axios.get(`api/chats/${chatId}`).then((r) => {
+                this.messages = r.data.map((message) => ({
+                    id: message.id,
+                    text: message.message,
+                    time: message.created_at,
+                    sender:
+                        message.type === "moder"
+                            ? "moder"
+                            : message.user_id === this.currentUserId
+                                ? "user"
+                                : "other",
+                    name: message.user.name,
+                    type: message.type,
+                }));
+                this.isChatSelected = true;
+
+                const chat = this.chats.find((chat) => chat.id === chatId);
+                if (chat) {
+                    this.markMessagesAsRead(chatId);
+                    this.selectedCompanion = chat.companion;
+                }
+            });
         },
 
         sendMessage(message) {
-            axios.post('api/messages', {chat_id: this.selectedChatId, message: message})
-                .then(r => {
+            axios
+                .post("api/messages", {
+                    chat_id: this.selectedChatId,
+                    message: message,
+                })
+                .then((r) => {
                     this.messages.push({
                         id: r.data.id,
                         text: r.data.message,
                         time: r.data.created_at,
-                        sender: 'user',
-                        name: r.data.user.name
+                        sender: "user",
+                        name: r.data.user.name,
                     });
+
+                    this.getChats()
                 });
-        }
+        },
+
+        subscribeToGlobalUserChannel() {
+            window.Echo.private(`user.${this.currentUserId}`).listen(
+                '.chat-message', () => {
+                    this.getChats()
+                });
+        },
     },
 
     mounted() {
-        this.getChats()
-    }
-}
+        this.getChats();
+        this.subscribeToGlobalUserChannel();
+    },
+};
 </script>
+
 
 <template>
     <v-row class="fill-height">

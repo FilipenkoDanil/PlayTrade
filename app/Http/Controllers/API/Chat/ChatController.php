@@ -50,6 +50,11 @@ class ChatController extends Controller
         return $messages;
     }
 
+    public function markMessagesAsRead(Chat $chat, Request $request)
+    {
+        $this->chatService->markReadMessages($chat, $request->user_id);
+    }
+
     public function find(FindChatRequest $request)
     {
         return $this->chatService->createOrGetChat($request->userFirst, $request->userSecond);

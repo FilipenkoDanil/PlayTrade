@@ -8,7 +8,9 @@
     "devDependencies": {
         "@mdi/font": "^7.4.47",
         "axios": "^1.6.4",
+        "laravel-echo": "^2.0.2",
         "laravel-vite-plugin": "^1.0.0",
+        "pusher-js": "^8.4.0",
         "vite": "^5.0.0",
         "vite-plugin-vuetify": "^2.0.4",
         "vuetify": "^3.7.9"

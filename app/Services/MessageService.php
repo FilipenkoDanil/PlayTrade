@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\SendMessageEvent;
 use App\Models\Chat;
 use App\Models\Deal;
 use Illuminate\Support\Facades\Auth;
@@ -25,10 +26,13 @@ class MessageService
                 $this->incrementUnreadMessage($chat, $companion->id);
             }
 
-            return $message->load('user');
+            $message = $message->load('user');
+
+            broadcast(new SendMessageEvent($message))->toOthers();
+
+            return $message;
         });
     }
-
 
     public function incrementUnreadMessage(Chat $chat, int $userId): void
     {

@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::apiResource('chats', ChatController::class)->except(['destroy', 'update']);
     Route::post('chats/find', [ChatController::class, 'find']);
+    Route::post('chats/{chat}/mark-read', [ChatController::class, 'markMessagesAsRead']);
     Route::post('/messages', [MessageController::class, 'store']);
 
     Route::post('ratings', [RatingController::class, 'store']);

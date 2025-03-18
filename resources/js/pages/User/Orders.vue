@@ -92,7 +92,7 @@ export default {
 
         <template v-slot:item.offer_title="{ item }">
             <span v-if="item.offer?.category?.type !== 1">
-                {{ JSON.parse(item.offer_server).title }}
+                {{ JSON.parse(item.offer_server)?.title }}
                 {{ item.quantity }}
                 {{ item.offer_unit }}
                 {{ item.offer_category }}
@@ -122,7 +122,7 @@ export default {
                 <p><strong>Игра:</strong> {{ selectedDeal.offer_game }}</p>
                 <p><strong>Категория:</strong> {{ selectedDeal.offer_category }}</p>
 
-                <template v-if="selectedDeal.offer.category.type === 1">
+                <template v-if="selectedDeal.offer.category?.type === 1">
                     <v-divider class="my-3"></v-divider>
                     <p><strong>Название оффера:</strong> {{ selectedDeal.offer_title }}</p>
                     <p><strong>Описание:</strong> {{ selectedDeal.offer_description }}</p>

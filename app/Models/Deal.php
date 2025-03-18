@@ -18,7 +18,7 @@ class Deal extends Model implements Transactable
 
     public function offer(): BelongsTo
     {
-        return $this->belongsTo(Offer::class);
+        return $this->belongsTo(Offer::class)->withTrashed();
     }
 
     public function buyer(): BelongsTo
