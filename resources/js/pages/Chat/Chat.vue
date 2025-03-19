@@ -41,28 +41,6 @@ export default {
         showChat(chatId) {
             this.selectedChatId = chatId;
 
-            if (this.echoChannel) {
-                this.echoChannel.unsubscribe();
-            }
-
-            this.echoChannel = window.Echo.private(`chat.${chatId}`);
-            this.echoChannel.listen(".chat-message", (data) => {
-                this.messages.push({
-                    id: data.message.id,
-                    text: data.message.message,
-                    time: data.message.created_at,
-                    sender:
-                        data.message.user_id === this.currentUserId
-                            ? "user"
-                            : "other",
-                    name: data.message.user.name,
-                    type: data.message.type,
-                });
-
-                this.markMessagesAsRead(this.selectedChatId);
-                this.getChats()
-            });
-
             axios.get(`api/chats/${chatId}`).then((r) => {
                 this.messages = r.data.map((message) => ({
                     id: message.id,
@@ -114,10 +92,39 @@ export default {
         },
     },
 
+    watch: {
+        selectedChatId(newVal, oldVal) {
+            window.Echo.leave(`chat.${oldVal}`)
+
+            window.Echo.private(`chat.${newVal}`)
+                .listen(".chat-message", (data) => {
+                    this.messages.push({
+                        id: data.message.id,
+                        text: data.message.message,
+                        time: data.message.created_at,
+                        sender:
+                            data.message.user_id === this.currentUserId
+                                ? "user"
+                                : "other",
+                        name: data.message.user.name,
+                        type: data.message.type,
+                    });
+
+                    this.markMessagesAsRead(this.selectedChatId);
+                    this.getChats()
+                });
+        }
+    },
+
     mounted() {
         this.getChats();
         this.subscribeToGlobalUserChannel();
     },
+
+    beforeUnmount() {
+        window.Echo.leave(`user.${this.currentUserId}`);
+        window.Echo.leave(`chat.${this.selectedChatId}`);
+    }
 };
 </script>
 
@@ -125,7 +132,7 @@ export default {
 <template>
     <v-row class="fill-height">
         <v-col cols="3" class="d-flex flex-column">
-            <ChatList @selectChat="showChat" :chats="chats"></ChatList>
+            <ChatList @selectChat="showChat" :selectedChatId="selectedChatId" :chats="chats"></ChatList>
         </v-col>
 
 

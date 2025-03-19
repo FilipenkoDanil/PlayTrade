@@ -121,6 +121,10 @@ export default {
 
     mounted() {
         this.checkAuth()
+    },
+
+    beforeUnmount() {
+        window.Echo.leave(`chat.${this.chatId}`);
     }
 }
 </script>

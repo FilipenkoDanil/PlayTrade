@@ -49,7 +49,26 @@ export default {
     watch: {
         messages() {
             this.scrollToBottom()
+        },
+
+        chatId() {
+            window.Echo.private(`chat.${this.chatId}`)
+                .listen('.chat-message', r => {
+                    this.messages.push({
+                        id: r.message.id,
+                        text: r.message.message,
+                        time: r.message.created_at,
+                        name: r.message.user.name,
+                        sender: 'user',
+                        type: 'user'
+                    })
+                    this.scrollToBottom()
+                })
         }
+    },
+
+    beforeUnmount() {
+        window.Echo.leave(`chat.${this.chatId}`)
     }
 
 }

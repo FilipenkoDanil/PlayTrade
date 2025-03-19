@@ -2,7 +2,7 @@
 export default {
     name: "ChatList",
 
-    props: ['chats']
+    props: ['chats', 'selectedChatId']
 }
 </script>
 
@@ -13,6 +13,7 @@ export default {
             :key="chat.id">
             <v-list-item
                 class="pa-4"
+                :active="chat.id === selectedChatId"
                 link
                 @click="$emit('selectChat', chat.id)"
                 v-if="chat.last_message"

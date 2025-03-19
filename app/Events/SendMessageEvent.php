@@ -34,12 +34,15 @@ class SendMessageEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         $chat = Chat::find($this->message->chat_id);
-        $companion = $chat->users()->where('user_id', '!=', $this->message->user_id)->first();
+        $companions = $chat->users()->where('user_id', '!=', $this->message->user_id)->get();
 
-        return [
-            new PrivateChannel('chat.' . $this->message->chat_id),
-            new PrivateChannel('user.' . $companion->id),
-        ];
+        $channels[] = new PrivateChannel('chat.' . $this->message->chat_id);
+
+        foreach ($companions as $companion) {
+            $channels[] = new PrivateChannel('user.' . $companion->id);
+        }
+
+        return $channels;
     }
 
     /**
