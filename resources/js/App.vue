@@ -100,6 +100,12 @@ export default {
                     ></v-list-item>
 
                     <v-list-item
+                        :to="{ name: 'withdrawal.list' }"
+                        prepend-icon="mdi-finance"
+                        title="Заявки на вывод"
+                    ></v-list-item>
+
+                    <v-list-item
                         :to="{ name: 'category.create' }"
                         prepend-icon="mdi-folder-plus"
                         title="Создать категорию"

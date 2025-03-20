@@ -32,6 +32,12 @@ export default {
             }
         },
 
+        markMessagesAsRead(chatId) {
+            axios.post(`/api/chats/${chatId}/mark-read`, {
+                user_id: this.currentUserId,
+            })
+        },
+
         getChat() {
             if (!this.isAuthenticated || this.isSelfChat) return
 
@@ -71,6 +77,8 @@ export default {
                                 name: data.message.user.name,
                                 type: data.message.type,
                             });
+
+                            this.markMessagesAsRead(this.chatId);
                         });
                     });
             });

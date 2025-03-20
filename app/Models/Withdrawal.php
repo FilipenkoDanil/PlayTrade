@@ -23,4 +23,9 @@ class Withdrawal extends Model implements Transactable
     {
         return $this->belongsTo(Status::class);
     }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

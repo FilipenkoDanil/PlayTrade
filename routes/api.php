@@ -82,6 +82,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::post('messages', [ModerController::class, 'sendMessage']);
             Route::get('chats/{chat}', [ModerController::class, 'showChat']);
 
+            Route::get('withdrawals', [\App\Http\Controllers\API\Moder\WithdrawalController::class, 'index']);
+            Route::post('withdrawals/{withdrawal}/approve', [\App\Http\Controllers\API\Moder\WithdrawalController::class, 'approve']);
+
             Route::post('disputes/refund-buyer', [DisputeController::class, 'refundBuyer']);
             Route::post('disputes/refund-seller', [DisputeController::class, 'refundSeller']);
             Route::post('disputes/refund-fifty', [DisputeController::class, 'refundFiftyFifty']);
