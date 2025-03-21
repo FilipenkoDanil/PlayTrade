@@ -43,7 +43,7 @@ export default {
             }
 
             if (this.type === 1) {
-                payload.attributes = this.attributes
+                payload.attributes = this.selectedAttributes
             }
 
             axios.post("api/categories", payload)

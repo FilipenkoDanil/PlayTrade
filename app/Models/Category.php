@@ -20,7 +20,7 @@ class Category extends Model
         parent::boot();
 
         static::deleting(function ($category) {
-            Offer::where('category_id', $category->id)->delete();
+            $category->allOffers()->delete();
         });
     }
 
@@ -47,5 +47,10 @@ class Category extends Model
     public function offers(): HasMany
     {
         return $this->hasMany(Offer::class)->where('is_active', '=', 1);
+    }
+
+    public function allOffers(): HasMany
+    {
+        return $this->hasMany(Offer::class);
     }
 }

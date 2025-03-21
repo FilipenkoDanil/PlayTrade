@@ -84,7 +84,9 @@ class GameController extends Controller
     public function destroy(Game $game)
     {
         DB::transaction(function () use ($game) {
-            $game->categories()->delete();
+            $game->categories->each(function ($category) {
+                $category->delete();
+            });
             $game->servers()->delete();
             $game->delete();
         });
