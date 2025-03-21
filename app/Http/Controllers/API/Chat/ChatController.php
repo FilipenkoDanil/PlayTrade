@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Chat;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\FindChatRequest;
 use App\Http\Requests\Chat\StoreChatRequest;
+use App\Http\Resources\MessageResource;
 use App\Models\Chat;
 use App\Services\ChatService;
 use Illuminate\Http\Request;
@@ -47,7 +48,7 @@ class ChatController extends Controller
         $messages = $this->chatService->getChatMessages($chat);
         $this->chatService->markReadMessages($chat, Auth::id());
 
-        return $messages;
+        return MessageResource::collection($messages)->resolve();
     }
 
     public function markMessagesAsRead(Chat $chat, Request $request)

@@ -60,7 +60,7 @@ export default {
                         time: r.message.created_at,
                         name: r.message.user.name,
                         sender: 'user',
-                        type: 'user'
+                        type: r.message.type
                     })
                     this.scrollToBottom()
                 })

@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Http\Resources\MessageResource;
 use App\Models\Chat;
 use App\Models\Message;
 use Illuminate\Broadcasting\Channel;
@@ -34,9 +35,9 @@ class SendMessageEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         $chat = Chat::find($this->message->chat_id);
-        $companions = $chat->users()->where('user_id', '!=', $this->message->user_id)->get();
+        $companions = $chat->users()->get();
 
-        $channels[] = new PrivateChannel('chat.' . $this->message->chat_id);
+        $channels = [new PrivateChannel('chat.' . $this->message->chat_id)];
 
         foreach ($companions as $companion) {
             $channels[] = new PrivateChannel('user.' . $companion->id);
@@ -60,6 +61,6 @@ class SendMessageEvent implements ShouldBroadcast
      */
     public function broadcastWith(): array
     {
-        return ['message' => $this->message];
+        return ['message' => MessageResource::make($this->message)];
     }
 }

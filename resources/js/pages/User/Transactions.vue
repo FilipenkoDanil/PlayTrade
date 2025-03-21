@@ -81,12 +81,22 @@ export default {
                 requested_amount: this.amount,
                 card_number: this.cardNumber
             })
-                .then(() => this.getTransactions())
+                .then(() => {
+                    this.getTransactions()
+                    this.getUserBalance()
+                    this.withdrawDialog = !this.withdrawDialog
+                    this.cardNumber = ''
+                    this.amount = 0
+                    this.amountToReceive = 0
+                })
         },
 
         cancelWithdrawal() {
             axios.post(`api/withdrawals/${this.selectedTransaction.transactable_id}/cancel`)
-                .then(() => this.getTransactions())
+                .then(() => {
+                    this.getTransactions()
+                    this.dialog = !this.dialog
+                })
         }
     },
 
@@ -136,7 +146,7 @@ export default {
         </v-col>
 
         <v-col cols="auto">
-            <v-btn @click="withdrawDialog = !withdrawDialog" color="primary" variant="tonal">
+            <v-btn @click="withdrawDialog = !withdrawDialog; this.getUserBalance()" color="primary" variant="tonal">
                 Вывести деньги
             </v-btn>
         </v-col>

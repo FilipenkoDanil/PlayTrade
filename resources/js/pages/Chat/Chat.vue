@@ -80,7 +80,19 @@ export default {
                         name: r.data.user.name,
                     });
 
-                    this.getChats()
+                    const chatIndex = this.chats.findIndex(chat => chat.id === this.selectedChatId);
+                    if (chatIndex !== -1) {
+                        const updatedChat = {
+                            ...this.chats[chatIndex],
+                            last_message: {
+                                text: r.data.message,
+                                date: r.data.created_at,
+                            },
+                        };
+
+                        this.chats.splice(chatIndex, 1);
+                        this.chats.unshift(updatedChat);
+                    }
                 });
         },
 
@@ -111,7 +123,6 @@ export default {
                     });
 
                     this.markMessagesAsRead(this.selectedChatId);
-                    this.getChats()
                 });
         }
     },

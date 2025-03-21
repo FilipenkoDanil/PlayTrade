@@ -23,7 +23,10 @@ export default {
                                 .then(r => {
                                     localStorage.setItem('isAuth', 'true')
                                     localStorage.setItem('userId', r.data.id)
-                                    this.setAuth(true);
+                                    this.setAuth({
+                                        isAuth: true,
+                                        userId: r.data.id
+                                    });
                                     reloadRolesAndPermissions()
                                     this.$router.push({name: 'home'})
                                 })

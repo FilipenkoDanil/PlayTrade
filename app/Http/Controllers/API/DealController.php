@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\SendMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Deal\StoreDealRequest;
 use App\Http\Resources\Deal\DealListResource;
@@ -40,6 +41,8 @@ class DealController extends Controller
 
         $chat = $this->chatService->createOrGetChat(Auth::id(), $result->offer->seller->id);
         $this->messageService->sendDealNotification($result, $chat, 'paid');
+
+        broadcast(SendMessageEvent::class);
 
         if ($result->offer->auto_message) {
             $this->messageService->sendMessage($result->offer->auto_message, $chat->id, $result->offer->seller_id);

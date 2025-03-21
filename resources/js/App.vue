@@ -6,7 +6,8 @@ export default {
     data() {
         return {
             drawer: false,
-            isAuth: localStorage.getItem('isAuth')
+            isAuth: localStorage.getItem('isAuth'),
+            userId: localStorage.getItem('userId'),
         }
     },
 
@@ -19,7 +20,8 @@ export default {
 
     methods: {
         setAuth(value) {
-            this.isAuth = value;
+            this.isAuth = value.isAuth
+            this.userId = value.userId
         },
 
         logout() {
@@ -55,6 +57,12 @@ export default {
                 <v-list-subheader class="text-uppercase text-caption font-weight-bold text-grey-darken-1">
                     Аккаунт
                 </v-list-subheader>
+                <v-list-item
+                    v-if="isAuth"
+                    :to="{ name: 'user.profile', params: {id: userId}}"
+                    prepend-icon="mdi-account"
+                    title="Мой профиль"
+                ></v-list-item>
                 <v-list-item
                     :to="{ name: 'user.orders' }"
                     prepend-icon="mdi-cart"
