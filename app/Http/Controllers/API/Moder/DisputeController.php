@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\Moder;
 
+use App\Events\SendMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Deal\DisputeDealRequest;
 use App\Http\Resources\DealResource;
@@ -40,7 +41,7 @@ class DisputeController extends Controller
             $this->dealService->cancel($deal);
 
             $chat = $this->chatService->createOrGetChat($deal->offer->seller->id, $deal->buyer_id);
-            $this->messageService->sendDealNotification($deal, $chat, 'refundBuyer');
+            broadcast(new SendMessageEvent($this->messageService->sendDealNotification($deal, $chat, 'refundBuyer')));
         });
     }
 
@@ -57,7 +58,7 @@ class DisputeController extends Controller
             $this->transactionService->confirmDeal($deal->buyer, $deal->offer->seller, $deal->getAmount(), $deal);
 
             $chat = $this->chatService->createOrGetChat($deal->offer->seller->id, $deal->buyer_id);
-            $this->messageService->sendDealNotification($deal, $chat, 'refundSeller');
+            broadcast(new SendMessageEvent($this->messageService->sendDealNotification($deal, $chat, 'refundSeller')));
         });
     }
 
@@ -79,7 +80,7 @@ class DisputeController extends Controller
             $this->transactionService->create($deal->offer->seller->id, $deal, 'deal_fifty');
 
             $chat = $this->chatService->createOrGetChat($deal->offer->seller->id, $deal->buyer_id);
-            $this->messageService->sendDealNotification($deal, $chat, 'refundFiftyFifty');
+            broadcast(new SendMessageEvent($this->messageService->sendDealNotification($deal, $chat, 'refundFiftyFifty')));
         });
     }
 

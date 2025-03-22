@@ -26,11 +26,7 @@ class MessageService
                 $this->incrementUnreadMessage($chat, $companion->id);
             }
 
-            $message = $message->load('user');
-
-            broadcast(new SendMessageEvent($message))->toOthers();
-
-            return $message;
+            return $message->load('user');
         });
     }
 
@@ -57,9 +53,9 @@ class MessageService
         };
     }
 
-    public function sendDealNotification(Deal $deal, Chat $chat, string $type): void
+    public function sendDealNotification(Deal $deal, Chat $chat, string $type)
     {
         $message = $this->getDealNotification($deal, $type);
-        $this->sendMessage($message, $chat->id, Auth::id(), 'notify');
+        return $this->sendMessage($message, $chat->id, Auth::id(), 'notify');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\Moder;
 
+use App\Events\SendMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\FindChatRequest;
 use App\Http\Requests\Chat\ModerFindChatRequest;
@@ -33,7 +34,11 @@ class ModerController extends Controller
 
     public function sendMessage(StoreMessageRequest $request)
     {
-        return $this->messageService->sendMessage($request->message, $request->chat_id, Auth::id(), 'moder');
+        $message = $this->messageService->sendMessage($request->message, $request->chat_id, Auth::id(), 'moder');
+
+        broadcast(new SendMessageEvent($message))->toOthers();
+
+        return $message;
     }
 
 }

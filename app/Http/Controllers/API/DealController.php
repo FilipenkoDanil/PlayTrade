@@ -40,9 +40,8 @@ class DealController extends Controller
         }
 
         $chat = $this->chatService->createOrGetChat(Auth::id(), $result->offer->seller->id);
-        $this->messageService->sendDealNotification($result, $chat, 'paid');
 
-        broadcast(SendMessageEvent::class);
+        broadcast(new SendMessageEvent($this->messageService->sendDealNotification($result, $chat, 'paid')));
 
         if ($result->offer->auto_message) {
             $this->messageService->sendMessage($result->offer->auto_message, $chat->id, $result->offer->seller_id);
@@ -76,7 +75,8 @@ class DealController extends Controller
         $this->dealService->confirm($deal);
 
         $chat = $this->chatService->createOrGetChat(Auth::id(), $deal->offer->seller->id);
-        $this->messageService->sendDealNotification($deal, $chat, 'confirmed');
+
+        broadcast(new SendMessageEvent($this->messageService->sendDealNotification($deal, $chat, 'confirmed')));
 
         return response()->json(['message' => 'Deal confirmed']);
     }
@@ -90,7 +90,7 @@ class DealController extends Controller
         $this->dealService->cancel($deal);
 
         $chat = $this->chatService->createOrGetChat(Auth::id(), $deal->buyer_id);
-        $this->messageService->sendDealNotification($deal, $chat, 'canceled');
+        broadcast(new SendMessageEvent($this->messageService->sendDealNotification($deal, $chat, 'canceled')));
 
         return response()->json(['message' => 'Deal cancelled']);
     }
@@ -104,7 +104,9 @@ class DealController extends Controller
         $this->dealService->dispute($deal);
 
         $chat = $this->chatService->createOrGetChat(Auth::id(), Auth::id() == $deal->buyer_id ? $deal->offer->seller_id : $deal->buyer_id);
-        $this->messageService->sendDealNotification($deal, $chat, 'disputed');
+        broadcast(new SendMessageEvent($this->messageService->sendDealNotification($deal, $chat, 'disputed')));
+
+        return response()->json(['message' => 'Deal disputed']);
     }
 
     public function orders()

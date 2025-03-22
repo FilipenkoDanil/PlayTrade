@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\SendMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Rating\StoreRatingRequest;
 use App\Http\Requests\Rating\UpdateRatingRequest;
@@ -44,7 +45,8 @@ class RatingController extends Controller
 
         $deal = Deal::find($request->deal_id);
         $chat = $this->chatService->createOrGetChat(Auth::id(), $deal->offer->seller->id);
-        $this->messageService->sendDealNotification($deal, $chat, 'rating');
+
+        broadcast(new SendMessageEvent($this->messageService->sendDealNotification($deal, $chat, 'rating')));
 
         return new RatingResource($rating);
     }
