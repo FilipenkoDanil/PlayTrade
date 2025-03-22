@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Events\DepositSuccessEvent;
 use App\Models\Deposit;
 use App\Models\Status;
 use Illuminate\Http\Request;
@@ -85,6 +86,7 @@ class PaymentService
                 if ($deposit->status_id !== Status::TRANSACTION_COMPLETED) {
                     $deposit->status_id = Status::TRANSACTION_COMPLETED;
                     $this->transactionService->incrementBalance($deposit->user, $deposit->amount);
+                    broadcast(new DepositSuccessEvent($deposit->deposit_id));
                 }
                 break;
             case 'Pending':
@@ -99,6 +101,7 @@ class PaymentService
                 if ($deposit->status_id !== Status::TRANSACTION_REFUNDED) {
                     $deposit->status_id = Status::TRANSACTION_REFUNDED;
                     $this->transactionService->decrementBalance($deposit->user, $deposit->amount);
+                    $this->transactionService->create($deposit->user->id, $deposit, 'withdrawal');
                 }
         }
         $deposit->save();

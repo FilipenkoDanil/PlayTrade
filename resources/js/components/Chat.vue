@@ -60,9 +60,6 @@ export default {
 
                         this.scrollToBottom()
 
-                        if (this.echoChannel) {
-                            this.echoChannel.unsubscribe();
-                        }
 
                         this.echoChannel = window.Echo.private(`chat.${this.chatId}`);
                         this.echoChannel.listen(".chat-message", (data) => {

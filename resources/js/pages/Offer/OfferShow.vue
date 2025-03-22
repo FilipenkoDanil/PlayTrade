@@ -37,6 +37,8 @@ export default {
                     this.snackOptions.text = 'Сделка успешно создана.';
                     this.snackOptions.color = 'success';
                     this.showSnack = true;
+                    this.getUserBalance()
+                    this.quantity = 0
                 })
                 .catch(err => {
                     this.snackOptions.text = err.response.data.error;
@@ -50,6 +52,7 @@ export default {
                 amount: this.missingMoney
             })
                 .then(r => {
+                    console.log(r)
                     const form = document.createElement("form");
                     form.method = "POST";
                     form.action = r.data.payment_url;
@@ -66,6 +69,11 @@ export default {
                     document.body.appendChild(form);
                     form.submit();
                     document.body.removeChild(form);
+
+                    window.Echo.private(`deposit.${r.data.payment_data.orderReference}`)
+                        .listen('.deposit-success', () => {
+                            this.getUserBalance()
+                        })
                 });
         },
 

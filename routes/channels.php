@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Deposit;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -23,4 +24,14 @@ Broadcast::channel('chat.{chatId}', function ($user, $chatId) {
 
 Broadcast::channel('user.{userId}', function ($user, $userId) {
     return $user->id == $userId;
+});
+
+Broadcast::channel('deposit.{deposit_id}', function ($user, $depositId) {
+    $deposit = Deposit::where('deposit_id', $depositId)->get()->first();
+
+    if ($deposit && $deposit->user_id === $user->id) {
+        return true;
+    }
+
+    return false;
 });
