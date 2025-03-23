@@ -13,6 +13,10 @@ window.axios.defaults.baseURL = 'http://127.0.0.1:8000'
 window.axios.defaults.withCredentials = true
 
 window.axios.interceptors.response.use({}, err => {
+    if (err.config.ignoreRedirect) {
+        return Promise.reject(err)
+    }
+
     if (err.response.status === 401 || err.response.status === 419) {
         localStorage.removeItem('isAuth')
         localStorage.removeItem('userId')
@@ -20,7 +24,7 @@ window.axios.interceptors.response.use({}, err => {
         router.push({name: 'login'})
     }
 
-    return Promise.reject(err);
+    return Promise.reject(err)
 })
 
 /**

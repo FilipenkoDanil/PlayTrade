@@ -25,17 +25,25 @@ class StoreOfferRequest extends FormRequest
         $category = Category::findOrFail($this->input('category_id'));
         $isCurrency = $category->type === 2;
 
-        return [
+        $rules = [
             'title' => $isCurrency ? 'nullable|string|max:100' : 'required|string|max:100',
             'amount' => 'required|numeric|min:1',
-            'price' => 'required|numeric|min:1',
+            'price' => 'required|numeric|min:1|max:999999',
             'description' => 'string|nullable|max:255',
             'auto_message' => 'string|nullable|max:255',
-            'server_id' => 'integer|exists:servers,id',
             'category_id' => 'required|integer|exists:categories,id',
-            'attributes' => 'array',
-            'attributes.*.id' => 'required|integer|exists:attributes,id',
-            'attributes.*.value' => 'required|string|max:255',
         ];
+
+        if ($category->servers->isNotEmpty()) {
+            $rules['server_id'] = 'required|integer|exists:servers,id';
+        }
+
+        if ($category->attributes->isNotEmpty()) {
+            $rules['attributes'] = 'required|array';
+            $rules['attributes.*.id'] = 'required|integer|exists:attributes,id';
+            $rules['attributes.*.value'] = 'required|string|max:255';
+        }
+
+        return $rules;
     }
 }

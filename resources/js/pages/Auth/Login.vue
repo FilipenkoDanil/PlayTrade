@@ -1,5 +1,6 @@
 <script>
-import { reloadRolesAndPermissions } from 'laravel-permission-to-vuejs'
+import {reloadRolesAndPermissions} from 'laravel-permission-to-vuejs'
+
 export default {
     inject: ['isAuth', 'setAuth'],
     name: 'Login',
@@ -7,6 +8,8 @@ export default {
         return {
             email: '',
             password: '',
+
+            errors: [],
         }
     },
 
@@ -31,6 +34,7 @@ export default {
                                     this.$router.push({name: 'home'})
                                 })
                         })
+                        .catch(err => this.errors = err.response.data.errors)
                 })
         },
     }
@@ -49,6 +53,7 @@ export default {
                         label="Email"
                         type="email"
                         required
+                        :error-messages="errors.email"
                     ></v-text-field>
 
                     <v-text-field
@@ -56,6 +61,7 @@ export default {
                         label="Пароль"
                         type="password"
                         required
+                        :error-messages="errors.password"
                     ></v-text-field>
 
                     <v-btn @click.prevent="login" type="submit" color="primary" block class="mt-2">

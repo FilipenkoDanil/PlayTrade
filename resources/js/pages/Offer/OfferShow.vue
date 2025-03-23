@@ -29,6 +29,13 @@ export default {
         },
 
         createDeal() {
+            if (this.offer.seller_id == localStorage.getItem('userId')) {
+                this.snackOptions.text = 'Вы не можете оформить сделку.'
+                this.snackOptions.color = 'error'
+                this.showSnack = true
+                return
+            }
+
             axios.post('api/deals', {
                 quantity: this.quantity,
                 offer_id: this.offer.id
@@ -48,6 +55,13 @@ export default {
         },
 
         createPayment() {
+            if (this.offer.seller_id == localStorage.getItem('userId')) {
+                this.snackOptions.text = 'Вы не можете оформить сделку.'
+                this.snackOptions.color = 'error'
+                this.showSnack = true
+                return
+            }
+
             axios.post('api/payment/create', {
                 amount: this.missingMoney
             })
@@ -295,7 +309,6 @@ export default {
         v-model="showSnack"
         :timeout="2000"
         :color="snackOptions.color"
-        variant="outlined"
     >
         {{ snackOptions.text }}
     </v-snackbar>

@@ -9,6 +9,8 @@ export default {
             name: '',
             password: '',
             conf_password: '',
+
+            errors: []
         }
     },
 
@@ -35,6 +37,7 @@ export default {
                                     this.$router.push({name: 'home'})
                                 })
                         })
+                        .catch(err => this.errors = err.response.data.errors)
                 })
         },
     }
@@ -52,6 +55,7 @@ export default {
                         label="Email"
                         type="email"
                         required
+                        :error-messages="errors.email"
                     ></v-text-field>
 
                     <v-text-field
@@ -59,6 +63,7 @@ export default {
                         label="Name"
                         type="text"
                         required
+                        :error-messages="errors.name"
                     ></v-text-field>
 
                     <v-text-field
@@ -66,6 +71,7 @@ export default {
                         label="Пароль"
                         type="password"
                         required
+                        :error-messages="errors.password"
                     ></v-text-field>
 
                     <v-text-field
@@ -73,6 +79,8 @@ export default {
                         label="Повторный пароль"
                         type="password"
                         required
+                        :error-messages="errors.password"
+
                     ></v-text-field>
 
                     <v-btn @click.prevent="register" type="submit" color="primary" block class="mt-2">

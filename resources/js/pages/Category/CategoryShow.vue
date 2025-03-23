@@ -84,7 +84,7 @@ export default {
                 <v-skeleton-loader class="my-2" v-if="loading" type="chip, chip, chip, chip"></v-skeleton-loader>
                 <template v-else>
                     <v-btn v-for="cat in category.game.categories" :key="cat.id" :to="{name: 'category', params: {id: cat.id}}"
-                           active-color="indigo-darken-4" rounded size="large" class="mr-2 my-2">
+                           active-color="indigo-darken-4" rounded  class="mr-2 my-2">
                         {{ cat.title }}
                         <span class="text-medium-emphasis text-subtitle-2">{{ cat.offers_count }}</span>
                     </v-btn>
@@ -92,7 +92,7 @@ export default {
 
                 <v-row>
                     <v-col cols="12" md="4">
-                        <v-text-field v-model="searchQuery" label="Поиск по названию" variant="outlined" dense @input="filterOffers"></v-text-field>
+                        <v-text-field v-model="searchQuery" label="Поиск по названию" variant="outlined" density="comfortable" @input="filterOffers"></v-text-field>
                     </v-col>
 
                     <v-col v-if="category.servers?.length > 0" cols="12" md="4">
@@ -104,6 +104,7 @@ export default {
                             clearable
                             variant="outlined"
                             placeholder="Выберите сервер"
+                            density="comfortable"
                             @update:model-value="filterOffers">
                         </v-select>
                     </v-col>

@@ -2,7 +2,8 @@ export default [
     {
         path: '/games/list',
         name: 'game.list',
-        component: () => import('@/pages/Game/GameList.vue')
+        component: () => import('@/pages/Game/GameList.vue'),
+        meta: { requiresAuth: true }
     },
     {
         path: '/games/create',

@@ -1,5 +1,6 @@
 <script>
-import { reloadRolesAndPermissions } from 'laravel-permission-to-vuejs'
+import {reloadRolesAndPermissions} from 'laravel-permission-to-vuejs'
+
 export default {
     name: "App",
 
@@ -24,6 +25,24 @@ export default {
             this.userId = value.userId
         },
 
+        checkAuth() {
+            if (localStorage.getItem('isAuth') && localStorage.getItem('userId')) {
+                axios.get('api/user', {
+                    ignoreRedirect: true
+                })
+                    .then(r => {
+                        this.isAuth = true
+                        this.userId = r.data.id
+                    })
+                    .catch(() => {
+                        this.isAuth = false
+                        this.userId = null
+                        localStorage.removeItem('isAuth');
+                        localStorage.removeItem('userId');
+                    });
+            }
+        },
+
         logout() {
             axios.post('logout')
                 .then(() => {
@@ -34,6 +53,10 @@ export default {
                     this.$router.push({name: 'login'})
                 })
         }
+    },
+
+    mounted() {
+        this.checkAuth()
     }
 }
 </script>
@@ -41,8 +64,9 @@ export default {
 <template>
     <v-app>
         <v-app-bar>
-            <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-            <router-link :to="{name: 'home'}" class="v-toolbar-title text-decoration-none text-white">PlayTrade</router-link>
+            <v-app-bar-nav-icon v-if="isAuth" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+            <router-link :to="{name: 'home'}" class="v-toolbar-title text-decoration-none text-white">PlayTrade
+            </router-link>
             <v-spacer></v-spacer>
             <v-btn v-if="isAuth" @click="logout" icon="mdi-logout"></v-btn>
             <v-btn v-else @click="this.$router.push({name: 'login'})" icon="mdi-login"></v-btn>
@@ -52,13 +76,13 @@ export default {
             v-model="drawer"
             temporary
             color="background"
+            v-if="isAuth"
         >
             <v-list dense nav>
                 <v-list-subheader class="text-uppercase text-caption font-weight-bold text-grey-darken-1">
                     Аккаунт
                 </v-list-subheader>
                 <v-list-item
-                    v-if="isAuth"
                     :to="{ name: 'user.profile', params: {id: userId}}"
                     prepend-icon="mdi-account"
                     title="Мой профиль"
