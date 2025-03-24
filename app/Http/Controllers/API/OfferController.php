@@ -38,7 +38,7 @@ class OfferController extends Controller
      */
     public function show(Offer $offer)
     {
-        return (new OfferResource($offer->load(['attributes', 'category.unit', 'server', 'seller'])))->additional([RatingResource::collection($offer->seller->ratings())]);
+        return (new OfferResource($offer->load(['attributes', 'category.unit', 'category.game', 'server', 'seller'])))->additional([RatingResource::collection($offer->seller->ratings())]);
     }
 
     /**

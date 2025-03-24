@@ -40,9 +40,9 @@ export default {
                 <v-text-field
                     v-model="search"
                     prepend-inner-icon="mdi-magnify"
-                    placeholder="Search games"
+                    placeholder="Поиск игр.."
                     variant="outlined"
-                    dense
+                    density="comfortable"
                     hide-details
                     class="custom-search"
                 ></v-text-field>

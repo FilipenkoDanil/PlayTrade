@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Http\Resources\User\UserProfileResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class OfferResource extends JsonResource
 {
@@ -15,13 +16,12 @@ class OfferResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $array = [
             'id' => $this->id,
             'title' => $this->title,
             'amount' => $this->amount,
             'price' => $this->price,
             'description' => $this->description,
-            'auto_message' => $this->auto_message,
             'is_active' => $this->is_active,
             'category_id' => $this->category_id,
             'seller_id' => $this->seller_id,
@@ -31,5 +31,11 @@ class OfferResource extends JsonResource
             'seller' => new UserProfileResource($this->whenLoaded('seller')),
             'attributes' => AttributeResource::collection($this->whenLoaded('attributes')),
         ];
+
+        if (Auth::id() == $this->seller_id) {
+            $array['auto_message'] = $this->auto_message;
+        }
+
+        return $array;
     }
 }

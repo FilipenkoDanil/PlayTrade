@@ -44,7 +44,7 @@ class DealController extends Controller
         broadcast(new SendMessageEvent($this->messageService->sendDealNotification($result, $chat, 'paid')));
 
         if ($result->offer->auto_message) {
-            $this->messageService->sendMessage($result->offer->auto_message, $chat->id, $result->offer->seller_id);
+            broadcast(new SendMessageEvent($this->messageService->sendMessage($result->offer->auto_message, $chat->id, $result->offer->seller_id)));
         }
 
         return new DealResource($result);

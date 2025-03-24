@@ -111,7 +111,7 @@ export default {
         },
 
         isFormValid() {
-            return this.cardNumber && this.amount && this.amount >= 100 && this.amount <= this.userBalance;
+            return this.cardNumber && this.amount && this.amount >= 50 && this.amount <= this.userBalance;
         },
     },
 
@@ -184,7 +184,7 @@ export default {
 
         <template v-slot:item.amount="{ item }">
               <span class="font-weight-bold">
-                {{ item.amount > 0 ? `+${item.amount}` : item.amount }}
+                {{ item.amount > 0 ? `+${item.amount}` : item.amount }} ₴
               </span>
         </template>
 
@@ -280,6 +280,7 @@ export default {
                     prepend-icon="mdi-cash"
                     :rules="[rules.required, rules.minAmount]"
                     type="number"
+                    suffix="₴"
                     min="50"
                 ></v-text-field>
 
@@ -290,6 +291,7 @@ export default {
                     label="К получению"
                     placeholder="0"
                     prepend-icon="mdi-wallet"
+                    suffix="₴"
                     readonly
                 ></v-text-field>
             </v-card-text>

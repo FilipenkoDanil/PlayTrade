@@ -146,16 +146,28 @@ export default {
                     <v-divider></v-divider>
                 </v-row>
 
-                <div v-if="offer.category?.type === 1">
-                    <h1 class="text-h5 font-weight-bold mb-4">
-                        {{ offer.title }}
-                    </h1>
+                <v-row  v-if="offer.category?.type === 1">
+                    <v-col>
+                        <h1 class="text-h5 font-weight-bold mb-4">
+                            {{ offer.title }}
+                        </h1>
 
-                    <p class="text-body-2 mb-4">
-                        {{ offer.description }}
-                    </p>
-                </div>
+                        <p class="text-body-2 mb-4">
+                            {{ offer.description }}
+                        </p>
+                    </v-col>
+                    <v-divider></v-divider>
+                </v-row>
 
+
+                <v-row>
+                    <v-col>
+                        <v-chip class="ma-1" color="deep-purple-accent-1" variant="outlined">
+                            Игра:
+                            {{ offer.category?.game.title }}
+                        </v-chip>
+                    </v-col>
+                </v-row>
 
                 <v-row v-if="offer.category?.type === 1">
                     <v-col cols="12" sm="6" v-for="attribute in offer.attributes" :key="attribute.title">
@@ -175,7 +187,7 @@ export default {
 
                 <v-row>
                     <v-col>
-                        <v-chip class="ma-1 border-dashed" color="warning" variant="outlined">
+                        <v-chip class="ma-1" color="warning" variant="outlined">
                             Наличие: {{ offer.amount }}{{ offer.category?.unit.title }}
                         </v-chip>
                     </v-col>

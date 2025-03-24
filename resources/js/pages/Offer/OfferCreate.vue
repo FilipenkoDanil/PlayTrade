@@ -141,6 +141,7 @@ export default {
                         :label="'Цена/' + category.unit?.title"
                         type="number"
                         min="1"
+                        suffix="₴"
                         :error-messages="errors.price"
                     ></v-text-field>
                 </v-col>

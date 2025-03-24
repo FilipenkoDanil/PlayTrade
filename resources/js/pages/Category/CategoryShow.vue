@@ -124,6 +124,7 @@ export default {
                     item-value="id"
                     hover
                     class="offer-table"
+                    items-per-page="25"
                     @click:row="goToOffer"
                 >
                     <template v-if="category.servers?.length" v-slot:item.server.title="{ item }">
@@ -152,7 +153,7 @@ export default {
                     </template>
 
                     <template v-slot:item.price="{ item }">
-                        {{ item.price }} $
+                        {{ item.price }} ₴
                     </template>
                 </v-data-table>
             </v-col>
@@ -172,7 +173,7 @@ export default {
                         <v-expansion-panel-text>
                             1. Выберите продавца.<br>
                             2. Оформите сделку.<br>
-                            3. Дождитесь подтверждения.
+                            3. Дождитесь выполнения и подтвердите.
                         </v-expansion-panel-text>
                     </v-expansion-panel>
                 </v-expansion-panels>
