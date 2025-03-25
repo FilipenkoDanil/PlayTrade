@@ -42,6 +42,11 @@ export default {
                 });
         },
 
+        deleteServer() {
+            axios.delete(`api/servers/${this.$route.params.id}`)
+                .then(() => this.$router.push({'name': 'game.edit', params: {id: this.game.id}}))
+        },
+
         getServer() {
             axios.get(`api/servers/${this.$route.params.id}`)
                 .then(r => {
@@ -68,8 +73,9 @@ export default {
 
         </v-card-text>
         <v-card-actions>
-            <v-spacer></v-spacer>
             <v-btn :loading="loading" color="primary" @click="updateServer">Сохранить</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn color="red" @click="deleteServer">Удалить сервер</v-btn>
         </v-card-actions>
     </v-card>
 

@@ -36,7 +36,7 @@ export default {
 </script>
 
 <template>
-    <v-card>
+    <v-card class="pa-4  mx-auto" max-width="500">
         <v-card-title>Редактирование игры</v-card-title>
 
         <v-card-text>

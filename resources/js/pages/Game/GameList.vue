@@ -9,7 +9,7 @@ export default {
             trashedGames: [],
             headers: [
                 {title: '#', value: 'id'},
-                {title: 'Title', value: 'title'},
+                {title: 'Название', value: 'title'},
             ]
         }
     },
@@ -42,7 +42,6 @@ export default {
 </script>
 
 <template>
-    <h2 class="text-h5 mb-4">Список игр</h2>
     <v-card class="mb-6">
         <v-card-title>Активные игры</v-card-title>
         <v-divider></v-divider>
@@ -51,6 +50,7 @@ export default {
             :headers="headers"
             class="elevation-1"
             hover
+            items-per-page="100"
             @click:row="openGame"
         ></v-data-table>
     </v-card>

@@ -13,6 +13,10 @@ class UnitSeeder extends Seeder
      */
     public function run(): void
     {
-        Unit::factory(3)->create();
+        $units = ['к', 'кк', 'шт',];
+
+        foreach ($units as $unit) {
+            Unit::firstOrCreate(['title' => $unit]);
+        }
     }
 }

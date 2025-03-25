@@ -153,9 +153,9 @@ export default {
 
         </v-card-text>
         <v-card-actions>
-            <v-btn @click="deleteCategory" color="red">Удалить категорию</v-btn>
-            <v-spacer></v-spacer>
             <v-btn :loading="loading" color="primary" @click="updateCategory">Сохранить</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn @click="deleteCategory" color="red">Удалить категорию</v-btn>
         </v-card-actions>
     </v-card>
 

@@ -46,6 +46,31 @@ export default {
                 .then(r => this.userBalance = r.data.balance)
         },
 
+        getStatusText(statusId) {
+            switch (statusId) {
+                case 1:
+                    return 'Выполняется';
+                case 2:
+                    return 'Завершен';
+                case 3:
+                    return 'Отменен';
+                case 4:
+                    return 'Спор';
+                case 5:
+                    return 'Выполняется';
+                case 6:
+                    return 'Завершен';
+                case 7:
+                    return 'Ошибка';
+                case 8:
+                    return 'Отменен';
+                case 9:
+                    return 'Возвращен';
+                default:
+                    return 'Неизвестно';
+            }
+        },
+
         getStatusColor(statusId) {
             switch (statusId) {
                 case 1:
@@ -178,7 +203,7 @@ export default {
 
         <template v-slot:item.status="{ item }">
             <v-chip :color="getStatusColor(item.transactable.status_id)" small>
-                {{ item.transactable.status.title }}
+                {{ getStatusText(item.transactable.status_id) }}
             </v-chip>
         </template>
 
@@ -218,7 +243,7 @@ export default {
 
                 <p><strong>Статус: </strong>
                     <v-chip :color="getStatusColor(selectedTransaction.transactable.status_id)" small>
-                        {{ selectedTransaction.transactable.status.title }}
+                        {{ getStatusText(selectedTransaction.transactable.status_id) }}
                     </v-chip>
                 </p>
 

@@ -33,15 +33,15 @@ export default {
         getStatusText(statusId) {
             switch (statusId) {
                 case 1:
-                    return 'In Progress';
+                    return 'Выполняется';
                 case 2:
-                    return 'Completed';
+                    return 'Завершен';
                 case 3:
-                    return 'Canceled';
+                    return 'Отменен';
                 case 4:
-                    return 'Disputed';
+                    return 'Спор';
                 default:
-                    return 'Unknown';
+                    return 'Неизвестно';
             }
         },
         getStatusColor(statusId) {

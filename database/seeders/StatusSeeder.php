@@ -14,18 +14,16 @@ class StatusSeeder extends Seeder
     public function run(): void
     {
         $statuses = [
-            // Статусы для сделок (deals)
-            ['title' => 'In Progress', 'type' => 'deal'], // Выполняется
-            ['title' => 'Completed', 'type' => 'deal'],   // Закрыто (выполнено)
-            ['title' => 'Cancelled', 'type' => 'deal'],   // Отменено
-            ['title' => 'Disputed', 'type' => 'deal'],    // Спор
+            ['title' => 'In Progress', 'type' => 'deal'],
+            ['title' => 'Completed', 'type' => 'deal'],
+            ['title' => 'Cancelled', 'type' => 'deal'],
+            ['title' => 'Disputed', 'type' => 'deal'],
 
-            // Статусы для транзакций (transactions)
-            ['title' => 'Pending', 'type' => 'transaction'],  // Ожидание
-            ['title' => 'Completed', 'type' => 'transaction'], // Выполнено
-            ['title' => 'Failed', 'type' => 'transaction'],   // Ошибка
-            ['title' => 'Cancelled', 'type' => 'transaction'], // Отменено
-            ['title' => 'Refunded', 'type' => 'transaction'], // Возврат
+            ['title' => 'Pending', 'type' => 'transaction'],
+            ['title' => 'Completed', 'type' => 'transaction'],
+            ['title' => 'Failed', 'type' => 'transaction'],
+            ['title' => 'Cancelled', 'type' => 'transaction'],
+            ['title' => 'Refunded', 'type' => 'transaction'],
         ];
 
         foreach ($statuses as $status) {

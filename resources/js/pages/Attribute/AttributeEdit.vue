@@ -42,12 +42,16 @@ export default {
                 });
         },
 
+        deleteAttribute() {
+            axios.delete(`api/attributes/${this.$route.params.id}`)
+                .then(() => this.$router.push({'name': 'game.edit', params: {id: this.game.id}}))
+        },
+
         getAttribute() {
             axios.get(`api/attributes/${this.$route.params.id}`)
                 .then(r => {
                     this.title = r.data.data.title
                     this.game = r.data.data.game
-                    console.log(r.data)
                 })
         },
 
@@ -69,8 +73,9 @@ export default {
 
         </v-card-text>
         <v-card-actions>
-            <v-spacer></v-spacer>
             <v-btn :loading="loading" color="primary" @click="updateAttribute">Сохранить</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn color="red" @click="deleteAttribute">Удалить атрибут</v-btn>
         </v-card-actions>
     </v-card>
 
