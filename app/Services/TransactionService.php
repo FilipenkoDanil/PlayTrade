@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Contracts\Transactable;
+use App\Models\Deal;
+use App\Models\Status;
 use App\Models\Transaction;
 use App\Models\User;
 
@@ -37,5 +39,15 @@ class TransactionService
         $seller->increment('balance', $amount);
 
         $this->create($seller->id, $deal, Transaction::DEAL_SALE);
+    }
+
+    public function incrementBalance(User $user, float $amount): void
+    {
+        $user->increment('balance', $amount);
+    }
+
+    public function decrementBalance(User $user, float $amount): void
+    {
+        $user->decrement('balance', $amount);
     }
 }

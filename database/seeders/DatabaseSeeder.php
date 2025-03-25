@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             OfferSeeder::class,
             AttributeCategorySeeder::class,
             AttributeOfferSeeder::class,
+            RolesSeeder::class,
         ]);
     }
 }

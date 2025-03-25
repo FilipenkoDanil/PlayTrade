@@ -31,7 +31,6 @@ export default {
                 .then(() => {
                     this.snackMessage = "Сервер успешно обновлен";
                     this.snackColor = "success";
-                    this.title = "";
                 })
                 .catch(r => {
                     this.snackMessage = r.response.data.message;
@@ -41,6 +40,11 @@ export default {
                     this.loading = false;
                     this.snack = true;
                 });
+        },
+
+        deleteServer() {
+            axios.delete(`api/servers/${this.$route.params.id}`)
+                .then(() => this.$router.push({'name': 'game.edit', params: {id: this.game.id}}))
         },
 
         getServer() {
@@ -69,8 +73,9 @@ export default {
 
         </v-card-text>
         <v-card-actions>
-            <v-spacer></v-spacer>
             <v-btn :loading="loading" color="primary" @click="updateServer">Сохранить</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn color="red" @click="deleteServer">Удалить сервер</v-btn>
         </v-card-actions>
     </v-card>
 

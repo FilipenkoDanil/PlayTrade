@@ -28,6 +28,7 @@ class StoreCategoryRequest extends FormRequest
             'description' => 'nullable',
             'game_id' => 'required|exists:games,id',
             'unit_id' => 'required|exists:units,id',
+            'type' => 'required|numeric|in:1,2',
             'attributes' => 'array',
             'attributes.*' => [
                 'exists:attributes,id',

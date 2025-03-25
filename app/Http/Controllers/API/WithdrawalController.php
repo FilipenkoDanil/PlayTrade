@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
+use App\Models\Status;
+use App\Models\Transaction;
+use App\Models\Withdrawal;
+use App\Http\Requests\StoreWithdrawalRequest;
+use App\Http\Requests\UpdateWithdrawalRequest;
+use App\Services\TransactionService;
+use App\Services\WithdrawalService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+class WithdrawalController extends Controller
+{
+    public function __construct(private readonly WithdrawalService $withdrawalService, private readonly TransactionService $transactionService)
+    {
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreWithdrawalRequest $request)
+    {
+        $user = Auth::user();
+
+        if ($user->balance < $request->requested_amount) {
+            return response()->json(['message' => "You don't have sufficient balance"], 403);
+        }
+
+        return DB::transaction(function () use ($request, $user) {
+            $withdrawal = $this->withdrawalService->createWithdrawal($request->validated(), $user->id);
+            $this->transactionService->create($user->id, $withdrawal, Transaction::WITHDRAWAL);
+            $this->transactionService->freezeBalance($user, $withdrawal->requested_amount);
+
+            return $withdrawal;
+        });
+    }
+
+    public function cancel(Withdrawal $withdrawal)
+    {
+        $user = Auth::user();
+
+        if ($user->id !== $withdrawal->user_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        if ($withdrawal->status_id !== Status::TRANSACTION_PENDING) {
+            return response()->json(['message' => 'Withdrawal cannot be canceled'], 403);
+        }
+
+        DB::transaction(function () use ($withdrawal, $user) {
+            $withdrawal->status_id = Status::TRANSACTION_CANCELED;
+            $this->transactionService->unfreezeBalance($user, $withdrawal->getAmount());
+            $withdrawal->save();
+
+            return $withdrawal;
+        });
+    }
+}

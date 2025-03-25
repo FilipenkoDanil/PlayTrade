@@ -64,7 +64,10 @@ class DealService
         DB::transaction(function () use ($deal) {
             $deal->update(['status_id' => Status::DEAL_COMPLETED]);
 
-            $this->transactionService->confirmDeal($deal->buyer, $deal->offer->seller, $deal->price, $deal);
+            $deal->buyer->decrement('frozen_balance', $deal->price);
+            $deal->offer->seller->increment('balance', $deal->price);
+
+            $this->transactionService->create($deal->offer->seller_id, $deal, Transaction::DEAL_SALE);
         });
     }
 
@@ -75,6 +78,13 @@ class DealService
 
             $this->transactionService->create($deal->buyer->id, $deal, Transaction::DEAL_CANCELED);
             $this->transactionService->unfreezeBalance($deal->buyer, $deal->price);
+        });
+    }
+
+    public function dispute(Deal $deal): void
+    {
+        DB::transaction(function () use ($deal) {
+            $deal->update(['status_id' => Status::DEAL_DISPUTED]);
         });
     }
 }

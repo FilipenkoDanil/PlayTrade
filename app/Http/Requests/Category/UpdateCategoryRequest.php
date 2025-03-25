@@ -27,6 +27,7 @@ class UpdateCategoryRequest extends FormRequest
             'title' => 'required|max:255',
             'description' => 'nullable',
             'unit_id' => 'required|exists:units,id',
+            'type' => 'required|in:1,2',
             'attributes' => 'array',
             'attributes.*' => [
                 'exists:attributes,id',

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Transaction extends Model
 {
@@ -16,4 +18,14 @@ class Transaction extends Model
     const DEAL_CANCELED = 'deal_canceled';
     const WITHDRAWAL = 'withdrawal';
     const DEPOSIT = 'deposit';
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function transactable(): MorphTo
+    {
+        return $this->morphTo();
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Offer;
 
+use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreOfferRequest extends FormRequest
@@ -21,17 +22,28 @@ class StoreOfferRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'title' => 'nullable|string|max:100',
+        $category = Category::findOrFail($this->input('category_id'));
+        $isCurrency = $category->type === 2;
+
+        $rules = [
+            'title' => $isCurrency ? 'nullable|string|max:100' : 'required|string|max:100',
             'amount' => 'required|numeric|min:1',
-            'price' => 'required|numeric|min:1',
+            'price' => 'required|numeric|min:1|max:999999',
             'description' => 'string|nullable|max:255',
             'auto_message' => 'string|nullable|max:255',
-            'server_id' => 'integer|exists:servers,id',
             'category_id' => 'required|integer|exists:categories,id',
-            'attributes' => 'array',
-            'attributes.*.id' => 'required|integer|exists:attributes,id',
-            'attributes.*.value' => 'required|string|max:255',
         ];
+
+        if ($category->servers->isNotEmpty()) {
+            $rules['server_id'] = 'required|integer|exists:servers,id';
+        }
+
+        if ($category->attributes->isNotEmpty()) {
+            $rules['attributes'] = 'required|array';
+            $rules['attributes.*.id'] = 'required|integer|exists:attributes,id';
+            $rules['attributes.*.value'] = 'required|string|max:255';
+        }
+
+        return $rules;
     }
 }

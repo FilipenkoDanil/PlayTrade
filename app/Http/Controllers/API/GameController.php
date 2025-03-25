@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Game\StoreGameRequest;
 use App\Http\Requests\Game\UpdateGameRequest;
 use App\Http\Resources\GameResource;
+use App\Models\Attribute;
+use App\Models\Category;
 use App\Models\Game;
+use App\Models\Server;
 use Illuminate\Support\Facades\DB;
 
 class GameController extends Controller
@@ -24,7 +27,37 @@ class GameController extends Controller
      */
     public function store(StoreGameRequest $request)
     {
-        return new GameResource(Game::create($request->validated()));
+        $game = DB::transaction(function () use ($request) {
+            $game = Game::create([
+                'title' => $request->title
+            ]);
+
+            foreach ($request->categories as $category) {
+                Category::create([
+                    'title' => $category['title'],
+                    'unit_id' => $category['unit_id'],
+                    'game_id' => $game->id,
+                    'type' => $category['type']
+                ]);
+            }
+
+            foreach ($request->servers as $server) {
+                Server::create([
+                    'title' => $server['title'],
+                    'game_id' => $game->id
+                ]);
+            }
+
+            foreach ($request['attributes'] as $attribute) {
+                Attribute::create([
+                    'title' => $attribute['title'],
+                    'game_id' => $game->id
+                ]);
+            }
+            return $game;
+        });
+
+        return new GameResource($game);
     }
 
     /**
@@ -32,7 +65,7 @@ class GameController extends Controller
      */
     public function show(Game $game)
     {
-        return new GameResource($game->load('categories'));
+        return new GameResource($game->load(['categories', 'attributes', 'servers']));
     }
 
     /**
@@ -51,7 +84,9 @@ class GameController extends Controller
     public function destroy(Game $game)
     {
         DB::transaction(function () use ($game) {
-            $game->categories()->delete();
+            $game->categories->each(function ($category) {
+                $category->delete();
+            });
             $game->servers()->delete();
             $game->delete();
         });

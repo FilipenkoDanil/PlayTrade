@@ -20,11 +20,13 @@ class CategoryResource extends JsonResource
             'description' => $this->description,
             'game_id' => $this->game_id,
             'unit_id' => $this->unit_id,
+            'type' => $this->type,
             'game' => new GameResource($this->whenLoaded('game')),
             'unit' => new UnitResource($this->whenLoaded('unit')),
             'offers' => OfferResource::collection($this->whenLoaded('offers')),
             'servers' => ServerResource::collection($this->whenLoaded('servers')),
             'attributes' => AttributeResource::collection($this->whenLoaded('attributes')),
+            'offers_count' => $this->whenCounted('offers_count')
         ];
     }
 }

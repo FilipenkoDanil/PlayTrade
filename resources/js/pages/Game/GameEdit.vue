@@ -21,7 +21,6 @@ export default {
             axios.patch(`api/games/${this.game.id}`, {
                 title: this.game.title
             })
-                .then(() => console.log('OK'))
         },
 
         deleteGame() {
@@ -37,7 +36,7 @@ export default {
 </script>
 
 <template>
-    <v-card>
+    <v-card class="pa-4  mx-auto" max-width="500">
         <v-card-title>Редактирование игры</v-card-title>
 
         <v-card-text>
@@ -46,6 +45,16 @@ export default {
             <span class="text-h6">Категории: </span>
             <v-chip-group>
                 <v-chip v-for="cat in game.categories" :to="{name: 'category.edit', params: {id: cat.id}}">{{ cat.title }}</v-chip>
+            </v-chip-group>
+
+            <span class="text-h6">Атрибуты: </span>
+            <v-chip-group>
+                <v-chip v-for="attr in game.attributes" :to="{name: 'attribute.edit', params: {id: attr.id}}">{{ attr.title }}</v-chip>
+            </v-chip-group>
+
+            <span class="text-h6">Сервера: </span>
+            <v-chip-group>
+                <v-chip v-for="serv in game.servers" :to="{name: 'server.edit', params: {id: serv.id}}">{{ serv.title }}</v-chip>
             </v-chip-group>
         </v-card-text>
 

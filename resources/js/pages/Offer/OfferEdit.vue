@@ -1,6 +1,4 @@
 <script>
-import axios from "axios";
-
 export default {
     name: "Edit",
 
@@ -10,7 +8,13 @@ export default {
             offer: {},
 
             selectedServerId: null,
-            attributes: []
+            attributes: [],
+
+            // Добавлено: состояния для снекбара и ошибок
+            snackbar: false,
+            snackbarMessage: '',
+            snackbarColor: 'success',
+            errors: {}
         }
     },
 
@@ -41,9 +45,12 @@ export default {
         },
 
         updateOffer() {
+            this.errors = {}; // Очищаем ошибки перед отправкой
+
             const payload = {
                 title: this.offer.title,
                 description: this.offer.description,
+                auto_message: this.offer.auto_message,
                 amount: this.offer.amount,
                 price: this.offer.price,
                 is_active: this.offer.is_active,
@@ -54,17 +61,27 @@ export default {
                 payload.server_id = null
             }
 
-
             payload.attributes = this.attributes
                 .filter(attr => attr.value)
                 .map(attr => ({id: attr.id, value: attr.value}))
 
             axios.put(`api/offers/${this.$route.params.id}`, payload)
-                .then(response => {
-                    console.log("Offer updated successfully:", response.data)
+                .then(() => {
+                    // Показываем уведомление об успешном обновлении
+                    this.snackbarMessage = 'Предложение успешно обновлено!';
+                    this.snackbarColor = 'success';
+                    this.snackbar = true;
                 })
-                .catch(error => {
-                    console.error("Error updating offer:", error)
+                .catch(err => {
+                    if (err.response && err.response.data.errors) {
+                        // Сохраняем ошибки для отображения
+                        this.errors = err.response.data.errors;
+
+                        // Показываем уведомление об ошибке
+                        this.snackbarMessage = 'Ошибка при обновлении предложения. Проверьте данные.';
+                        this.snackbarColor = 'error';
+                        this.snackbar = true;
+                    }
                 });
         },
 
@@ -94,37 +111,78 @@ export default {
                 </v-col>
             </v-row>
 
-            <v-row>
+            <v-row v-if="offer.category?.type === 1">
                 <v-col cols="12">
-                    <v-text-field v-model="offer.title" label="Название"></v-text-field>
+                    <v-text-field
+                        v-model="offer.title"
+                        label="Название"
+                        :error-messages="errors.title"
+                    ></v-text-field>
                 </v-col>
             </v-row>
 
             <v-row>
                 <v-col cols="6">
-                    <v-text-field v-model="offer.amount" :label="'Количество ' + category.unit?.title" type="number"
-                                  min="1"></v-text-field>
+                    <v-text-field
+                        v-model="offer.amount"
+                        :label="'Количество ' + category.unit?.title"
+                        type="number"
+                        min="1"
+                        :error-messages="errors.amount"
+                    ></v-text-field>
                 </v-col>
                 <v-col cols="6">
-                    <v-text-field v-model="offer.price" :label="'Цена/' + category.unit?.title" type="number"
-                                  min="1"></v-text-field>
+                    <v-text-field
+                        v-model="offer.price"
+                        :label="'Цена/' + category.unit?.title"
+                        type="number"
+                        min="1"
+                        :error-messages="errors.price"
+                    ></v-text-field>
                 </v-col>
 
+                <!-- Поле "Сервер" -->
                 <v-col v-if="category?.servers?.length" cols="12">
-                    <v-select v-model="selectedServerId" :items="category.servers" label="Сервер" item-title="title"
-                              item-value="id"></v-select>
+                    <v-select
+                        v-model="selectedServerId"
+                        :items="category.servers"
+                        label="Сервер"
+                        item-title="title"
+                        item-value="id"
+                        :error-messages="errors.server_id"
+                    ></v-select>
                 </v-col>
             </v-row>
 
-            <v-textarea v-model="offer.description" label="Описание"></v-textarea>
+            <!-- Поле "Описание" -->
+            <v-textarea
+                v-if="offer.category?.type === 1"
+                v-model="offer.description"
+                label="Описание"
+                :error-messages="errors.description"
+            ></v-textarea>
 
+            <!-- Поле "Автосообщение" -->
+            <v-textarea
+                v-if="offer.category?.type === 1"
+                v-model="offer.auto_message"
+                label="Автосообщение"
+                :error-messages="errors.auto_message"
+            ></v-textarea>
+
+            <!-- Чекбокс "Активно" -->
             <v-checkbox v-model="offer.is_active" label="Активно" :false-value="0" :true-value="1"></v-checkbox>
 
-            <div v-if="attributes.length">
+            <!-- Атрибуты -->
+            <div v-if="offer.category?.type === 1 && attributes.length">
                 <p class="text-subtitle-1 font-weight-medium">Атрибуты</p>
                 <v-row>
                     <v-col cols="4" v-for="(attr, index) in attributes" :key="attr.id">
-                        <v-text-field v-model="attributes[index].value" :label="attr.title"></v-text-field>
+                        <v-text-field
+                            v-model="attributes[index].value"
+                            :label="attr.title"
+                            :error-messages="errors[`attributes.${attr.id}`]"
+                        ></v-text-field>
                     </v-col>
                 </v-row>
             </div>
@@ -133,9 +191,18 @@ export default {
         <v-card-actions>
             <v-btn @click="updateOffer" color="primary">Сохранить изменения</v-btn>
             <v-spacer></v-spacer>
-            <v-btn @click="deleteOffer" color="red">Удалить предложение</v-btn>
+            <v-btn @click="deleteOffer" color="red">Удалить</v-btn>
         </v-card-actions>
     </v-card>
+
+    <!-- Снекбар для уведомлений -->
+    <v-snackbar
+        v-model="snackbar"
+        :color="snackbarColor"
+        timeout="3000"
+    >
+        {{ snackbarMessage }}
+    </v-snackbar>
 </template>
 
 <style scoped>

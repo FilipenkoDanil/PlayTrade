@@ -18,7 +18,7 @@ export default {
     methods: {
         createServer() {
             if (!this.title.trim()) {
-                this.snackMessage = "Название категории не может быть пустым";
+                this.snackMessage = "Название сервера не может быть пустым";
                 this.snackColor = "error";
                 this.snack = true;
                 return;

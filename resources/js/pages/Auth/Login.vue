@@ -1,4 +1,6 @@
 <script>
+import {reloadRolesAndPermissions} from 'laravel-permission-to-vuejs'
+
 export default {
     inject: ['isAuth', 'setAuth'],
     name: 'Login',
@@ -6,6 +8,8 @@ export default {
         return {
             email: '',
             password: '',
+
+            errors: [],
         }
     },
 
@@ -18,10 +22,19 @@ export default {
                         password: this.password
                     })
                         .then(() => {
-                            localStorage.setItem('isAuth', 'true')
-                            this.setAuth(true);
-                            this.$router.push({name: 'home'})
+                            axios.get('api/user')
+                                .then(r => {
+                                    localStorage.setItem('isAuth', 'true')
+                                    localStorage.setItem('userId', r.data.id)
+                                    this.setAuth({
+                                        isAuth: true,
+                                        userId: r.data.id
+                                    });
+                                    reloadRolesAndPermissions()
+                                    this.$router.push({name: 'home'})
+                                })
                         })
+                        .catch(err => this.errors = err.response.data.errors)
                 })
         },
     }
@@ -40,6 +53,7 @@ export default {
                         label="Email"
                         type="email"
                         required
+                        :error-messages="errors.email"
                     ></v-text-field>
 
                     <v-text-field
@@ -47,6 +61,7 @@ export default {
                         label="Пароль"
                         type="password"
                         required
+                        :error-messages="errors.password"
                     ></v-text-field>
 
                     <v-btn @click.prevent="login" type="submit" color="primary" block class="mt-2">

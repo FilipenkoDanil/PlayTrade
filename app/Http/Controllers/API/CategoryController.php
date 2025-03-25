@@ -37,7 +37,9 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return new CategoryResource($category->load(['game.categories', 'offers.seller', 'servers', 'attributes', 'unit', 'offers.attributes', 'offers.server']));
+        return new CategoryResource($category->load(['game.categories' => function ($query) {
+            $query->withCount('offers');
+        }, 'offers.seller', 'servers', 'attributes', 'unit', 'offers.attributes', 'offers.server']));
     }
 
     /**
@@ -54,7 +56,7 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         DB::transaction(function () use ($category) {
-           $category->delete();
+            $category->delete();
         });
 
         return response()->json([

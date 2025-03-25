@@ -22,7 +22,18 @@ class StoreGameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|unique:games,title|max:255'
+            'title' => 'required|unique:games,title|max:255',
+
+            'categories' => 'nullable|array',
+            'categories.*.title' => 'required|string|max:255',
+            'categories.*.unit_id' => 'required|exists:units,id',
+            'categories.*.type' => 'required|in:1,2',
+
+            'servers' => 'nullable|array',
+            'servers.*.title' => 'required|string|max:255',
+
+            'attributes' => 'nullable|array',
+            'attributes.*.title' => 'required|string|max:255',
         ];
     }
 }

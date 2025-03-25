@@ -13,14 +13,14 @@ class Category extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['title', 'description', 'game_id', 'unit_id'];
+    protected $fillable = ['title', 'type', 'description', 'game_id', 'unit_id'];
 
     protected static function boot(): void
     {
         parent::boot();
 
         static::deleting(function ($category) {
-            Offer::where('category_id', $category->id)->delete();
+            $category->allOffers()->delete();
         });
     }
 
@@ -47,5 +47,10 @@ class Category extends Model
     public function offers(): HasMany
     {
         return $this->hasMany(Offer::class)->where('is_active', '=', 1);
+    }
+
+    public function allOffers(): HasMany
+    {
+        return $this->hasMany(Offer::class);
     }
 }

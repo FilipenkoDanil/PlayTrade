@@ -5,6 +5,10 @@ import gameRoutes from "./modules/game";
 import offerRoutes from "./modules/offer";
 import userRoutes from "./modules/user";
 import serverRoutes from "./modules/server.js"
+import chatRoutes from "./modules/chat.js"
+import disputeRoutes from "./modules/dispute.js"
+import attributeRoutes from "./modules/attribute.js"
+import withdrawalRoutes from "./modules/withdrawal.js"
 
 const routes = [
     {
@@ -17,7 +21,11 @@ const routes = [
     ...gameRoutes,
     ...offerRoutes,
     ...userRoutes,
-    ...serverRoutes
+    ...serverRoutes,
+    ...chatRoutes,
+    ...disputeRoutes,
+    ...attributeRoutes,
+    ...withdrawalRoutes,
 ]
 
 const router = createRouter({
@@ -27,16 +35,15 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const isAuth = localStorage.getItem('isAuth')
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
 
-    if (isAuth) {
-        if (to.name === 'login' || to.name === 'register') {
-            return next({
-                name: 'home'
-            })
-        }
+    if (requiresAuth && !isAuth) {
+        next({ name: 'login' })
+    } else if (isAuth && (to.name === 'login' || to.name === 'register')) {
+        next({ name: 'home' })
+    } else {
+        next();
     }
-
-    next()
 })
 
 export default router
