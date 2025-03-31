@@ -46,7 +46,7 @@ export default {
             if (container) {
                 setTimeout(() => {
                     container.scrollTop = container.scrollHeight;
-                    this.showMessages = true; // Показываем сообщения только после скролла
+                    this.showMessages = true
                 }, 50);
             }
         }
@@ -66,7 +66,9 @@ export default {
 <template>
     <v-card class="d-flex flex-column fill-height" rounded>
         <v-card-title v-if="isChatSelected">
-            <h2 class="text-h5">{{ companion.name }}</h2>
+            <router-link :to="{name: 'user.profile', params: {id: companion.id}}" style="text-decoration: none; color: inherit;">
+                <h2 class="text-h5">{{ companion.name }}</h2>
+            </router-link>
             <v-divider></v-divider>
         </v-card-title>
 
@@ -81,7 +83,6 @@ export default {
                 ref="messageContainer"
                 v-show="showMessages"
             >
-                <!-- Сообщения и уведомления -->
                 <div
                     v-for="message in messages"
                     :key="message.id"
@@ -90,7 +91,6 @@ export default {
                         message.type === 'notify' ? 'justify-center' : (message.sender === 'user' ? 'justify-end' : 'justify-start')
                     ]"
                 >
-                    <!-- Уведомление -->
                     <v-card
                         v-if="message.type === 'notify'"
                         class="pa-3 mb-2"
@@ -103,7 +103,6 @@ export default {
                         </v-card-text>
                     </v-card>
 
-                    <!-- Обычное сообщение -->
                     <v-card
                         v-else
                         class="pa-3 mb-2"

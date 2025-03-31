@@ -91,7 +91,7 @@ export default {
                 </template>
 
                 <v-row>
-                    <v-col cols="12" md="4">
+                    <v-col cols="12" md="4" v-if="category.type === 1">
                         <v-text-field v-model="searchQuery" label="Поиск по названию" variant="outlined" density="comfortable" @input="filterOffers"></v-text-field>
                     </v-col>
 
@@ -133,7 +133,6 @@ export default {
 
                     <template v-slot:item.seller.name="{ item }">
                         <div class="d-flex align-center">
-                            <!-- Аватар с рамкой -->
                             <v-avatar
                                 size="40"
                                 class="mr-2"
@@ -142,7 +141,6 @@ export default {
                                 <v-img src="https://picsum.photos/500" alt="Avatar"></v-img>
                             </v-avatar>
 
-                            <!-- Имя продавца -->
                             <span class="mr-2">{{ item.seller.name }}</span>
 
                         </div>

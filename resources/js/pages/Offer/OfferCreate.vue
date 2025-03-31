@@ -116,6 +116,7 @@ export default {
                         v-else
                         v-model="title"
                         label="Название"
+                        density="comfortable"
                         :error-messages="errors.title"
                     ></v-text-field>
                 </v-col>
@@ -130,6 +131,7 @@ export default {
                         :label="'Количество ' + category.unit?.title"
                         type="number"
                         min="1"
+                        density="comfortable"
                         :error-messages="errors.amount"
                     ></v-text-field>
                 </v-col>
@@ -142,6 +144,7 @@ export default {
                         type="number"
                         min="1"
                         suffix="₴"
+                        density="comfortable"
                         :error-messages="errors.price"
                     ></v-text-field>
                 </v-col>
@@ -154,6 +157,7 @@ export default {
                         label="Сервер"
                         item-title="title"
                         item-value="id"
+                        density="comfortable"
                         :error-messages="errors.server_id"
                     ></v-select>
                 </v-col>
@@ -164,6 +168,7 @@ export default {
                 v-if="category.type === 1"
                 v-model="description"
                 label="Описание"
+                density="comfortable"
                 :error-messages="errors.description"
             ></v-textarea>
 
@@ -172,6 +177,7 @@ export default {
                 v-if="category.type === 1"
                 v-model="autoMessage"
                 label="Автоосообщение"
+                density="comfortable"
                 :error-messages="errors.auto_message"
             ></v-textarea>
 
@@ -184,6 +190,7 @@ export default {
                             v-else
                             v-model="selectedAttributes[attr.id]"
                             :label="attr.title"
+                            density="comfortable"
                             :error-messages="errors['attributes']"
                         ></v-text-field>
                     </v-col>

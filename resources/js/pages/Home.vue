@@ -57,7 +57,7 @@ export default {
             </template>
             <template v-else>
                 <v-col v-for="game in filteredGames" :key="game.id" cols="12" sm="6" md="4" lg="3">
-                    <v-card class="game-card">
+                    <v-card class="game-card" density="compact">
                         <v-img :src="game.image || 'https://picsum.photos/800'" height="200px" cover></v-img>
                         <v-card-title class="font-weight-bold">{{ game.title }}</v-card-title>
                         <v-card-text>
@@ -66,8 +66,9 @@ export default {
                                 :key="category.id"
                                 :to="{ name: 'category', params: { id: category.id } }"
                                 :color="colors[idx % colors.length]"
-                                class="mr-1 mb-1 text-white"
+                                class="mr-1 mb-1"
                                 label
+                                density="comfortable"
                             >
                                 {{ category.title }}
                             </v-chip>

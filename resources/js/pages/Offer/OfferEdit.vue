@@ -10,7 +10,6 @@ export default {
             selectedServerId: null,
             attributes: [],
 
-            // Добавлено: состояния для снекбара и ошибок
             snackbar: false,
             snackbarMessage: '',
             snackbarColor: 'success',
@@ -39,13 +38,13 @@ export default {
                             id: catAttr.id,
                             title: catAttr.title,
                             value: offerAttr ? offerAttr.value : ''
-                        };
-                    });
+                        }
+                    })
                 })
         },
 
         updateOffer() {
-            this.errors = {}; // Очищаем ошибки перед отправкой
+            this.errors = {}
 
             const payload = {
                 title: this.offer.title,
@@ -67,20 +66,17 @@ export default {
 
             axios.put(`api/offers/${this.$route.params.id}`, payload)
                 .then(() => {
-                    // Показываем уведомление об успешном обновлении
-                    this.snackbarMessage = 'Предложение успешно обновлено!';
-                    this.snackbarColor = 'success';
-                    this.snackbar = true;
+                    this.snackbarMessage = 'Предложение успешно обновлено!'
+                    this.snackbarColor = 'success'
+                    this.snackbar = true
                 })
                 .catch(err => {
                     if (err.response && err.response.data.errors) {
-                        // Сохраняем ошибки для отображения
-                        this.errors = err.response.data.errors;
+                        this.errors = err.response.data.errors
 
-                        // Показываем уведомление об ошибке
-                        this.snackbarMessage = 'Ошибка при обновлении предложения. Проверьте данные.';
-                        this.snackbarColor = 'error';
-                        this.snackbar = true;
+                        this.snackbarMessage = 'Ошибка при обновлении предложения. Проверьте данные.'
+                        this.snackbarColor = 'error'
+                        this.snackbar = true
                     }
                 });
         },
@@ -116,6 +112,7 @@ export default {
                     <v-text-field
                         v-model="offer.title"
                         label="Название"
+                        density="comfortable"
                         :error-messages="errors.title"
                     ></v-text-field>
                 </v-col>
@@ -128,6 +125,7 @@ export default {
                         :label="'Количество ' + category.unit?.title"
                         type="number"
                         min="1"
+                        density="comfortable"
                         :error-messages="errors.amount"
                     ></v-text-field>
                 </v-col>
@@ -137,11 +135,11 @@ export default {
                         :label="'Цена/' + category.unit?.title"
                         type="number"
                         min="1"
+                        density="comfortable"
                         :error-messages="errors.price"
                     ></v-text-field>
                 </v-col>
 
-                <!-- Поле "Сервер" -->
                 <v-col v-if="category?.servers?.length" cols="12">
                     <v-select
                         v-model="selectedServerId"
@@ -149,31 +147,30 @@ export default {
                         label="Сервер"
                         item-title="title"
                         item-value="id"
+                        density="comfortable"
                         :error-messages="errors.server_id"
                     ></v-select>
                 </v-col>
             </v-row>
 
-            <!-- Поле "Описание" -->
             <v-textarea
                 v-if="offer.category?.type === 1"
                 v-model="offer.description"
                 label="Описание"
+                density="comfortable"
                 :error-messages="errors.description"
             ></v-textarea>
 
-            <!-- Поле "Автосообщение" -->
             <v-textarea
                 v-if="offer.category?.type === 1"
                 v-model="offer.auto_message"
                 label="Автосообщение"
+                density="comfortable"
                 :error-messages="errors.auto_message"
             ></v-textarea>
 
-            <!-- Чекбокс "Активно" -->
             <v-checkbox v-model="offer.is_active" label="Активно" :false-value="0" :true-value="1"></v-checkbox>
 
-            <!-- Атрибуты -->
             <div v-if="offer.category?.type === 1 && attributes.length">
                 <p class="text-subtitle-1 font-weight-medium">Атрибуты</p>
                 <v-row>
@@ -181,6 +178,7 @@ export default {
                         <v-text-field
                             v-model="attributes[index].value"
                             :label="attr.title"
+                            density="comfortable"
                             :error-messages="errors[`attributes.${attr.id}`]"
                         ></v-text-field>
                     </v-col>
@@ -195,7 +193,6 @@ export default {
         </v-card-actions>
     </v-card>
 
-    <!-- Снекбар для уведомлений -->
     <v-snackbar
         v-model="snackbar"
         :color="snackbarColor"
