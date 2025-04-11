@@ -13,9 +13,9 @@ export default {
             selectedServer: null,
             selectedAttributes: [],
             errors: {},
-            snackbar: false, // Управление видимостью снекбара
-            snackbarMessage: '', // Сообщение снекбара
-            snackbarColor: 'success' // Цвет снекбара (success, error и т.д.)
+            snackbar: false,
+            snackbarMessage: '',
+            snackbarColor: 'success'
         }
     },
 
@@ -63,28 +63,27 @@ export default {
 
             axios.post('api/offers', payload)
                 .then(() => {
-                    // Очищаем форму
-                    this.title = '';
-                    this.description = '';
-                    this.autoMessage = '';
-                    this.price = null;
-                    this.amount = null;
-                    this.selectedServer = null;
-                    this.selectedAttributes = {};
+                    this.title = ''
+                    this.description = ''
+                    this.autoMessage = ''
+                    this.price = null
+                    this.amount = null
+                    this.selectedServer = null
+                    this.selectedAttributes = {}
 
-                    this.snackbarMessage = 'Предложение успешно добавлено!';
-                    this.snackbarColor = 'success';
-                    this.snackbar = true;
+                    this.snackbarMessage = 'Предложение успешно добавлено!'
+                    this.snackbarColor = 'success'
+                    this.snackbar = true
                 })
                 .catch(err => {
                     if (err.response && err.response.data.errors) {
-                        this.errors = err.response.data.errors;
+                        this.errors = err.response.data.errors
 
-                        this.snackbarMessage = 'Ошибка при добавлении предложения. Проверьте данные.';
-                        this.snackbarColor = 'error';
-                        this.snackbar = true;
+                        this.snackbarMessage = 'Ошибка при добавлении предложения. Проверьте данные.'
+                        this.snackbarColor = 'error'
+                        this.snackbar = true
                     }
-                });
+                })
         }
     },
 
@@ -104,7 +103,7 @@ export default {
         </v-btn>
 
         <v-skeleton-loader v-if="!category.id" type="heading" class="mb-2"/>
-        <v-card-title v-else>Добавление предложения</v-card-title>
+        <v-card-title v-else>Продать {{ category.title }}</v-card-title>
 
         <v-card-text>
             <v-skeleton-loader v-if="!category.id" type="paragraph" class="mb-4"/>

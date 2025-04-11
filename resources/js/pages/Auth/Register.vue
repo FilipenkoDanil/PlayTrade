@@ -60,7 +60,7 @@ export default {
 
                     <v-text-field
                         v-model="name"
-                        label="Name"
+                        label="Имя"
                         type="text"
                         required
                         :error-messages="errors.name"

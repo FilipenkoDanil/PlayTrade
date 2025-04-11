@@ -81,7 +81,7 @@ export default {
                     <p class="text-body-2 text-medium-emphasis">{{ category.description }}</p>
                 </template>
 
-                <v-skeleton-loader class="my-2" v-if="loading" type="chip, chip, chip, chip"></v-skeleton-loader>
+                <v-skeleton-loader class="mt-2 mb-8" v-if="loading" type="chip, chip, chip, chip"></v-skeleton-loader>
                 <template v-else>
                     <v-btn v-for="cat in category.game.categories" :key="cat.id" :to="{name: 'category', params: {id: cat.id}}"
                            active-color="indigo-darken-4" rounded  class="mr-2 my-2">
